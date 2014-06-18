@@ -72,6 +72,8 @@ MbaActionBinding.prototype.bindAction = function(dom, route, node){
     var domElement = dom.getDom(0);
     var handler = function(){
         var model = actionBinding.getModel(bindingRoute);
+        /*if(domElement._mbaModel == null)
+            throw new MbaError('Dom element has no mbaModel.');*/
         model[actionBinding.getAction()](domElement._mbaModel);
         var modelAfterAction = actionBinding.modelForRouteExists(bindingRoute);//TODO tester cette méthode pour ne pas lever d'erreur si le modèle n'existe pas, peut etre faire uen fonction dédié modelFromRouteExists ?
         if(modelAfterAction != null){//model can be removed during action

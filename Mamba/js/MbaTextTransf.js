@@ -15,6 +15,11 @@ function MbaTextTransf(){
         checkArgNb(arguments, 2);
         return domElement.textContent;
     };
+    
+    MbaTextTransf.prototype.referenceModelIntoDomElement = function(domElement){
+        checkType(domElement, 'dom');
+        domElement.parentElement._mbaModel = this.getLastModel();
+    };
 }
 MbaTextTransf.prototype = new MbaTransf2();
 MbaTextTransf.prototype.constructor = MbaTextTransf;

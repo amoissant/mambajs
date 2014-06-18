@@ -40,7 +40,8 @@ function MbaRootNode(templateRoot){
     MbaRootNode.prototype.removeDom = function(dom, route){
         checkType(dom, MbaDom);
 		checkType(route, MbaRoute);
-        //we do nothing, MbaRootNode doesn't represent a real htmlElement
+        if(this._parentDom != null)
+            MbaNode2.prototype.removeDom.call(this, dom, route);
 	};
     
     MbaRootNode.prototype.startRender = function(model){

@@ -81,6 +81,7 @@ function MbaTransf2(){
         this.updateDomWithModel(domElement, newValue, oldValue);
         this.setOldValue(newValue, route);
         this.setSuperModel(model);//TODO on peut optimiser les perfs ici avec un évènement pour modifier la référence du supermodel
+        this.referenceModelIntoDomElement(domElement);
     };
     
     MbaTransf2.prototype.canReadValueFromDom = function(){
@@ -129,5 +130,10 @@ function MbaTransf2(){
         }
         else
             console.log('events ', this._events, ' will be ignored');            
+    };
+    
+    MbaTransf2.prototype.referenceModelIntoDomElement = function(domElement){
+        checkType(domElement, 'dom');
+        domElement._mbaModel = this.getLastModel();
     };
 }

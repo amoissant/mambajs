@@ -1,5 +1,23 @@
 Test(function() {   
     
+    Ca('teste que l\'on supprime un élément à la racine de son parent si son modèle est supprimé', function(){
+        var html = '<div class="test"></div>';
+        var model = [{text: 'toto'}, {text: 'tutu'}];
+        var directive = {r00t: '.test', text: '.test'};
+        var mamba = new MbaTemplate2(html, directive);
+        mamba.render(model);
+        var root = document.createElement('div');
+        var renderedDom = mamba.getRenderedDom().getDom();
+        for(var i=0 ; i<renderedDom.length ; i++){
+            root.appendChild(renderedDom[i]);
+        }
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="test">toto</div><div class="test">tutu</div>');
+        
+        model.pop();
+        mamba.render(model);
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="test">toto</div>');
+    });
+    
     Ca('teste le scénario 04', function(){
         var html = 
             '<div class="message"></div><input id="button" type="button"></input>';
@@ -54,17 +72,16 @@ Test(function() {
         var model = data.model;
         var mamba = new MbaTemplate2(html, directive);
         mamba.render(model);
-        mamba.getRootNode().debug(true);
+        //mamba.getRootNode().debug(true);
         
         model.video.animes.pop();
         mamba.updateDomForModel(model.video);
-        mamba.getRootNode().debug(true);
+        //mamba.getRootNode().debug(true);
         
         var renderedDom = mamba.getRenderedDom();
         var expectedHtml = 
             '<div class="anime"><div class="name">SpongeBob SquarePants</div><div class="ep_number">01a</div><div class="ep_name">Help Wanted</div><div class="ep_number">01b</div><div class="ep_name">Reef Blower</div></div>';        
         OnAttend(renderedDom.toString()).DEtreEgalA(expectedHtml);
-        console.log(renderedDom);
     });
     
     Ca('test que la mise à jour du sous-modèle fonctionne avec un modèle incomplet', function(){
@@ -332,6 +349,217 @@ Test(function() {
         OnAttend(dom.toString()).DEtreEgalA(expectedHtml);  
     });
     
+    //TODO remplacer par la fonction d'api qui insert le renderedDom dans un selecteur ou un élément de dom
+    function appendInRoot (root, renderedDom){
+            var dom = renderedDom.getDom();
+            for(var i=0 ; i<dom.length ; i++){
+                root.appendChild(dom[i]);
+            }  
+        }
+    
+    Ca('teste le scénario de la demo 02', function(){
+        function Message(text, parent){
+            this.text = text;
+            this._parent = parent;
+            this.remove = function(){
+                this._parent.remove(this);
+            }
+        }
+    
+        function MessageCollection(){
+            this.messages = [];
+            this.newMessage = '';
+            this.add = function(){
+                this.messages.push(new Message(this.newMessage, this));
+                this.newMessage = '';
+            };
+            this.remove = function(message){
+                var index = this.messages.indexOf(message);
+                this.messages.splice(index, 1);
+                this.populate();
+            };
+            this.empty = function(){
+                this.messages = [];
+            };
+            this.populate = function(){
+                var event = new CustomEvent('populate');
+                event.model = this;
+                document.dispatchEvent(event);
+            };
+        }        
+    
+        var html = 
+            '<div class="messages"></div>'+
+            '<input id="message" type="text" placeholder="taper un message ici"></input>'+
+            '<input id="addBtn" type="button" value="Ajouter"></input>'+
+            '<input id="emptyBtn" type="button" value="Vider"></input>';
+        
+        var model = new MessageCollection();
+
+        var directive = 
+            {"messages": 
+                {"r00t": ".messages", 
+                 "text": ".messages", 
+                 "/remove" : ".messages->click"},
+             "newMessage": "#message$value->blur",
+             "/add": "#addBtn->click", 
+             "/empty": "#emptyBtn->click"};
+        
+        var mamba = new MbaTemplate2(html, directive);
+        mamba.render(model);
+        //mamba.getRootNode().debug(true);
+        var renderedDom = mamba.getRenderedDom();
+        var input = mamba.findInRenderedDom('#message').getDom(0);
+        var add = mamba.findInRenderedDom('#addBtn').getDom(0);
+        var empty = mamba.findInRenderedDom('#emptyBtn').getDom(0);//TODO faire une fonction qui retourne un élément de dom
+        var root = document.createElement('div');
+        appendInRoot(root, renderedDom);
+        
+        document.addEventListener('populate', function(e){
+            mamba.updateDomForModel(e.model);
+        });
+        
+        var expectedHtml = 
+            '<input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        input.value = 'toto';
+        input.dispatchEvent(new Event('blur'));
+        OnAttend(model.newMessage).DEtreEgalA('toto');
+        add.dispatchEvent(new Event('click'));
+        OnAttend(model.messages.length).DEtreEgalA(1);
+        var expectedHtml = 
+            '<div class="messages">toto</div><input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        input.value = 'tutu';
+        input.dispatchEvent(new Event('blur'));
+        OnAttend(model.newMessage).DEtreEgalA('tutu');
+        add.dispatchEvent(new Event('click'));
+        OnAttend(model.messages.length).DEtreEgalA(2);
+        expectedHtml = 
+            '<div class="messages">toto</div><div class="messages">tutu</div><input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        input.value = 'titi';
+        input.dispatchEvent(new Event('blur'));
+        OnAttend(model.newMessage).DEtreEgalA('titi');
+        add.dispatchEvent(new Event('click'));
+        OnAttend(model.messages.length).DEtreEgalA(3);
+        expectedHtml = 
+            '<div class="messages">toto</div><div class="messages">tutu</div><div class="messages">titi</div><input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        var tutu = root.childNodes[1];
+        tutu.dispatchEvent(new Event('click'));
+        OnAttend(model.messages.length).DEtreEgalA(2);
+        expectedHtml = 
+            '<div class="messages">toto</div><div class="messages">titi</div><input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        empty.dispatchEvent(new Event('click'));       
+        OnAttend(model.messages.length).DEtreEgalA(0);
+        expectedHtml = 
+            '<input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+    });
+    
+    Ca('teste le scénario de la demo 03', function(){
+        function Message(text, parent){
+            this.text = text;
+        }
+        
+        function MessageCollection(){
+            this.messages = [];
+            this.newMessage = '';
+            this.add = function(){
+                this.messages.push(new Message(this.newMessage, this));
+                this.newMessage = '';
+            };
+            this.remove = function(message){
+                var index = this.messages.indexOf(message);
+                this.messages.splice(index, 1);
+            };
+            this.empty = function(){
+                this.messages = [];
+            };
+        }
+                
+        var html = 
+            '<div class="messages"></div>'+
+            '<input id="message" type="text" placeholder="taper un message ici"></input>'+
+            '<input id="addBtn" type="button" value="Ajouter"></input>'+
+            '<input id="emptyBtn" type="button" value="Vider"></input>';
+        
+        var model = new MessageCollection();
+        
+        var directive = 
+            {"messages": 
+             {"r00t": ".messages", 
+              "text": ".messages"},
+             "newMessage": "#message$value->blur",
+             "/add": "#addBtn->click", 
+             "/empty": "#emptyBtn->click", 
+             "/remove": ".messages->click"};
+        
+        var mamba = new MbaTemplate2(html, directive);
+        mamba.render(model);
+        //mamba.getRootNode().debug(true);
+        var renderedDom = mamba.getRenderedDom();
+        var input = mamba.findInRenderedDom('#message').getDom(0);
+        var add = mamba.findInRenderedDom('#addBtn').getDom(0);
+        var empty = mamba.findInRenderedDom('#emptyBtn').getDom(0);//TODO faire une fonction qui retourne un élément de dom
+        var root = document.createElement('div');
+        appendInRoot(root, renderedDom);
+        
+        document.addEventListener('populate', function(e){
+            mamba.updateDomForModel(e.model);
+        });
+        
+        var expectedHtml = 
+            '<input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        input.value = 'toto';
+        input.dispatchEvent(new Event('blur'));
+        OnAttend(model.newMessage).DEtreEgalA('toto');
+        add.dispatchEvent(new Event('click'));
+        OnAttend(model.messages.length).DEtreEgalA(1);
+        var expectedHtml = 
+            '<div class="messages">toto</div><input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        input.value = 'tutu';
+        input.dispatchEvent(new Event('blur'));
+        OnAttend(model.newMessage).DEtreEgalA('tutu');
+        add.dispatchEvent(new Event('click'));
+        OnAttend(model.messages.length).DEtreEgalA(2);
+        expectedHtml = 
+            '<div class="messages">toto</div><div class="messages">tutu</div><input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        input.value = 'titi';
+        input.dispatchEvent(new Event('blur'));
+        OnAttend(model.newMessage).DEtreEgalA('titi');
+        add.dispatchEvent(new Event('click'));
+        OnAttend(model.messages.length).DEtreEgalA(3);
+        expectedHtml = 
+            '<div class="messages">toto</div><div class="messages">tutu</div><div class="messages">titi</div><input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        var tutu = root.childNodes[1];
+        tutu.dispatchEvent(new Event('click'));
+        OnAttend(model.messages.length).DEtreEgalA(2);
+        expectedHtml = 
+            '<div class="messages">toto</div><div class="messages">titi</div><input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        empty.dispatchEvent(new Event('click'));       
+        OnAttend(model.messages.length).DEtreEgalA(0);
+        expectedHtml = 
+            '<input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+    });    
     //TODO faire méthode MbaTemplate2.appendRenderedDomIn('body');
     //TODO tester demo2 et demo3
     //TODO optimiser les render récursif en passant le modèle parent, si c'est aussi celui de l'enfant alors on le garde
@@ -355,48 +583,6 @@ Test(function() {
          "name"   : ".ep_name"}
     */
 
-/*
-     prop: toto                     -> ajoute la valeur de prop dans le innerHTML 
-     prop: toto@attr                -> si prop est non booléenne mets la valeur de prop dans l'attribut
-                                    -> si prop est booléenne 
-                                        - prop vaut vrai alors on ajoute l'attribut sans valeur (norme HTML)
-                                        - prop vaut faux alors on supprime l'attribut (norme HTML)
-     prop: toto@class               -> ajoute la valeur de prop dans l'attribut class, si prop boolean alors erreur
-     prop: toto@class(star)         -> si prop est booleenne 
-                                        - si prop vaut vrai alors on ajoute la classe 'star' à toto
-                                        - si prop vaut faux alors on enlève la classe 'star' à toto
-                                    -> si prop non booléenne alors erreur
-     prop: toto$foo                 -> met la valeur de prop dans la propriété 'foo' du l'élément de dom
-     prop: toto$:nom_fonction       -> execute la fonction paramétrée 'nom_fonction' à chaque rendu
-     prop: toto${function(){..}}    -> execute la fonction anonyme à chaque rendu
-     prop: toto->blur               -> appelle le setter de name seulement quand on perd le focus sur toto
-     prop: toto->(mouseover, blur)  -> appelle le setter de name seulement pour les deux évènements mouseover et blur
-     prop: toto@class->blur         -> exemple avec attribut et event 
-     /doSomething : toto->click     -> appelle la fonction doSomething du modèle quand on click sur toto
-    
-    - Les evènements permettent de préciser quand mettre à jour le modèle mais ne sont pas applicables pour toutes les fonctions
-      de rendu : 
-      prop: toto->blur         quand on perd le focus sur toto alors on met à jour prop dans le modèle avec la valeur du dom
-      prop: toto@checked->blur quand on perd le focus sur toto alors on met à jour prop dans le modèle avec la valeur du dom 
-                               (attention ici on va pas chercher dans les attributs mais dans la fonction checked)
-      prop: toto@class->blur   ne veut rien dire, il n'y a rien à mettre à jour.
-      
-      
-    - Principe de base pour les attributs : si une valeur du modèle est bindé sur un attributs alors quand le modèle change
-      on met à jour l'attribut dans le dom, sur l'évènement (->event) indiqué, on met à jour la valeur du modèle en fonction du dom.
-      
-    - Cas particulier pour les input et peut-etre d'autres : 
-      Les valeurs pour 'checked', 'selected', 'value' sont disponibles dans les objets js correspondants au éléments de dom mais 
-      pas dans les atrributs et leurs valeur. Il faut étendre les fonctions de rendu et de mise à jour du dom pour :
-      - Quand on veut faire le rendu, on met à jour le dom avec la valeur du modèle puis on met à jour l'objet js avec la valeur.
-      - Quand on veut mettre à jour le modèle à partir du dom, on met à jour le dom en fonction dela valeur dans l'objet js puis
-        on met à jour le modèle par rapport au dom.
-    
-    pour le nom des events, on prend tous les events natifs cf http://www.w3schools.com/tags/ref_eventattributes.asp
-    avec le 'on' au début optionel
-    
-    */
-    
    /*
     Cas à faire marcher (ou pas ya pas de r00t) : render et/ou binding           
           
