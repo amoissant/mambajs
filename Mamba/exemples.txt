@@ -1,0 +1,103 @@
+
+html : 
+<style media="screen" type="text/css">
+ .bleu{color: blue}
+ .rouge{color: red}
+</style>
+<table style="font-size : 8pt; text-align:center">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Copie du Nom</th>
+            <th>Emploi</th>
+            <th>Espece de l'animal</th>
+            <th>Couleur de l'animal</th>
+            <th>Status</th>
+            <th>Actions</th>
+            <th>Véhicule</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr id="person">
+          <td id="name_"></td>
+          <td id="copy_name"></td>
+          <td id="job_"></td>
+          <td id="animal_type"></td>
+          <td id="animal_color"></td>
+          <td>
+              <select style="font-size : 8pt">
+                  <option id="status_"></option>
+              </select>
+          </td>
+          <td>
+              <button class="action" 
+                      style="font-size : 8pt">
+              </button>
+          </td>
+          <td>
+              <div class="vehicle_">
+                  <span>-</span>
+                  <span class="genre_"></span>
+                  <span class="color_"></span>
+             </div>
+          </td>
+      </tr>
+    </tbody>
+</table>
+
+model :
+[{"name" : "toto",
+  "job" : "student",
+  "currStatus" : "recalé",
+  "status" : [{"lib" : "admis"}, {"lib" : "recalé"}],
+  "actions" : ["ouvrir", "modifier"],
+  "vehicle" : {"genre" : "voiture" , "couleur" : "rouge"},
+  "animal" : {"espece" : "chat", "couleur" : "gris tigré"}},
+ {"name" : "anthony",
+  "job" : "ingé",
+  "status" : [{"lib" : "en attente"}, {"lib" : "fermé"}],
+  "actions" : ["ouvrir", "supprimer"],
+  "vehicle" : [{"genre" : "moto" , "couleur" : "bleu"},
+               {"genre" : "moto" , "couleur" : "rouge"}]}]
+
+binding :
+{"r00t" : "#person",
+ "name" : "#name_, #copy_name",
+ "job" : "#job_",
+ "currStatus" : "select@value",
+ "status" : {"lib" : "#status_"},
+ "actions" : ".action",
+ "vehicle" : {"r00t" : ".vehicle_",
+              "genre" : ".genre_",
+              "couleur" : ".color_, .color_@class"},
+ "animal" : {"espece" : "#animal_type",
+             "couleur" : "#animal_color"}}
+             
+             
+exemple récursif : 
+
+template : 
+
+<ul>
+    <li class="dossier">
+        <div class="nom"></div>
+        <ul class="sous-dossiers"></ul>
+    </li>
+</ul>
+
+model : 
+
+ [{"nom" : "toto", 
+   "dossiers" : [{"nom" : "subtoto1"}, {"nom" : "subtoto2"}]},
+{"nom" : "tata", 
+   "dossiers" : [{"nom" : "subtata1"}]},
+{"nom" : "tutu"}]
+
+
+binding : 
+{"r00t" : ".dossier",
+ "nom" : ".nom",
+ "dossiers" : "me"} -> remplacer 'me' par lui même
+  
+
+

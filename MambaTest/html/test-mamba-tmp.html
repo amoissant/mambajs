@@ -1,0 +1,104 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="../../Mamba/js/jquery-1.10.1.js"></script>
+	<script type="text/javascript" src="../js/Test.js"></script>
+	<script type="text/javascript" src="../js/underscore.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/cssreset.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="../css/mambaTest.css" media="screen" />
+	<script type="text/javascript">
+		var ancienImprimer = Imprimer;
+		Imprimer = function(test, vert){
+			var resultatHtml = "<tr><td class='nom_test'></td><td class='resultat_test'></td></tr>";
+			var resultatHtmlDom = $.parseHTML(resultatHtml);
+			$(resultatHtmlDom).find(".nom_test").text(test);
+			$(resultatHtmlDom).find(".resultat_test").addClass((vert?"vert":"rouge"));
+			$(resultatHtmlDom).find(".resultat_test").text((vert?"vert":"rouge"));
+			$("tbody").append(resultatHtmlDom);
+			ancienImprimer(test, vert);
+		};
+	</script>
+	<body>
+		<table id="result_table">
+			<thead>
+				<tr>
+					<th>
+						Nom du test
+					</th>
+					<th>
+						Résultat
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</body>
+    <script type="text/javascript" src="../../Mamba/js/MbaError.js"></script>
+	<script type="text/javascript" src="../../Mamba/js/Mamba.js"></script>
+	<script type="text/javascript" src="../../Mamba/js/MbaUtil.js"></script>
+	<script type="text/javascript" src="../../Mamba/js/MbaDom.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaDirective2.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaRootDirective.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/AnchorProvider.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/DefaultAnchorProvider.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/TextNodeAnchorProvider.js"></script>    
+    <script type="text/javascript" src="../../Mamba/js/MbaBinding2.js"></script>
+	<script type="text/javascript" src="../../Mamba/js/MbaBindingText.js"></script>		
+    <script type="text/javascript" src="../../Mamba/js/MbaAccessor2.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaFieldAccessor2.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaAccessorChain.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaTransf2.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/EventConnector.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/EventConnectorTextNode.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaTextTransf.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaAttributeTransf.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaClassTransf.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaClassWithArgTransf.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaPropertyTransf.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaRefFunctionTransf.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaCustomFunctionTransf.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaRoute.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaNode2.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaNodeDirective.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaRootNode.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaTemplate2.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaNodeHtmlElement2.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaNodeBinding2.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaNodeConstructor2.js"></script>
+	<script type="text/javascript" src="../../Mamba/js/MbaVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaDirectiveVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaDirectiveDebugVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/AddTextNodesVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaTemplateDirective.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaTemplateBinding.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/TemplateDirectiveAndBindingVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaTemplateDirectiveVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaNodeVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/DebugNodeVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/TestNodeVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/IntegrateBindingAndDirectiveNodesVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/DirectiveSplitter.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/DirectiveParser.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/DirectiveExtractor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/BaseExtractor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/SimpleExtractor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/AttributeExtractor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/ClassExtractor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/ClassWithArgExtractor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/PropertyExtractor.js"></script>    
+    <script type="text/javascript" src="../../Mamba/js/RefFunctionExtractor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/CustomFunctionExtractor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/ConnectEventsVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/DebugNodeAndAccessorVisitor.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/MbaActionBinding.js"></script>
+    <script type="text/javascript" src="../../Mamba/js/AddActionBindingIntoNodesVisitor.js"></script>    
+    <script type="text/javascript" src="../../Mamba/js/UpdateSuperModelReferenceVisitor.js"></script>    
+    <script type="text/javascript" src="../../Mamba/js/GetNodesAndAccessorsVisitor.js"></script>   
+    <script type="text/javascript" src="../../Mamba/js/AccessorChainAndMbaNodes.js"></script>       
+    <script type="text/javascript" src="../../Mamba/js/AccessorNode.js"></script>      
+    <script type="text/javascript" src="../../Mamba/js/ModelFinder.js"></script> 
+    
+ 	<script type="text/javascript" src="../js/TestMambaTmp.js"></script>
+</head>
+</html>

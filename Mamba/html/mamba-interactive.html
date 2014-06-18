@@ -1,0 +1,188 @@
+<html>	
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.1.js"></script>
+	<script type="text/javascript" src="../js/underscore.js"></script>
+ 
+    <script type="text/javascript" src="../js/MbaError.js"></script>
+	<script type="text/javascript" src="../js/Mamba.js"></script>
+	<script type="text/javascript" src="../js/MbaUtil.js"></script>
+	<script type="text/javascript" src="../js/MbaDom.js"></script>
+    <script type="text/javascript" src="../js/MbaDirective2.js"></script>
+    <script type="text/javascript" src="../js/MbaRootDirective.js"></script>
+    <script type="text/javascript" src="../js/AnchorProvider.js"></script>
+    <script type="text/javascript" src="../js/DefaultAnchorProvider.js"></script>
+    <script type="text/javascript" src="../js/TextNodeAnchorProvider.js"></script>    
+    <script type="text/javascript" src="../js/MbaBinding2.js"></script>
+	<script type="text/javascript" src="../js/MbaBindingText.js"></script>		
+    <script type="text/javascript" src="../js/MbaAccessor2.js"></script>
+    <script type="text/javascript" src="../js/MbaFieldAccessor2.js"></script>
+    <script type="text/javascript" src="../js/MbaAccessorChain.js"></script>
+    <script type="text/javascript" src="../js/MbaTransf2.js"></script>
+    <script type="text/javascript" src="../js/EventConnector.js"></script>
+    <script type="text/javascript" src="../js/EventConnectorTextNode.js"></script>
+    <script type="text/javascript" src="../js/MbaTextTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaAttributeTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaClassTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaClassWithArgTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaRefFunctionTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaCustomFunctionTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaPropertyTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaRoute.js"></script>
+    <script type="text/javascript" src="../js/MbaNode2.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeDirective.js"></script>
+    <script type="text/javascript" src="../js/MbaRootNode.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplate2.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeHtmlElement2.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeBinding2.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeConstructor2.js"></script>
+	<script type="text/javascript" src="../js/MbaVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaDirectiveVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaDirectiveDebugVisitor.js"></script>
+    <script type="text/javascript" src="../js/AddTextNodesVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplateDirective.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplateBinding.js"></script>
+    <script type="text/javascript" src="../js/TemplateDirectiveAndBindingVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplateDirectiveVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeVisitor.js"></script>
+    <script type="text/javascript" src="../js/DebugNodeVisitor.js"></script>
+    <script type="text/javascript" src="../js/TestNodeVisitor.js"></script>
+    <script type="text/javascript" src="../js/IntegrateBindingAndDirectiveNodesVisitor.js"></script>
+    <script type="text/javascript" src="../js/DirectiveSplitter.js"></script>
+    <script type="text/javascript" src="../js/DirectiveParser.js"></script>
+    <script type="text/javascript" src="../js/DirectiveExtractor.js"></script>
+    <script type="text/javascript" src="../js/BaseExtractor.js"></script>
+    <script type="text/javascript" src="../js/SimpleExtractor.js"></script>
+    <script type="text/javascript" src="../js/AttributeExtractor.js"></script>
+    <script type="text/javascript" src="../js/ClassExtractor.js"></script>
+    <script type="text/javascript" src="../js/PropertyExtractor.js"></script>
+    <script type="text/javascript" src="../js/ClassWithArgExtractor.js"></script>
+    <script type="text/javascript" src="../js/RefFunctionExtractor.js"></script>
+    <script type="text/javascript" src="../js/CustomFunctionExtractor.js"></script>
+    <script type="text/javascript" src="../js/ConnectEventsVisitor.js"></script>
+    <script type="text/javascript" src="../js/DebugNodeAndAccessorVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaActionBinding.js"></script>
+    <script type="text/javascript" src="../js/AddActionBindingIntoNodesVisitor.js"></script>
+    <script type="text/javascript" src="../js/UpdateSuperModelReferenceVisitor.js"></script>   
+    <script type="text/javascript" src="../js/GetNodesAndAccessorsVisitor.js"></script>   
+    <script type="text/javascript" src="../js/AccessorChainAndMbaNodes.js"></script>       
+    <script type="text/javascript" src="../js/AccessorNode.js"></script>      
+    
+	<script type="text/javascript">
+
+		function addTabulation(){
+			$('textarea').on('keypress', function(e){
+				
+				if(e.keyCode == 9){//tab
+					var tabString = "  ";
+					var start = $(this).get(0).selectionStart;
+    				var end = $(this).get(0).selectionEnd;
+					$(this).val($(this).val().substring(0, start)
+                		+ tabString
+                		+ $(this).val().substring(end));
+
+    				$(this).get(0).selectionStart =
+    				$(this).get(0).selectionEnd = start + tabString.length;
+					return false;
+				}
+			});
+		}
+		
+		
+		$(document).ready(function(){
+
+			$('#html').click(function(){
+				$('#html_errors').text('');			
+			});				
+			$('#model').click(function(){
+				$('#model_errors').text('');			
+			});		
+			$('#directive').click(function(){
+				$('#directive_errors').text('');			
+			});	
+
+			$('#run').click(function(){
+				try{
+                    var modeltextArea = document.querySelector('#model');
+                    eval('model='+modeltextArea.value);
+                    //model = $.parseJSON($('#model').val());//.replace(/\'/g,'"'));	
+				}catch(error){
+				 	$('#model_errors').text(error);
+					return;
+				}
+				try{
+					directive = $.parseJSON($('#directive').val());//.replace(/\'/g,'"'));
+					extra_script = $('#extra_script').val();
+					eval(extra_script);
+				}catch(error){
+				 	$('#directive_errors').text(error);
+					return;
+				}
+				try{
+					//html = $.parseHTML($('#html').val());
+                    html = $('#html').val();
+				}catch(error){
+				 	$('#html_errors').text(error);
+					return;
+				}		
+				
+                //html = html.replace(/>\s+</g, '><');
+                
+                mbaTemplate = new MbaTemplate2(html, directive);
+                mbaTemplate.render(model);
+                rootNode = mbaTemplate.getRootNode();
+                rootNode.debug(true);
+                var dom = mbaTemplate.getRenderedDom().getDom();
+				
+				$('#result').empty();
+				$('#result').append(dom);
+
+			});
+			
+			addTabulation();
+		});	
+	</script>
+	<style type="text/css">
+		.half{width:50%}
+		.cent{width:100%;}
+		.error{color:red; width:100%;}
+
+		.blue{color:blue}
+		.red{color:red}
+		.infos{font-size: small}
+	</style>
+</head>
+
+<body>
+	<table class="cent">
+		<tbody>
+			<tr>
+				<td class="half">Template html</td>
+				<td class="half">Model</td>
+			</tr>
+			<tr>
+				<td><textarea id="html" rows="15" class="cent" spellcheck="false"></textarea></td>
+				<td><textarea id="model"rows="15" class="cent" spellcheck="false"></textarea></td>
+			</tr>
+			<tr>
+				<td><div id="html_errors" class="error"></div></td>
+				<td><span id="model_errors" class="error"></span></td>
+			</tr>
+			<tr>
+				<td>Directive</td>
+				<td><button id="run">Result</button><span id="time"></span></td>
+			</tr>
+			<tr>
+				<td>
+					<div><textarea id="directive" rows="15" class="cent" spellcheck="false"></textarea></div>
+				</td>
+				<td id="result"></td>
+			</tr>
+			<tr>
+				<td><div id="directive_errors" class="error"></div></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

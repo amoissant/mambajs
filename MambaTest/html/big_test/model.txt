@@ -1,0 +1,12 @@
+[{"name" : "toto",
+  "job" : "student",
+  "status" : [{"lib" : "admis"}, {"lib" : "recalé"}],
+  "actions" : ["ouvrir", "modifier"],
+  "vehicle" : {"genre" : "voiture" , "couleur" : "rouge"},
+  "animal" : {"espece" : "chat", "couleur" : "gris tigré"}},
+ {"name" : "anthony",
+  "job" : "ingé",
+  "status" : [{"lib" : "en attente"}, {"lib" : "fermé"}],
+  "actions" : ["ouvrir", "supprimer"],
+  "vehicle" : [{"genre" : "moto" , "couleur" : "bleu"},
+               {"genre" : "moto" , "couleur" : "rouge"}]}]

@@ -1,0 +1,127 @@
+<html>	
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.1.js"></script>
+	<script type="text/javascript" src="../js/underscore.js"></script>
+ 
+    <script type="text/javascript" src="../js/MbaError.js"></script>
+	<script type="text/javascript" src="../js/Mamba.js"></script>
+	<script type="text/javascript" src="../js/MbaUtil.js"></script>
+	<script type="text/javascript" src="../js/MbaDom.js"></script>
+    <script type="text/javascript" src="../js/MbaDirective2.js"></script>
+    <script type="text/javascript" src="../js/MbaRootDirective.js"></script>
+    <script type="text/javascript" src="../js/AnchorProvider.js"></script>
+    <script type="text/javascript" src="../js/DefaultAnchorProvider.js"></script>
+    <script type="text/javascript" src="../js/TextNodeAnchorProvider.js"></script>    
+    <script type="text/javascript" src="../js/MbaBinding2.js"></script>
+	<script type="text/javascript" src="../js/MbaBindingText.js"></script>		
+    <script type="text/javascript" src="../js/MbaAccessor2.js"></script>
+    <script type="text/javascript" src="../js/MbaFieldAccessor2.js"></script>
+    <script type="text/javascript" src="../js/MbaAccessorChain.js"></script>
+    <script type="text/javascript" src="../js/MbaTransf2.js"></script>
+    <script type="text/javascript" src="../js/EventConnector.js"></script>
+    <script type="text/javascript" src="../js/EventConnectorTextNode.js"></script>
+    <script type="text/javascript" src="../js/MbaTextTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaAttributeTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaClassTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaClassWithArgTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaRefFunctionTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaCustomFunctionTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaPropertyTransf.js"></script>
+    <script type="text/javascript" src="../js/MbaRoute.js"></script>
+    <script type="text/javascript" src="../js/MbaNode2.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeDirective.js"></script>
+    <script type="text/javascript" src="../js/MbaRootNode.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplate2.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeHtmlElement2.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeBinding2.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeConstructor2.js"></script>
+	<script type="text/javascript" src="../js/MbaVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaDirectiveVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaDirectiveDebugVisitor.js"></script>
+    <script type="text/javascript" src="../js/AddTextNodesVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplateDirective.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplateBinding.js"></script>
+    <script type="text/javascript" src="../js/TemplateDirectiveAndBindingVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplateDirectiveVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeVisitor.js"></script>
+    <script type="text/javascript" src="../js/DebugNodeVisitor.js"></script>
+    <script type="text/javascript" src="../js/TestNodeVisitor.js"></script>
+    <script type="text/javascript" src="../js/IntegrateBindingAndDirectiveNodesVisitor.js"></script>
+    <script type="text/javascript" src="../js/DirectiveSplitter.js"></script>
+    <script type="text/javascript" src="../js/DirectiveParser.js"></script>
+    <script type="text/javascript" src="../js/DirectiveExtractor.js"></script>
+    <script type="text/javascript" src="../js/BaseExtractor.js"></script>
+    <script type="text/javascript" src="../js/SimpleExtractor.js"></script>
+    <script type="text/javascript" src="../js/AttributeExtractor.js"></script>
+    <script type="text/javascript" src="../js/ClassExtractor.js"></script>
+    <script type="text/javascript" src="../js/PropertyExtractor.js"></script>
+    <script type="text/javascript" src="../js/ClassWithArgExtractor.js"></script>
+    <script type="text/javascript" src="../js/RefFunctionExtractor.js"></script>
+    <script type="text/javascript" src="../js/CustomFunctionExtractor.js"></script>
+    <script type="text/javascript" src="../js/ConnectEventsVisitor.js"></script>
+    <script type="text/javascript" src="../js/DebugNodeAndAccessorVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaActionBinding.js"></script>
+    <script type="text/javascript" src="../js/AddActionBindingIntoNodesVisitor.js"></script>
+    <script type="text/javascript" src="../js/UpdateSuperModelReferenceVisitor.js"></script>    
+    <script type="text/javascript" src="../js/GetNodesAndAccessorsVisitor.js"></script>   
+    <script type="text/javascript" src="../js/AccessorChainAndMbaNodes.js"></script>       
+    <script type="text/javascript" src="../js/AccessorNode.js"></script>     
+    <script type="text/javascript" src="../js/ModelFinder.js"></script> 
+    
+    <style type="text/css">
+		body
+        {
+            height :100%; 
+            text-align: center;
+        }
+        #content
+        {
+            height : 100%;
+            display: inline-block;
+            margin-top: 50px;
+        }
+	</style>
+</head>
+
+<body>
+    <div id='content'></div>
+</body>
+<script type="text/javascript">
+    
+    function appendInBody (renderedDom){
+        var dom = renderedDom.getDom();
+        var content = document.querySelector('#content');
+        for(var i=0 ; i<dom.length ; i++){
+            content.appendChild(dom[i]);
+        }  
+    }
+    
+    var html = 
+        '<div class="messages"></div>'+
+        '<input id="message" type="text"></input>'+
+        '<input id="add" type="button" value="Ajouter"></input>'+
+        '<input id="delete" type="button" value="Vider"></input>';
+    
+    var model = 
+        {messages: [],
+         addMessage: function(){this.messages.push({text :this.message});this.message='';},
+         vider: function(){this.messages = [];},
+         message: '', 
+         placeHolder: 'taper un message ici'};
+
+
+    var directive = 
+        {"messages" : {"r00t" : ".messages", "text": ".messages"},
+         "message" : "#message$value->blur",
+         "placeHolder" : "#message@placeholder",
+         "/addMessage" : "#add->click", 
+         "/vider" : "#delete->click"};
+    
+    var mamba = new MbaTemplate2(html, directive);
+    mamba.render(model);
+    mamba.getRootNode().debug(true);
+    var renderedDom = mamba.getRenderedDom();
+    appendInBody(renderedDom);
+</script>
+</html>

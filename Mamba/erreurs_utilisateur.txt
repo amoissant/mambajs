@@ -1,0 +1,4 @@
+{"r00t": ".person@value", -> ici on a une directive à la place d'un selecteur css
+ "name": ".name",
+ "tel": {"r00t": ".tel", "number": ".tel"},
+ "job": ".job@value"}

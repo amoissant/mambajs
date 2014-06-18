@@ -1,0 +1,28 @@
+
+template :
+
+<select id="la_selection"><option id="les_options"/></select>
+
+model:
+ 
+{"options" : [
+{"value": 0, "text": "toto", "selected": true}, 
+{"value": 1, "text": "tutu", "selected": false}, 
+{"value": 2, "text": "tata", "selected": false}, 
+{"value": 3, "text": "titi", "selected": false}
+]}
+
+binding : 
+
+{"options" : 
+{ "r00t": "#les_options",
+  "value": "#les_options@value",
+  "text": "#les_options",
+  "selected": "#les_options?+@selected"
+}}
+
+-> marche pas (génère un select vide) -> normal, y'avait pas de root, corrigé et algo plus flexible dans ces cas là. 
+-> pouvoir avoir un raccourcis pour ne pas avoir à répéter '#les_options' dans les directives.
+
+
+Faire un exemple de tableau dynamique en mamba

@@ -1,0 +1,11 @@
+{"r00t" : "#person",
+ "name" : "#name_, #copy_name",
+ "job" : "#job_",
+ "status" : {"lib" : "#status_"},
+ "actions" : ".action",
+ "vehicle" : {"r00t" : ".vehicle_",
+              "genre" : ".genre_",
+              "couleur" : ".color_, .color_@class"},
+ "animal" : {"espece" : "#animal_type",
+             "couleur" : "#animal_color"}}
+ 

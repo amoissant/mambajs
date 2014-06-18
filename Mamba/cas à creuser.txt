@@ -1,0 +1,102 @@
+
+Cas 01 : 
+
+Ceci 'fonctionne'
+
+	<div>Schools : </div>
+	<div class="school"></div>
+	<br/>
+	<div>Students name : </div>
+	<div class="student_name"></div>
+	<br/>
+	<div>Students age : </div>
+	<div class="student_age"></div>
+	
+	[{"schoolName" : "harvard",
+	  "students" : [{"name" : "toto", "age" : 18}, {"name" : "tutu", "age" : 19}]},
+	 {"schoolName" : "polytechnique",
+	  "students" : [{"name" : "titi", "age" : 20}, {"name" : "tata", "age" : 21}]}]
+	  
+	{"schoolName" : ".school",
+	 "students" : {"name" : ".student_name",
+	               "age" : ".student_age"}}
+	  
+et donne :
+
+	Schools :
+	harvard
+	polytechnique
+	
+	Students name :
+	toto
+	tutu
+	titi
+	tata
+	
+	Students age :
+	18
+	19
+	20
+	21
+
+Ceci 'fonctionne' 
+
+	<div>Schools : </div>
+	<div class="school"></div>
+	<br/>
+	<div>Students name : </div>
+	<div class="student_name"></div>
+	
+	{"schoolName" : "harvard",
+	  "students" : [{"name" : "toto", "age" : 18}, {"name" : "tutu", "age" : 19}]}
+	  
+	{"schoolName" : ".school",
+	 "students" : {"name" : ".student_name",
+	               "age" : ".student_name@title"}}
+	               
+et donne : 
+
+	Schools :
+	harvard
+	
+	Students name :
+	toto avec l'age en title
+	tutu avec l'age en title
+
+
+Ne pourrait-on pas le faire marcher avec le modèle suivant ? (étudier le comportement de getMergedBindings)
+
+	[{"schoolName" : "harvard",
+	  "students" : [{"name" : "toto", "age" : 18}, {"name" : "tutu", "age" : 19}]},
+	 {"schoolName" : "polytechnique",
+	  "students" : [{"name" : "titi", "age" : 20}, {"name" : "tata", "age" : 21}]}]
+	  
+	  
+Cas 02 : 
+
+Modèle : 
+{"options" : [{"label" : "toto", "value" : "01"}, {"label" : "titi", "value" : "02"}, {"label" : "tata", "value" : "03"}]}
+
+Template : 
+<div>
+<span>choisir parmis les options suivantes : </span>
+<span class="option_label_root"><span class="option_label"></span>,&nbsp</span>
+<br/>
+<select><option></option></select>
+</div>
+
+Directive 1 :
+{"r00t" : "div",
+ "options" : 
+  [{"r00t" : ".option_label_root",
+    "label" : ".option_label"},
+   {"r00t" : "option",
+    "label" : "option",
+    "value" : "option@value"}}
+    
+Directive 2 :
+{"options" : 
+  [{"r00t" : ".option_label_root",
+    "label" : ".option_label"},
+   {"label" : "option",
+    "value" : "option@value"}}

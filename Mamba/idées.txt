@@ -1,0 +1,162 @@
+
+
+Pour executer un bout de code spécifique : 
+
+{"active" : "input{function(dom, value){$(dom).removeAttr('disabled');}}"}
+{"active" : "input{toggleDisabled}"} -> prototype = toggleDisabled(dom, value)
+{"id" : ".toto{function(dom, value){$(dom).attr('id', 'toto'+value);}}"} -> génération d'id
+{"id" : ".toto{function(dom, value){$(dom).attr('id', $(dom).attr('id')+value);}}"} -> génération d'id avec prefixe déjà dans le dom
+
+
+Prévoir des fonctions préconfigurées :
+ 
+{"id" : "#toto{:idAppend}"} -> génère un id="toto16" si l'id du modèle est 16
+-> attention, si on réapplique cette fonction lors d'un disptach alors on aura un id égal à toto1616 
+-> dispatch doit conserver les références des éléments de dom donc c'est à la fonction de trasnformation 
+   de garantir le même résultat après plusieurs appels successifs (par exemple stocker le préfixe avec $(dom).data('prefix', $(dom).attr('id)))
+
+
+Dans un binding, chaque propriété (ex "name") correspond à une propriété du modèle.
+{"name" : "#toto"}
+Si "name" est un fonction alors considérer que c'est une fonction getter/setter
+Si "name" n'existe pas alors essayer de trouver les fonctions getName, isName et setName
+Pouvoir aussi donner explicitement le nom du getter et du setter :
+{"getTruc, setMachin" : "#toto"}
+
+
+Pouvoir binder des fonction du modèle sur des évènements d'un éléments de dom
+{"recalcul" : "#compute_btn€click"}
+
+
+Pour un modèle ne contenant que des champs, pouvoir attacher un handler quand une valeur est modifiée dans  un input par exemple :
+model.onChange('dateNaissance', function(model, prop){//recalcul de l'age});
+
+
+Pour mettre à jour le modèle, comment faire ?
+model = {"name" : "toto", "children" : ["titi", "tata", "tutu"]};
+Si je fait model.children = ["billy", "joe", "nick"] puis model.disptach() ca doit marcher;
+
+
+Noms pr refactor : 
+
+template -> dom ou chaine représentant un dom
+directive -> les instructions brutes de templating et de binding
+model -> les données à insérer dans le template
+
+MbaModel -> surcouche du modèle, permet d'accéder aux propriété du modèle
+MbaDom -> surcouche du template, représente un dom et permet de rechercher, modifier et remplacer des éléments de dom
+MbaDirective -> transformation des directives en MbaDirectives, associe une MbaAccessor à un ou plusieurs MbaBinding
+MbaAccessor -> interface pour les accesseurs des propriétés du modèle
+	-MbaFieldAccessor -> quand la propriété du modèle est un champs
+	-MbaPropAccessor -> quand la propriété du modèle est une fonction qui fait getter et setter
+	-MbaGetSetAcessor -> quand la propriété du modèle est définit par un getter et un setter distincts
+MbaBinding -> un selecteur css, un dom, une fonction de transformation, ancienne valeur du modèle -> inject 
+ 
+
+
+Nouvel algo : 
+
+renommer MbaTemplate en MbaDom
+
+trier les directives : 
+-un MbaBinding par 'selecteur' dans les directives
+-créer un MbaBinding par 'sélecteur' dans les directives, leur faire calculer l'ancre puis les fusionner par ancre
+ 
+
+MbaBinding 
+-selecteurCss selecteur -> sélecteur css permettant de retrouver l'ancre dans le template passé,
+-MbaDom getAnchor(template) -> récupère l'ancre dans le template grace au selecteur.
+-MbaDom renderedDom -> le dom une fois le rendu fait, c'est ce qui va remplacer l'ancre
+-MbaTransf[] domTransformations -> ensemble des opérations qui permettent de passer de l'ancre au dom rendu
+-MbaDom render(modèle, template) -> renderedDom = getAnchor().clone() puis, pour chaque domTransformation faire render(renderedDom, modèle), à la fin faire getAnchor().replaceWith(renderedDom)
+    
+    
+MbaTransf
+-function(renderedDom, modèleValue) transformation -> la fonction de transformation
+-string modelAccessor -> pour récupérer la valeur du modèle, utilisé par render()
+-typePrimitif ou tableau ancienneModelValue -> pour tester si on doit faire le render(), sert uniquement si modelValue n'est pas un tableau
+-render(renderedDom, modèle) -> retourne renderedDom auquel on a appliqué la transformation, 
+       on récupère la valeur du modèle grace a l'accésseur puis on applique la transformation
+                      
+
+Mamba
+-objet modèle -> le modèle à rendre
+-MbaDom template -> fait référence au template utilisé pour le rendu
+-MbaBinding[] bindings -> tous les bindings permettant de faire le rendu du modèle, triés par profondeur croissante?
+-MbaDom render() -> fait le rendu en demandant à tous les bindings render(modèle, template), retourne un dom dont les éléments ne sont pas forcément dans le document (ceux qui ont été ajoutés)
+-MbaDom renderedDom -> le dernier dom rendu
+-void populate() -> render() + remplacement du dernier dom rendu par le nouveau
+ 
+Le modèle contient son Mamba.
+Quand on fait un modèle.populate(), on fait render() sur chaque MbaBinding puis on remplace le dom (renderedDom) du
+binding par le résultat du rendu. On verra après comment optimiser, (c'est possible quand pr un MbaBinding, parmis ses MbaTransf il n'y en a qu'une qui s'applique sur un tableau)
+
+
+API souhaitée : 
+var mamba = new Mamba (model, template, binding);
+mamba.model(newModel) -> setter model
+mamba.model() -> getter model
+mamba.binding(newBinding) -> setter binding
+mamba.binding() -> getter binding
+mamba.template(template) -> setter template
+mamba.template() -> getter template
+mamba.render(); -> retourne dom
+mamba.populate(); -> met à jour le dom la où il est inséré 
+
+model.toto.titi = $.get(...);
+model.toto.populate(); -> on récupère le Mamba du modèle puis on fait dispatch() dessus 
+Cette dernière syntaxe permettra de demander explicitement de rendu d'un sous-partie du modèle, chaque sous-modèle contient son mamba.
+
+ 
+Pouvoir 'mettre à plat des objets du modèle' :
+
+<style media="screen" type="text/css">
+ .bleu{color: blue}
+ .rouge{color: red}
+</style>
+<table style="font-size : 8pt; text-align:center">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Espece de l'animal</th>
+            <th>Couleur de l'animal</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr id="person">
+          <td id="name_"></td>
+          <td id="animal_type">type par défaut</td>
+          <td id="animal_color">animal par défaut</td>
+          <td>
+              <select style="font-size : 8pt">
+                  <option id="status_"></option>
+              </select>
+          </td>
+      </tr>
+    </tbody>
+</table>
+
+[{"name" : "toto",
+  "status" : [{"lib" : "admis"}, {"lib" : "recalé"}],
+  "animal" : {"espece" : "chat", "couleur" : "gris tigré"}},
+ {"name" : "anthony",
+  "job" : "ingé",
+  "status" : [{"lib" : "en attente"}, {"lib" : "fermé"}]}]
+ 
+directive 1 : 
+{"r00t" : "#person",
+ "name" : "#name_",
+ "status" : {"lib" : "#status_"},
+ "animal" : {"espece" : "#animal_type",
+             "couleur" : "#animal_color"}}
+ 
+directive 2 équivalente : 
+{"r00t" : "#person",
+ "name" : "#name_",
+ "status.lib" : "#status_",
+ "animal.espece" : "#animal_type",
+ "animal.couleur" : "#animal_color"}
+ 
+ 
+Implémenter une fonctionnalité de smart refresh, lorsque mamba appelle une fonction du modèle, il regarde si une propritété non fonction du modèle a été changée, si oui alors refresh

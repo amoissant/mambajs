@@ -1,0 +1,38 @@
+html {
+	font-size: 8pt;
+	font-family: sans-serif;
+}
+
+.vert {
+	color: green
+}
+
+.rouge {
+	color: red
+}
+
+.resultat_test {
+	font-weight: bold
+}
+
+tr:hover {
+	background-color: #dadada;
+}
+
+#result_table {
+	margin:auto;
+}
+
+#result_table th{
+	font-weight: bold;
+}
+
+#result_table td {
+    padding-bottom: 2px;
+}
+
+img {
+    position: absolute;
+    top : 0;
+    margin: auto;
+}
