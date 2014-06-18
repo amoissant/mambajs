@@ -3,7 +3,7 @@ mambajs
 
 A javascript library for templating and binding.
 
-Construction de la directive : 
+    Construction de la directive : 
     - La directive suit la structure du modèle est est composée de binding et/ou de sous-directives. 
     - Pour chaque sous-modèle de type tableau il faut préciser l'élément html à répéter grâce à 'r00t'.
     exemple :
@@ -18,7 +18,7 @@ Construction de la directive :
          "options" : {"r00t" : "option", 
                       "val" : "option"}};
 
-Bindings disponibles : 
+    Bindings disponibles : 
     prop: toto                     -> ajoute la valeur de prop dans le innerHTML 
     prop: toto@attr                -> si prop est non booléenne mets la valeur de prop dans l'attribut
                                    -> si prop est booléenne 
