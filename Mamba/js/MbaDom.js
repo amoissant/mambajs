@@ -449,5 +449,18 @@ function MbaDom(dom){
         return true;
     }
 
+    //TODO mettre au propre avec une classe dédié aux éléments de dom unique
+    this.referenceModelIntoParent = function(model){
+        var parent = this.getDom(0).parentElement;
+        parent._mbaModel = model;
+    };
+    
+    this.referenceModel = function(model){
+        var dom = this.getDom();
+        //TODO optimiser pour las avec un seul element et raison deplus pour avoir une classe représentant un seul elément de dom
+        for(var i=0 ; i<dom.length ; i++){
+            dom[i]._mbaModel = model;   
+        }
+    };
 };
 

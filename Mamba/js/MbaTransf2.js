@@ -81,7 +81,8 @@ function MbaTransf2(){
         this.updateDomWithModel(domElement, newValue, oldValue);
         this.setOldValue(newValue, route);
         this.setSuperModel(model);//TODO on peut optimiser les perfs ici avec un évènement pour modifier la référence du supermodel
-        this.referenceModelIntoDomElement(domElement);
+        //this.referenceModelIntoDomElement(domElement);
+        this.referenceModelIntoDom(dom);
     };
     
     MbaTransf2.prototype.canReadValueFromDom = function(){
@@ -99,7 +100,8 @@ function MbaTransf2(){
             var oldValue = transformation.getOldValue(route);
             var newValue = transformation.readValueFromDom(domElement, oldValue);
             var model = transformation.getSuperModel();
-            transformation.setNewValue(model, bindingRoute, newValue);     
+            transformation.setNewValue(model, bindingRoute, newValue);   
+            //console.log('set new value : '+newValue);
             var parentDirectiveNode = node.getParentDirectiveNode();
             parentDirectiveNode.updateChildrenForModelAndRoute(model, bindingRoute);
         };
@@ -135,5 +137,10 @@ function MbaTransf2(){
     MbaTransf2.prototype.referenceModelIntoDomElement = function(domElement){
         checkType(domElement, 'dom');
         domElement._mbaModel = this.getLastModel();
+    };
+
+    MbaTransf2.prototype.referenceModelIntoDom = function(dom){
+        checkType(dom, MbaDom);
+        dom.referenceModel(this.getLastModel());
     };
 }

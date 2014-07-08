@@ -71,12 +71,12 @@ MbaActionBinding.prototype.bindAction = function(dom, route, node){
     var bindingRoute = route.clone();
     var domElement = dom.getDom(0);
     var handler = function(){
-        var model = actionBinding.getModel(bindingRoute);
-        /*if(domElement._mbaModel == null)
-            throw new MbaError('Dom element has no mbaModel.');*/
-        model[actionBinding.getAction()](domElement._mbaModel);
-        var modelAfterAction = actionBinding.modelForRouteExists(bindingRoute);//TODO tester cette méthode pour ne pas lever d'erreur si le modèle n'existe pas, peut etre faire uen fonction dédié modelFromRouteExists ?
-        if(modelAfterAction != null){//model can be removed during action
+        var actionModel = actionBinding.getModel(bindingRoute);
+        var parameterModel = domElement._mbaModel;
+        var action = actionBinding.getAction(); 
+        actionModel[action](parameterModel);
+        var actionModelAfter = actionBinding.modelForRouteExists(bindingRoute);//TODO tester cette méthode pour ne pas lever d'erreur si le modèle n'existe pas, peut etre faire uen fonction dédié modelFromRouteExists ?
+        if(actionModelAfter != null){//model can be removed during action
             var parentDirectiveNode = node.getParentDirectiveNode(); 
             parentDirectiveNode.updateForModelAndRoute(actionBinding.getSuperModel(), bindingRoute);
         }

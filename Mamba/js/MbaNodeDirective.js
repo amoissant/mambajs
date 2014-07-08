@@ -211,6 +211,7 @@ function MbaNodeDirective(baseDom, templateDirective){
         for(var i=0 ; i<this._modelArray.length ; i++){
             childRoute.setLastIndex(i);
             this.updateDomForOneModelElement(model, childRoute);
+            this.referenceModelIntoRenderedDom(childRoute, i);
         } 
     };
     
@@ -246,6 +247,14 @@ function MbaNodeDirective(baseDom, templateDirective){
         checkType(route, MbaRoute);
         var modelRoute = this._templateDirective.shortenRoute(route);
         this.render(model, modelRoute);
+    };
+    
+    MbaNodeDirective.prototype.referenceModelIntoRenderedDom = function(modelRoute, modelIndex){
+        checkType(modelRoute, MbaRoute);
+        checkType(modelIndex, 'number');
+        var renderedDom = this.getRenderedDomForRoute(modelRoute);
+        var model = this._modelArray[modelIndex];
+        renderedDom.referenceModel(model);
     };
     
 	if(arguments.length > 0)

@@ -16,6 +16,11 @@ function MbaTextTransf(){
         return domElement.textContent;
     };
     
+    MbaTextTransf.prototype.referenceModelIntoDom = function(dom){
+        checkType(dom, MbaDom);
+        dom.referenceModelIntoParent(this.getLastModel());
+    };
+    
     MbaTextTransf.prototype.referenceModelIntoDomElement = function(domElement){
         checkType(domElement, 'dom');
         domElement.parentElement._mbaModel = this.getLastModel();
