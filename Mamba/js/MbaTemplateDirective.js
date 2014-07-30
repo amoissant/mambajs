@@ -9,7 +9,7 @@ function MbaTemplateDirective(template, directive){
     
     MbaTemplateDirective.prototype.init = function(template, directive){
         checkType(template, MbaDom);
-        checkType(directive, MbaDirective2);
+        checkType(directive, MbaDirective);
         
         this._accessorChain = directive.getAccessorChain();
         this._rootSelector = directive.getRootSelector();

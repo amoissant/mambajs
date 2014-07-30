@@ -21,5 +21,5 @@ function MbaPropertyTransf(propertyName){
     if(arguments.length > 0)
         this.init(propertyName);
 }
-MbaPropertyTransf.prototype = new MbaTransf2();
+MbaPropertyTransf.prototype = new MbaTransf();
 MbaPropertyTransf.prototype.constructor = MbaPropertyTransf;

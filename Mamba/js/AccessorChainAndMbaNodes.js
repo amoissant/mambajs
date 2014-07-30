@@ -14,7 +14,7 @@ AccessorChainAndMbaNodes.prototype.init = function(accessorChain){
 };
 
 AccessorChainAndMbaNodes.prototype.addNode = function(node){
-    checkType(node, MbaNode2);
+    checkType(node, MbaNode);
     this._nodes.push(node);
 };
 

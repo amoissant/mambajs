@@ -10,7 +10,7 @@ function AddTextNodesVisitor(template){
     };
     
     AddTextNodesVisitor.prototype.beforeVisitDirective = function(directive){
-        checkType(directive, MbaDirective2);
+        checkType(directive, MbaDirective);
         if(directive.hasRoot()){
             var subTemplate = this.getRelativeTemplate().find2(directive.getRootSelector());
             this._subTemplates.push(subTemplate);
@@ -20,12 +20,12 @@ function AddTextNodesVisitor(template){
     };
     
     AddTextNodesVisitor.prototype.afterVisitDirective = function(directive){
-        checkType(directive, MbaDirective2);
+        checkType(directive, MbaDirective);
         this._subTemplates.pop();
     };
     
     AddTextNodesVisitor.prototype.beforeVisitBinding = function(binding){
-        checkType(binding, MbaBinding2);
+        checkType(binding, MbaBinding);
         if(binding.getAnchorProvider() instanceof TextNodeAnchorProvider){
             var selector = binding.getSelector();
             var anchor = this.getRelativeTemplate().find2(selector);

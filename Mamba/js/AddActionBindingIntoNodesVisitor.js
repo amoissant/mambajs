@@ -16,12 +16,12 @@ AddActionBindingIntoNodesVisitor.prototype.init = function(template){
 }; 
 
 AddActionBindingIntoNodesVisitor.prototype.beforeVisitDirective = function(directive){
-    checkType(directive, MbaDirective2);
+    checkType(directive, MbaDirective);
     this._directives.push(directive);
 };
 
 AddActionBindingIntoNodesVisitor.prototype.afterVisitDirective = function(directive){
-    checkType(directive, MbaDirective2);
+    checkType(directive, MbaDirective);
     this._directives.pop();
 };
 

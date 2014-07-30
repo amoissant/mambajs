@@ -8,17 +8,17 @@
 	<script type="text/javascript" src="../js/Mamba.js"></script>
 	<script type="text/javascript" src="../js/MbaUtil.js"></script>
 	<script type="text/javascript" src="../js/MbaDom.js"></script>
-    <script type="text/javascript" src="../js/MbaDirective2.js"></script>
+    <script type="text/javascript" src="../js/MbaDirective.js"></script>
     <script type="text/javascript" src="../js/MbaRootDirective.js"></script>
     <script type="text/javascript" src="../js/AnchorProvider.js"></script>
     <script type="text/javascript" src="../js/DefaultAnchorProvider.js"></script>
     <script type="text/javascript" src="../js/TextNodeAnchorProvider.js"></script>    
-    <script type="text/javascript" src="../js/MbaBinding2.js"></script>
+    <script type="text/javascript" src="../js/MbaBinding.js"></script>
 	<script type="text/javascript" src="../js/MbaBindingText.js"></script>		
-    <script type="text/javascript" src="../js/MbaAccessor2.js"></script>
-    <script type="text/javascript" src="../js/MbaFieldAccessor2.js"></script>
+    <script type="text/javascript" src="../js/MbaAccessor.js"></script>
+    <script type="text/javascript" src="../js/MbaFieldAccessor.js"></script>
     <script type="text/javascript" src="../js/MbaAccessorChain.js"></script>
-    <script type="text/javascript" src="../js/MbaTransf2.js"></script>
+    <script type="text/javascript" src="../js/MbaTransf.js"></script>
     <script type="text/javascript" src="../js/EventConnector.js"></script>
     <script type="text/javascript" src="../js/EventConnectorTextNode.js"></script>
     <script type="text/javascript" src="../js/MbaTextTransf.js"></script>
@@ -29,13 +29,13 @@
     <script type="text/javascript" src="../js/MbaCustomFunctionTransf.js"></script>
     <script type="text/javascript" src="../js/MbaPropertyTransf.js"></script>
     <script type="text/javascript" src="../js/MbaRoute.js"></script>
-    <script type="text/javascript" src="../js/MbaNode2.js"></script>
+    <script type="text/javascript" src="../js/MbaNode.js"></script>
     <script type="text/javascript" src="../js/MbaNodeDirective.js"></script>
     <script type="text/javascript" src="../js/MbaRootNode.js"></script>
-    <script type="text/javascript" src="../js/MbaTemplate2.js"></script>
-    <script type="text/javascript" src="../js/MbaNodeHtmlElement2.js"></script>
-    <script type="text/javascript" src="../js/MbaNodeBinding2.js"></script>
-    <script type="text/javascript" src="../js/MbaNodeConstructor2.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplate.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeHtmlElement.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeBinding.js"></script>
+    <script type="text/javascript" src="../js/MbaNodeConstructor.js"></script>
 	<script type="text/javascript" src="../js/MbaVisitor.js"></script>
     <script type="text/javascript" src="../js/MbaDirectiveVisitor.js"></script>
     <script type="text/javascript" src="../js/MbaDirectiveDebugVisitor.js"></script>
@@ -128,7 +128,7 @@
 				
                 //html = html.replace(/>\s+</g, '><');
                 
-                mbaTemplate = new MbaTemplate2(html, directive);
+                mbaTemplate = new MbaTemplate(html, directive);
                 mbaTemplate.render(model);
                 rootNode = mbaTemplate.getRootNode();
                 rootNode.debug(true);

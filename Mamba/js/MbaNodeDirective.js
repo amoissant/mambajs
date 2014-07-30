@@ -11,7 +11,7 @@ function MbaNodeDirective(baseDom, templateDirective){
 	MbaNodeDirective.prototype.init = function(baseDom, templateDirective){
         checkType(baseDom, MbaDom);
 		checkType(templateDirective, MbaTemplateDirective);
-		MbaNode2.prototype.init.call(this, null, baseDom);
+		MbaNode.prototype.init.call(this, null, baseDom);
         this._templateDirective = templateDirective;
         this._indexedModelSize = {};
         this._indexedRoutes = {};
@@ -75,11 +75,11 @@ function MbaNodeDirective(baseDom, templateDirective){
     /**************************************************************/
     
 	MbaNodeDirective.prototype.isAnEmptySetOfNodes = function(nodes){
-        checkType(nodes, 'array', MbaNode2);
+        checkType(nodes, 'array', MbaNode);
         return nodes.length == 0;
     };
     MbaNodeDirective.prototype.allNodesHaveSameParent = function(nodes){
-        checkType(nodes, 'array', MbaNode2);
+        checkType(nodes, 'array', MbaNode);
         var parent = nodes[0].getParent();
         for(var i=1 ; i<nodes.length ; i++){
             if(nodes[i].getParent() != parent)
@@ -88,7 +88,7 @@ function MbaNodeDirective(baseDom, templateDirective){
         return true;
     };
     MbaNodeDirective.prototype.nodesAreContiguous = function(nodes, nodesPosition){
-        checkType(nodes, 'array', MbaNode2);
+        checkType(nodes, 'array', MbaNode);
         checkType(nodesPosition, 'array', 'number');
         
         nodesPosition.sort(function(a,b){return a-b});
@@ -102,7 +102,7 @@ function MbaNodeDirective(baseDom, templateDirective){
         return true;
     };
     MbaNodeDirective.prototype.checkCanInterpose = function(nodes){
-        checkType(nodes, 'array', MbaNode2);
+        checkType(nodes, 'array', MbaNode);
         if(this.isAnEmptySetOfNodes(nodes))
             throw new MbaError(0, 'Nodes must not be empty');
         if(!this.allNodesHaveSameParent(nodes))
@@ -113,7 +113,7 @@ function MbaNodeDirective(baseDom, templateDirective){
         return nodesPosition;
     };
     MbaNodeDirective.prototype.getNodesPositionInParent = function(nodes){
-        checkType(nodes, 'array', MbaNode2);
+        checkType(nodes, 'array', MbaNode);
         var nodesPosition = [];
         for(var i=0 ; i<nodes.length ; i++){
             var currNode = nodes[i];
@@ -122,7 +122,7 @@ function MbaNodeDirective(baseDom, templateDirective){
         return nodesPosition;
     };
     MbaNodeDirective.prototype.interposeUnderParentOfNodesInTree = function(nodes){
-        checkType(nodes, 'array', MbaNode2);
+        checkType(nodes, 'array', MbaNode);
         var nodesPosition = this.checkCanInterpose(nodes);
         var parent = nodes[0].getParent();
         
@@ -145,7 +145,7 @@ function MbaNodeDirective(baseDom, templateDirective){
        if(this._indexedRoutes[parentIndex] == null)
             this._indexedRoutes[parentIndex] = {};
     
-        var initialDom = MbaNode2.prototype.createInitialDom.call(this, route);
+        var initialDom = MbaNode.prototype.createInitialDom.call(this, route);
         var index = route.getIndexes();
         this._indexedRoutes[parentIndex][index] = initialDom;
         return initialDom;
@@ -157,7 +157,7 @@ function MbaNodeDirective(baseDom, templateDirective){
         var parentIndex = parentRoute.getIndexes();
         var index = route.getIndexes();
         delete this._indexedRoutes[parentIndex][index];
-        return MbaNode2.prototype.deleteRenderedDomForRoute.call(this, route);
+        return MbaNode.prototype.deleteRenderedDomForRoute.call(this, route);
     };
     
     
@@ -166,7 +166,7 @@ function MbaNodeDirective(baseDom, templateDirective){
     };
             
     MbaNodeDirective.prototype.appendDom = function(child, childDom, route){
-        checkType(child, MbaNode2);
+        checkType(child, MbaNode);
         checkType(childDom, MbaDom);
         checkType(route, MbaRoute);
         var currentRoute = this.getClosestRoute(route);
@@ -260,5 +260,5 @@ function MbaNodeDirective(baseDom, templateDirective){
 	if(arguments.length > 0)
 		this.init(baseDom, templateDirective);
 }
-MbaNodeDirective.prototype = new MbaNode2();
+MbaNodeDirective.prototype = new MbaNode();
 MbaNodeDirective.prototype.constructor = MbaNodeDirective;

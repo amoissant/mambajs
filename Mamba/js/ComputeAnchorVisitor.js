@@ -10,11 +10,11 @@ function ComputeAnchorVisitor = function(template){
     };
     
     MbaDirectiveVisitor.prototype.beforeVisitDirective = function(directive){
-        checkType(directive, MbaDirective2);
+        checkType(directive, MbaDirective);
     };
     
     MbaDirectiveVisitor.prototype.beforeVisitBinding = function(binding){
-        checkType(binding, MbaBinding2);
+        checkType(binding, MbaBinding);
     };    
     
     if(arguments.length != 0){

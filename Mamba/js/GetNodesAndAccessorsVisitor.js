@@ -17,13 +17,13 @@ GetNodesAndAccessorsVisitor.prototype.getRootAccessorNode = function(){
 };
 
 GetNodesAndAccessorsVisitor.prototype.beforeVisitNode = function(node){
-    checkType(node, MbaNode2);
+    checkType(node, MbaNode);
      switch(node.constructor){
         case MbaNodeDirective:
             var accessorChain = node.getAccessorChain();
             this.addAccesorChainAndNodes(accessorChain, node);
         break;
-        case MbaNodeBinding2:
+        case MbaNodeBinding:
             var accessorChains = node.getAccessorChains();
             for(var i=0 ; i<accessorChains.length ; i++){
                 this.addAccesorChainAndNodes(accessorChains[i], node);
@@ -33,7 +33,7 @@ GetNodesAndAccessorsVisitor.prototype.beforeVisitNode = function(node){
 };
 
 GetNodesAndAccessorsVisitor.prototype.addAccesorChainAndNodes = function(accessorChain, node){
-    checkType(node, MbaNode2);
+    checkType(node, MbaNode);
     checkType(accessorChain, MbaAccessorChain);
     var accessorChainCopy = this.copyWithoutLastAccessor(accessorChain);
     var accessorId = accessorChainCopy.toStringWithModel();

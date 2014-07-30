@@ -66,7 +66,7 @@ MbaActionBinding.prototype.modelForRouteExists = function(route){
 MbaActionBinding.prototype.bindAction = function(dom, route, node){
     checkType(dom, MbaDom);
     checkType(route, MbaRoute);
-    checkType(node, MbaNode2);
+    checkType(node, MbaNode);
     var actionBinding = this;
     var bindingRoute = route.clone();
     var domElement = dom.getDom(0);

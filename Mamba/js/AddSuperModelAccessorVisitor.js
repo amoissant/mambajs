@@ -12,7 +12,7 @@ AddSuperModelAccessorVisitor = function(property){
             case MbaNodeDirective:
                 this.addSuperModelAccessorForDirectiveNode(node);
             break;
-            case MbaNodeBinding2:
+            case MbaNodeBinding:
                 this.addSuperModelAccessorForBindingNode(node);
             break;
         }
@@ -24,7 +24,7 @@ AddSuperModelAccessorVisitor = function(property){
     };
     
     AddSuperModelAccessorVisitor.prototype.addSuperModelAccessorForBindingNode = function(node){
-        checkType(node, MbaNodeBinding2);
+        checkType(node, MbaNodeBinding);
         var accessorChains = node.getAccessorChains();
         for(var i=0 ; i<accessorChains.length ; i++){
             accessorChains[i].prependAccessor(this.createSuperModelAccessor());
@@ -32,7 +32,7 @@ AddSuperModelAccessorVisitor = function(property){
     };
     
     AddSuperModelAccessorVisitor.prototype.createSuperModelAccessor = function(){
-        return new MbaFieldAccessor2(this._property);
+        return new MbaFieldAccessor(this._property);
     };
     
     if(arguments.length > 0)

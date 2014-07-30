@@ -11,7 +11,7 @@ function TestNodeVisitor(test){
     };   
     
     TestNodeVisitor.prototype.beforeVisitNode = function(node){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         var currTest;
         if(node instanceof MbaRootNode)
             currTest = this._test;
@@ -23,7 +23,7 @@ function TestNodeVisitor(test){
     };
     
     TestNodeVisitor.prototype.afterVisitNode = function(node){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         this._stack.pop();
     };
     
@@ -32,7 +32,7 @@ function TestNodeVisitor(test){
     };    
     
     TestNodeVisitor.prototype.checkNode = function(node){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         var currTest = this.getCurrentTest();
         if(!(node instanceof currTest.type)){
             console.log(node, ' is not an instance of ', currTest.type);

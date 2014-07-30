@@ -4,7 +4,7 @@ function MbaRootDirective(precursor){
     this._rootSelector;
     
     MbaRootDirective.prototype.init = function(precursor){
-        MbaDirective2.prototype.init.call(this, precursor);    
+        MbaDirective.prototype.init.call(this, precursor);    
     };
     
     MbaRootDirective.prototype.initDirectiveAccessorChain = function(parentPropertyName){
@@ -25,5 +25,5 @@ function MbaRootDirective(precursor){
         this.init(precursor);
     }
 }
-MbaRootDirective.prototype = new MbaDirective2();
+MbaRootDirective.prototype = new MbaDirective();
 MbaRootDirective.prototype.constructor = MbaRootDirective;

@@ -13,6 +13,6 @@ UpdateSuperModelReferenceVisitor.prototype.init = function(model){
 };
 
 UpdateSuperModelReferenceVisitor.prototype.beforeVisitNode = function(node){
-    checkType(node, MbaNode2);
+    checkType(node, MbaNode);
     node.updateSuperModelReference(this._newSuperModel);
 };

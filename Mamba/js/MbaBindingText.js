@@ -38,9 +38,9 @@ function MbaBindingText(cssSelector, anchorProvider, firstTransf){
 	};
 	
 	if(arguments.length != 0){
-		MbaBinding2.prototype.init.call(this, cssSelector, anchorProvider, firstTransf);
+		MbaBinding.prototype.init.call(this, cssSelector, anchorProvider, firstTransf);
 	}
 };
-MbaBindingText.prototype = new MbaBinding2();
+MbaBindingText.prototype = new MbaBinding();
 MbaBindingText.prototype.constructor = MbaBindingText;
 

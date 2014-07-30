@@ -1,27 +1,6 @@
 Test(function() {   
     
-    
-  Ca('test que l\'on passe le bon modèle pour les actions sur le r00t', function(){
-      var html = '<div class="element"><span></span></div>';
-      var model = 
-          {elements : [{name: 'toto'}, {name: 'titi'}, {name: 'tutu'}],
-           remove : function(element){this.elements.splice(this.elements.indexOf(element), 1);}};
-      var directive = 
-          {"elements": {"r00t": ".element",
-                        "name": "span"},
-           "/remove": ".element->click"};
-      var mamba = new MbaTemplate2(html, directive);
-      mamba.render(model);
-      var dom = mamba.getRenderedDom();
-      var titiElement = dom.getDom(1);
-      
-      var expectedHtml = '<div class="element"><span>toto</span></div><div class="element"><span>titi</span></div><div class="element"><span>tutu</span></div>';
-      OnAttend(dom.toString()).DEtreEgalA(expectedHtml);
-      titiElement.dispatchEvent(new Event('click'));
-      dom = mamba.getRenderedDom();
-      var expectedHtml = '<div class="element"><span>toto</span></div><div class="element"><span>tutu</span></div>';
-      OnAttend(dom.toString()).DEtreEgalA(expectedHtml);
-  });
+
     //TODO si un élément de dom bindé a un setter sur un évenement et qu'une action doit se déclencher sur ce même evènement alors
     // il  faut que le setter soit appelé avant l'action.
     // Gérer aussi quand on fait ctrl-A sur un input avec setter.

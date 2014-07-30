@@ -17,5 +17,5 @@ function MbaClassTransf(){
         return false;  
     };
 }
-MbaClassTransf.prototype = new MbaTransf2();
+MbaClassTransf.prototype = new MbaTransf();
 MbaClassTransf.prototype.constructor = MbaClassTransf;

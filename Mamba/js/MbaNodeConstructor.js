@@ -1,12 +1,14 @@
 function MbaNodeConstructor(){
-		
+	
+    this._rootNode;
+    
 	MbaNodeConstructor.prototype.init = function(){
 	};	
 
-	MbaNodeConstructor.prototype.isValidToCreateMbaNode = function(domElement){
-		checkType(domElement, 'dom');
-		return true;
-	};
+    MbaNodeConstructor.prototype.getRootNode = function(){
+        return this._rootNode;
+    };
+    
 	MbaNodeConstructor.prototype.createMbaNodesForElements = function(parentNode, domElements){
 		checkType(parentNode, MbaNode);
 		checkType(domElements, 'array', 'dom');
@@ -14,10 +16,8 @@ function MbaNodeConstructor(){
 		var nodes = [];
 		for(var i=0 ; i<domElements.length ; i++){
 			var currElement = domElements[i];
-			if(this.isValidToCreateMbaNode(currElement)){
-				var currNode = this.createMbaNodeForElement(parentNode, currElement);				
-				nodes.push(currNode);
-			}
+			var currNode = this.createMbaNodeForElement(parentNode, currElement);				
+            nodes.push(currNode);
 		}
 		return nodes;
 	};
@@ -34,6 +34,13 @@ function MbaNodeConstructor(){
 		node.referenceMeIntoDomElement(baseDom);
 		return node;
 	};
+    
+    MbaNodeConstructor.prototype.constructTree = function(templateRoots){
+        checkType(templateRoots, MbaDom);
+        this._rootNode = new MbaRootNode(templateRoots);
+        var rootNodeChildren = this.createMbaNodesForElements(this._rootNode, templateRoots.getDom());
+        this._rootNode.setChildren(rootNodeChildren);
+    };
 	
 	if(arguments.length  > 0)
 		this.init();

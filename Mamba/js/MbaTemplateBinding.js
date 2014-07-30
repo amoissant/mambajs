@@ -9,7 +9,7 @@ function MbaTemplateBinding(template, binding){
     
     MbaTemplateBinding.prototype.init = function(template, binding){
         checkType(template, MbaDom);
-        checkType(binding, MbaBinding2);
+        checkType(binding, MbaBinding);
         
         this._template = template;        
         this._selector = binding.getSelector();
@@ -54,7 +54,7 @@ function MbaTemplateBinding(template, binding){
     
     MbaTemplateBinding.prototype.render = function (model, route, parentDirectiveNode){
         checkType(route, MbaRoute);
-        checkType(parentDirectiveNode, MbaNode2);
+        checkType(parentDirectiveNode, MbaNode);
 		for(var i=0 ; i<this._transformations.length ; i++){
 			var currTransf = this._transformations[i];
 			currTransf.update(this.getAnchor(), model, route, parentDirectiveNode);
@@ -62,7 +62,7 @@ function MbaTemplateBinding(template, binding){
 	};
     
     MbaTemplateBinding.prototype.bindEvents = function(node, route){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         checkType(route, MbaRoute);
         for(var i=0 ; i<this._transformations.length ; i++){
 			var currTransf = this._transformations[i];

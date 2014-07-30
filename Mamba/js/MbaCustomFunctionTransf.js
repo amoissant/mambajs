@@ -22,5 +22,5 @@ function MbaCustomFunctionTransf(customFunctionText){
     if(arguments.length > 0)
         this.init(customFunctionText);
 }
-MbaCustomFunctionTransf.prototype = new MbaTransf2();
+MbaCustomFunctionTransf.prototype = new MbaTransf();
 MbaCustomFunctionTransf.prototype.constructor = MbaCustomFunctionTransf;

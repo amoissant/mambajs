@@ -39,5 +39,5 @@ function MbaAttributeTransf(attribute){
     if(arguments.length > 0)
         this.init(attribute);
 }
-MbaAttributeTransf.prototype = new MbaTransf2();
+MbaAttributeTransf.prototype = new MbaTransf();
 MbaAttributeTransf.prototype.constructor = MbaAttributeTransf;

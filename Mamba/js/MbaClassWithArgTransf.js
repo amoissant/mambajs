@@ -32,5 +32,5 @@ function MbaClassWithArgTransf(className){
     if(arguments.length > 0)
         this.init(className);
 }
-MbaClassWithArgTransf.prototype = new MbaTransf2();
+MbaClassWithArgTransf.prototype = new MbaTransf();
 MbaClassWithArgTransf.prototype.constructor = MbaClassWithArgTransf;

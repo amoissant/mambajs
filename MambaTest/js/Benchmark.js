@@ -49,7 +49,7 @@ Benchmark.prototype.createBenchDirective = function(){
 
 Benchmark.prototype.timeRender = function(){
     var begin = new Date();
-    this._benchTemplate = new MbaTemplate2(this._benchHtml, this._benchDirective);
+    this._benchTemplate = new MbaTemplate(this._benchHtml, this._benchDirective);
     this._benchTemplate.render(this._benchModel);
     var end = new Date();
     var message = {text : 'time for render '+this._benchModelSize+' elements : '+this.getTimeInSeconds(begin, end)+'s.'};
@@ -104,7 +104,7 @@ Benchmark.prototype.getRenderedDom = function(){
                   "libSearchBtn" : "#search@value",
                   "/timeUpdate" : "#update->click",
                   "/timeSearchForModel" : "#search->click"};
- var mbaTemplate = new MbaTemplate2(html, directive);    
+ var mbaTemplate = new MbaTemplate(html, directive);    
  mbaTemplate.render(bench);
  mbaTemplate.getRootNode().debug(true);
  

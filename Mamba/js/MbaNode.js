@@ -1,83 +1,88 @@
 function MbaNode(parent, baseDom){
 	
-	this._baseDom;
-    this._baseDom2;
+    this._baseDom;
 	this._parent;
 	this._children;
-	this._renderedDom;
+    this._indexedRenderedDom;
+    this._actionBindings;
 	
-	MbaNode.prototype.init = function(parent, baseDom, appendIntoParent){
+	MbaNode.prototype.init = function(parent, baseDom){
         checkTypeOrNull(parent, MbaNode);
 		checkType(baseDom, MbaDom);
 		
-		this._baseDom = baseDom.clone2();//TODO : faire du ménage avec les clones...
-        this._baseDom2 = baseDom;
+        this._baseDom = baseDom;
 		this._parent = parent;
 		this._children = [];
-		this._renderedDom = baseDom;
-		
-		if(parent != null)
-			parent.addChild(this);
-		
-		if(appendIntoParent==null || appendIntoParent)
-			this.appendBaseDomElementsIntoParentIfNeeded();
+        this._indexedRenderedDom = {};
+        this._actionBindings = [];
 	};	
-	MbaNode.prototype.getBaseDom = function(){
-		return this._baseDom;
-	};
-    //TODO : se débarrasser de baseDom qui est un clone et renommer baseDom2 en baseDom
-    MbaNode.prototype.getBaseDom2 = function(){
-		return this._baseDom2;
-	};
-	MbaNode.prototype.setBaseDom = function(baseDom){
-		checkType(baseDom, MbaDom);
-		this._baseDom = baseDom;
-	};
-	MbaNode.prototype.getParent = function(){
+    
+    
+    MbaNode.prototype.getClosestRoute = function(route){
+        checkType(route, MbaRoute);
+        var closestRoute = route.clone();
+        while(closestRoute.length > 0){
+            if(this.hasNoRenderedDomForRoute(closestRoute))
+                closestRoute.removeLastIndex();
+            else
+                break;
+        }
+        return closestRoute;
+    };
+    
+    MbaNode.prototype.addActionBinding = function(actionBinding){
+        checkType(actionBinding, MbaActionBinding);
+        this._actionBindings.push(actionBinding);
+    };
+    
+    /**************************************************************/
+    /****** méthodes relatives à l'arborescences de MbaNodes ******/
+    /**************************************************************/
+    
+    MbaNode.prototype.getParent = function(){
 		return this._parent;
 	};
+    
 	MbaNode.prototype.setParent = function(parent){
 		checkType(parent, MbaNode);
 		this._parent = parent;
 	};
-	MbaNode.prototype.detachFromParent = function(){
-		this._parent = null;
-	};
-	MbaNode.prototype.getRenderedDom = function(){
-		return this._renderedDom;
-	};
-	MbaNode.prototype.getSize = function(){
-		return this.getRenderedDom().getLength();
-	};
+    
 	MbaNode.prototype.getChildren = function(){
 		return this._children;
 	};
+    
 	MbaNode.prototype.setChildren = function(children){
 		checkType(children, 'array', MbaNode);
 		this._children = children;
 	};
-	MbaNode.prototype.removeChildren = function(){
+    
+    MbaNode.prototype.removeChildren = function(){
 		var children = this._children;
 		this._children = [];
 		return children;
 	};
+    
 	MbaNode.prototype.addChild = function(child){
 		checkType(child, MbaNode);
 		this._children.push(child);
 	};
+    
 	MbaNode.prototype.getChild = function(index){
 		checkType(index, 'number');
 		
 		if(index < this._children.length)
 			return this._children[index];
 		else
-			return null;
+			return null;//TODO throw error plutot
 	};
+    
     MbaNode.prototype.setChildAtIndex = function(child, index){
         checkType(child, MbaNode);
 		checkType(index, 'number');
         this._children[index] = child;  
     };
+    
     MbaNode.prototype.replaceChildrenIncludedInIndexes = function(startIndex, endIndex, replacementNode){
         checkType(startIndex, 'number');
         checkType(endIndex, 'number');
@@ -93,7 +98,7 @@ function MbaNode(parent, baseDom){
         }
         this._children = newChildren;
     };
-    //TODO : à supprimer si non utilisée
+    
 	MbaNode.prototype.addChildAtIndex = function(child, index){
 		checkType(child, MbaNode);
 		checkType(index, 'number');
@@ -105,19 +110,27 @@ function MbaNode(parent, baseDom){
 		
 		this._children = newChildren;
 	};
+    
 	MbaNode.prototype.removeChild = function(child){
 		checkType(child, MbaNode);
 		
 		this._children = _.without(this._children, child);
 	};
-	MbaNode.prototype.getChildPosition = function(child){
+    //TODO à suppr, fait doublon avec celle dessous
+    MbaNode.prototype.getChildPosition = function(child){
 		checkType(child, MbaNode);
-		
 		return this._children.indexOf(child);
 	};
+    
+    MbaNode.prototype.getChildIndex = function(child){
+        checkType(child, MbaNode);
+        return this._children.indexOf(child);
+    };
+    
     MbaNode.prototype.getPositionInParent = function(){
       return this._parent.getChildPosition(this);  
     };
+    
 	MbaNode.prototype.getMinChildrenPosition = function(children){
 		checkType(children, 'array', MbaNode);
 		
@@ -134,204 +147,6 @@ function MbaNode(parent, baseDom){
 		else
 			console.log('ERROR : children must not be empty');
 	};
-	//TODO : c'est pas un méthode de mbaDom plutot ? 
-	MbaNode.prototype.getNodesFromMbaDom = function(dom){
-		checkType(dom, MbaDom);
-		
-		var nodes = [];
-		for(var i=0 ; i<dom.getLength() ; i++){
-			var currDomElement = dom.getDom(i);
-			nodes.push(currDomElement.mbaNode);
-		}
-		
-		return nodes;
-	};
-    MbaNode.prototype.allNodesHaveSameParent = function(nodes){
-        checkType(nodes, 'array', MbaNode);
-        var parent = nodes[0].getParent();
-        for(var i=1 ; i<nodes.length ; i++){
-            if(nodes[i].getParent() != parent)
-                return false;
-        }
-        return true;
-    };
-	
-	MbaNode.prototype.referenceMeIntoDomElement = function(mbaDom){
-		checkType(mbaDom, MbaDom);
-		
-		var dom = mbaDom.getDom();
-		for(var i=0 ; i<dom.length ; i++){
-			var currDom = dom[i];
-			currDom.mbaNode = this;
-		}
-	};
-	MbaNode.prototype.getChildOffset = function(child){
-		checkType(child, MbaNode);
-		
-		var childStartIndex = this.getChildStartIndex(child);
-		if(childStartIndex < 0)
-			throw new Error("this child is not mine !");
-		var childOffset = childStartIndex+child.getSize();		
-		return childOffset;
-	};
-	MbaNode.prototype.getChildStartIndex = function(child){
-		checkType(child, MbaNode);
-		
-		var thisChildIsMine = false;
-		var childStartIndex = 0;
-		for(var i=0 ; i<this._children.length ; i++){
-			var currChild = this._children[i];
-			if(currChild == child){
-				thisChildIsMine = true;
-				break;
-			}
-			childStartIndex += currChild.getSize();
-		}
-		if(!thisChildIsMine)
-			return -1;
-		return childStartIndex;
-	};
-	MbaNode.prototype.getChildEndIndex = function(child){
-		checkType(child, MbaNode);
-		
-		return this.getChildOffset(child)-1;
-	};
-	MbaNode.prototype.appendDomIntoParent = function(dom){
-		checkType(dom, MbaDom);
-		
-		this._parent.appendDomForChild(this, dom);
-		this.getRenderedDom().add(dom);
-	};
-	MbaNode.prototype.appendDomForChild = function(child, dom){
-		checkType(child, MbaNode);
-		checkType(dom, MbaDom);
-		
-		var childOffset = this.getChildOffset(child);
-		this.appendChildrenWithOffset(dom, childOffset);
-	};
-	MbaNode.prototype.appendDomForChildWithOffset = function(child, dom, offset){
-		checkType(child, MbaNode);
-		checkType(dom, MbaDom);
-		checkType(offset, 'number');
-		
-		var childOffset = this.getChildStartIndex(child);
-		childOffset += offset;
-		
-		this.appendChildrenWithOffset(dom, childOffset);
-	};
-	MbaNode.prototype.appendChildrenWithOffset = function(dom, offset){
-		checkType(dom, MbaDom);
-		checkType(offset, 'number');
-		
-		this.getRenderedDom().insertChildAtIndex(dom, offset);
-	};
-	MbaNode.prototype.appendBaseDomElementsIntoParentIfNeeded = function(){
-		//TODO on pourra optimiser cette fonction si besoin
-		for(var i=0 ; i<this.getRenderedDom().getLength() ; i++){
-			var currElement = this.getRenderedDom().getDom(i);
-			if(currElement.parentElement == null && !currElement.isTemplateRoot){
-				var currMbaDom = new MbaDom(currElement);
-				if(this._parent != null){
-					this._parent.appendDomForChild(this, currMbaDom);
-				}
-			}
-		}
-	};
-	MbaNode.prototype.removeDomIntoParent = function(){		
-		this.removeDomIntoParentFromIndex(0);
-	};
-	MbaNode.prototype.removeDomIntoParentFromIndex = function(index){
-		checkType(index, 'number');
-		
-		var removedDom = this._parent.removeDomForChildFromIndex(this, index);
-		this.getRenderedDom().remove(removedDom);
-	};
-	MbaNode.prototype.removeDomForChildFromIndex = function(child, index){
-		checkType(child, MbaNode);
-		checkType(index, 'number');
-		
-		var childStartIndexBase = this.getChildStartIndex(child);
-		if(childStartIndexBase < 0)
-			throw new Error("this child is not mine !");
-		
-		var childStartIndex = childStartIndexBase+index;
-		var childEndIndex = this.getChildEndIndex(child);
-		
-		return this.removeChildrenRangeInclude(childStartIndex, childEndIndex);
-	};
-	MbaNode.prototype.removeDomForChildBetweenIndexes = function(child, startIndex, endIndex){
-		checkType(child, MbaNode);
-		checkType(startIndex, 'number');
-		checkType(endIndex, 'number');
-		
-		var childStartIndex = 0;
-		var childEndIndex = childStartIndex;
-		for(var i=0 ; i<this._children.length ; i++){
-			var currChild = this._children[i];
-			if(currChild == child){
-				break;
-			}
-			else{
-				childStartIndex += currChild.getSize();
-				childEndIndex = childStartIndex;
-			}
-		}
-		return this.removeChildrenRangeInclude(childStartIndex+startIndex, childStartIndex+endIndex);
-	};
-	MbaNode.prototype.removeChildrenRangeInclude = function(startIndex, endIndex){
-		checkType(startIndex, 'number');
-		checkType(endIndex, 'number');
-		
-		return this.getRenderedDom().removeChildrenBetween(startIndex, endIndex);
-	};
-	MbaNode.prototype.callRenderOnChildren = function(model){
-		checkType(model, 'array', 'object');
-		
-		for(var i=0 ; i<this._children.length ; i++){
-			var currChild = this._children[i];
-			currChild.render(model);
-		}	
-	};
-	MbaNode.prototype.render = function(model){
-		this.callRenderOnChildren(model);	
-	};
-	MbaNode.prototype.checkImTheParentOfMyChildren = function(){
-		for(var i=0 ; i<this._children.length ; i++){
-			var currChild = this._children[i];
-			if(currChild.getParent() != this)
-				throw new Error("My child is not my child !");
-			else
-				currChild.checkImTheParentOfMyChildren();
-		}
-	};
-	MbaNode.prototype.visit = function(visitor){
-		checkType(visitor, MbaVisitor);
-        visitor.beforeVisitNode(this);
-		this.visitChildren(visitor);
-        visitor.afterVisitNode(this);
-	};
-	
-	MbaNode.prototype.visitChildren = function(visitor){
-		checkType(visitor, MbaVisitor);
-		for(var i=0 ; i<this._children.length ; i++){
-			var currChild = this._children[i];
-			currChild.visit(visitor);
-		}
-	};
-
-    MbaNode.prototype.accept = function(visitor, indexInParent){
-        checkType(visitor, MbaNodeVisitor);
-        visitor.beforeVisitNode(this, indexInParent);
-        this.callAcceptOnChildren(visitor);
-        visitor.afterVisitNode(this, indexInParent);
-    };
-    
-    MbaNode.prototype.callAcceptOnChildren = function(visitor){
-        for(var i=0 ; i<this._children.length ; i++){
-			var currChild = this._children[i];
-            currChild.accept(visitor, i);
-		}
-    };
     
     MbaNode.prototype.replaceInTree = function(toBeReplacedNode){
         checkType(toBeReplacedNode, MbaNode);
@@ -344,6 +159,253 @@ function MbaNode(parent, baseDom){
         for(var i=0 ; i<this._children.length ; i++){
             this._children[i].setParent(this);
         }
+    }
+    
+    MbaNode.prototype.checkImTheParentOfMyChildren = function(){
+		for(var i=0 ; i<this._children.length ; i++){
+			var currChild = this._children[i];
+			if(currChild.getParent() != this)
+				throw new Error("My child is not my child !");
+			else
+				currChild.checkImTheParentOfMyChildren();
+		}
+	};
+    
+    MbaNode.prototype.getParentDirectiveNode = function(){
+        var parentNode = this.getParent();
+        while(!(parentNode instanceof MbaNodeDirective)){
+              parentNode = parentNode.getParent();
+        }
+        return parentNode;
+    };
+    
+    MbaNode.prototype.getRootNode = function(){
+        if(this instanceof MbaRootNode)
+            return this;
+        var parentNode = this.getParent();
+        while(!(parentNode instanceof MbaRootNode)){
+              parentNode = parentNode.getParent();
+        }
+        return parentNode;
+    };
+    
+    /************************************************************************/
+    /****** méthodes relatives à l'ajout/suppression d'éléments de dom ******/
+    /************************************************************************/
+    
+    MbaNode.prototype.getInitialDom = function(){
+        return this._baseDom.cloneWithoutChildren();
+    };
+    
+    MbaNode.prototype.getBaseDom = function(){
+		return this._baseDom;
+	};
+    
+    MbaNode.prototype.setBaseDom = function(baseDom){
+		checkType(baseDom, MbaDom);
+		this._baseDom = baseDom;
+	};    
+    
+    MbaNode.prototype.getIndexedRenderedDom = function(){
+        return this._indexedRenderedDom;
+    };
+    
+    MbaNode.prototype.getRenderedDomForIndex = function(index){
+        checkType(index, 'string');
+        //TODO : faire des assert qu'on pourra désactiver contenant ce genre de code lourd
+        if(this.hasNoRenderedDomForIndex(index))
+            throw new MbaError(0, 'There is no renderedDom for index : \''+index+'\'');
+        return this._indexedRenderedDom[index];
+	};
+    
+    MbaNode.prototype.getRenderedDomForRoute = function(route){
+        checkType(route, MbaRoute);
+        return this.getRenderedDomForIndex(route.getIndexes());
+	};
+        
+    MbaNode.prototype.getRenderedDom = function(){
+        var renderedDom = new MbaDom();
+        for(var index in this._indexedRenderedDom){
+            renderedDom.add(this.getRenderedDomForIndex(index));
+        }
+        return renderedDom;
+	};
+    
+    MbaNode.prototype.getDomSizeForRoute = function(route){
+        return this.getRenderedDomForRoute(route).getLength();    
+    };
+    
+    MbaNode.prototype.setRenderedDomForRoute = function(dom, route){
+        checkType(dom, MbaDom);
+        checkType(route, MbaRoute);
+        this._indexedRenderedDom[route.getIndexes()] = dom;
+    };
+    
+    MbaNode.prototype.deleteRenderedDomForRoute = function(route){
+        checkType(route, MbaRoute);
+        delete this._indexedRenderedDom[route.getIndexes()];
+    };
+      
+    MbaNode.prototype.hasNoRenderedDomForIndex = function(index){
+        checkType(index, 'string');
+        return !this._indexedRenderedDom.hasOwnProperty(index);
+    };
+    
+    MbaNode.prototype.hasNoRenderedDomForRoute = function(route){
+        checkType(route, MbaRoute);
+        return this.hasNoRenderedDomForIndex(route.getIndexes());
+    };       
+    
+    MbaNode.prototype.createInitialDom = function(route){
+        checkType(route, MbaRoute);
+        var initialDom = this.getInitialDom();
+        this.setRenderedDomForRoute(initialDom, route);
+        this.bindRefreshEvents(route);
+        this.bindActionEvents(initialDom, route);
+        return initialDom;
+    };
+    
+    MbaNode.prototype.bindRefreshEvents = function(route){
+        checkType(route, MbaRoute);
+        //we do nothing here but subtypes do
+    };
+    
+    MbaNode.prototype.bindActionEvents = function(dom, route){
+        checkType(dom, MbaDom);
+        checkType(route, MbaRoute);
+        for(var i=0 ; i<this._actionBindings.length ; i++){
+            this._actionBindings[i].bindAction(dom, route, this);
+        }
+    };
+    
+	MbaNode.prototype.getSize = function(){
+		return this.getRenderedDom().getLength();
+	};
+    
+	//TODO bouger dans MbaDom
+	MbaNode.prototype.referenceMeIntoDomElement = function(mbaDom){
+		checkType(mbaDom, MbaDom);
+		
+		var dom = mbaDom.getDom();
+		for(var i=0 ; i<dom.length ; i++){
+			var currDom = dom[i];
+			currDom.mbaNode = this;
+		}
+	};
+            
+    MbaNode.prototype.appendDomIntoParent = function(childDom, route){
+        checkType(childDom, MbaDom);
+        checkType(route, MbaRoute);
+        this._parent.appendDom(this, childDom, route, route);
+    };
+    
+    MbaNode.prototype.appendDom = function(child, childDom, route){
+        checkType(child, MbaNode);
+        checkType(childDom, MbaDom);
+        checkType(route, MbaRoute);
+        var currentRoute = this.getClosestRoute(route);
+        var dom = this.getRenderedDomForRoute(currentRoute);
+        var offset = this.getChildOffset(child, currentRoute);        
+        dom.insertChildAtIndex2(childDom, offset);//TODO à renommer
+    };
+    
+    MbaNode.prototype.getChildOffset = function(child, route){
+		checkType(child, MbaNode);
+        checkType(route, MbaRoute);
+		
+		var offset = 0;
+        var children = this.getChildren();
+        for(var i=0 ; i<children.length ; i++){
+            var currChild = children[i];
+            var childrenSize = currChild.getDomSizeForRoute(route);
+            offset += childrenSize;
+            if(currChild == child)
+                break;                
+        }
+        return offset;
+	};
+
+    
+	MbaNode.prototype.removeDomIntoParent = function(dom, route){
+        checkType(dom, MbaDom);
+		checkType(route, MbaRoute);
+		this._parent.removeDom(dom, route);
+	};
+    
+    MbaNode.prototype.removeDom = function(dom, route){
+        checkType(dom, MbaDom);
+		checkType(route, MbaRoute);
+        var currentRoute = this.getClosestRoute(route);
+		this.getRenderedDomForRoute(currentRoute).removeChild(dom);//TODO renommer en removeChildren;
+	};
+    
+    MbaNode.prototype.deleteDom = function(route){
+        checkType(route, MbaRoute);
+        this.deleteChildrenDom(route);
+        this.removeDomIntoParent(this.getRenderedDomForRoute(route), route);
+        this.deleteRenderedDomForRoute(route);        
+    };
+    
+    MbaNode.prototype.deleteChildrenDom = function(route){
+        checkType(route, MbaRoute);
+        var children = this.getChildren();
+        for(var i=0 ; i<children.length ; i++){
+            children[i].deleteDom(route);
+        }
+    };
+    
+    MbaNode.prototype.callRenderOnChildren = function(model, route){
+        checkType(route, MbaRoute);
+		for(var i=0 ; i<this._children.length ; i++){
+			var currChild = this._children[i];
+			currChild.render(model, route);
+		}	
+	};
+    
+    MbaNode.prototype.render = function(model, route) {
+        checkType(route, MbaRoute);
+        if(this.hasNoRenderedDomForRoute(route)){
+            var newDom = this.createInitialDom(route);
+            this.appendDomIntoParent(newDom, route);    
+        }
+        this.callRenderOnChildren(model, route);
+        this.updateDom(model, route);
+	};
+    
+    MbaNode.prototype.updateDom = function(model, route){
+        checkType(route, MbaRoute);
+        //we do nothing here but subtypes do
+    };
+	
+    MbaNode.prototype.updateSuperModelReference = function(newSuperModel){
+        for(var i=0 ; i<this._actionBindings.length ; i++){
+            this._actionBindings[i].setSuperModel(newSuperModel);
+        }
+    };
+    
+    MbaNode.prototype.updateFromClosestParentDirective = function(model, route){
+        checkType(route, MbaRoute);
+        var parentDirectiveNode = this.getParentDirectiveNode();
+        //parentDirectiveNode.updateChildrenForModelAndRoute(model, route);
+        parentDirectiveNode.updateForModelAndRoute(model, route);
+    };
+    
+    MbaNode.prototype.accept = function(visitor){
+        checkType(visitor, MbaNodeVisitor);
+        visitor.beforeVisitNode(this);
+        this.callAcceptOnChildren(visitor);
+        visitor.afterVisitNode(this);
+    };
+    
+    MbaNode.prototype.callAcceptOnChildren = function(visitor){
+        for(var i=0 ; i<this._children.length ; i++){
+			var currChild = this._children[i];
+            currChild.accept(visitor);
+		}
+    };
+    
+    MbaNode.prototype.getId = function(){
+        return this._baseDom.getId();
     }
     
 	if(arguments.length  > 0)

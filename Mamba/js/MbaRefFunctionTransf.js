@@ -25,5 +25,5 @@ function MbaRefFunctionTransf(functionName){
         this.init(functionName);
     
 }
-MbaRefFunctionTransf.prototype = new MbaTransf2();
+MbaRefFunctionTransf.prototype = new MbaTransf();
 MbaRefFunctionTransf.prototype.constructor = MbaRefFunctionTransf;

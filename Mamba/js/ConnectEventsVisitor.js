@@ -1,7 +1,7 @@
 function ConnectEventsVisitor(){
     
     ConnectEventsVisitor.prototype.beforeVisitTransformation = function(transformation){
-        checkType(transformation, MbaTransf2);
+        checkType(transformation, MbaTransf);
         transformation.connectEvents();
     };        
 }

@@ -134,62 +134,6 @@ function getDirectiveProperties(directive){
 	return filteredProperties;
 }
 
-function isValidBinding(binding){
-	var isValid = true;
-	
-	if(binding == null)
-		return false;
-	if(typeof binding == "string")
-		return false;
-	if(typeof binding == "function")
-		return false;
-	if(typeof binding == "object"){
-	
-		if(binding[MBA_CST.VISITED])
-			return true;
-		else
-			binding[MBA_CST.VISITED] = true;
-		
-		if($.isArray(binding)){
-			return false;
-			/*var valid = true;
-			for(var i=0 ; i<binding.length ; i++){
-				var currBinding = binding[i];
-				valid &= isValidBinding(currBinding);
-			}
-			return valid;*/
-		}
-			
-		if(isDomElement(binding))
-			return false;
-		
-		var properties = getDirectiveProperties(binding);
-		if(properties.length == 0)
-			return false;
-		
-		for(var i=0 ; i<properties.length ; i++){
-			var prop = properties[i];
-			var propValue = binding[prop];
-			
-			if($.isArray(propValue)){
-				isValid &= isArrayDomElement(propValue)
-							|| isArrayString(propValue)
-							|| isDirectiveArray(propValue);		
-			}
-			else {
-				isValid &= typeof propValue == 'string' 
-							|| isDomElement(propValue) 
-							|| isValidBinding(propValue);
-			}
-		}
-	}
-	
-	delete binding[MBA_CST.VISITED];
-	
-	isValid = (isValid == 1 || isValid == true);
-	
-	return isValid;
-}
 
 function isDirective(obj){
 	return isBinding(obj);

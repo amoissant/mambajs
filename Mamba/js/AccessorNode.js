@@ -1,34 +1,3 @@
-function RootAccessorNode(){
-    this._children;
-    
-    this.init();
-}
-
-RootAccessorNode.prototype.init = function(){
-    this._children = {};
-};
-
-RootAccessorNode.prototype.hasChild = function(childName){
-    checkType(childName, 'string');
-    return this._children[childName] != null;
-};
-
-RootAccessorNode.prototype.addChild = function(childName, accessor){
-    checkType(childName, 'string');
-    checkType(accessor, MbaAccessor2);
-    this._children[childName] = new AccessorNode(this, accessor);
-};
-
-RootAccessorNode.prototype.getChild = function(childName){
-    checkType(childName, 'string');
-    return this._children[childName];
-};
-
-RootAccessorNode.prototype.getChildren = function(){
-    return this._children;
-};
-
-
 function AccessorNode(parent, accessor){
     
     this._parent;
@@ -43,7 +12,7 @@ AccessorNode.prototype.constructor = AccessorNode;
 
 AccessorNode.prototype.init = function(parent, accessor){
     checkTypeOrNull(parent, RootAccessorNode);
-    checkType(accessor, MbaAccessor2);
+    checkType(accessor, MbaAccessor);
     this._parent = parent;
     this._accessor = accessor;
     this._mbaNodes = [];
@@ -51,7 +20,7 @@ AccessorNode.prototype.init = function(parent, accessor){
 };
 
 AccessorNode.prototype.addMbaNodes = function(mbaNodes){
-    checkTypeOrNull(mbaNodes, 'array', MbaNode2);
+    checkTypeOrNull(mbaNodes, 'array', MbaNode);
     pushAll(this._mbaNodes, mbaNodes);
 };
 

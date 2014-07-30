@@ -26,5 +26,5 @@ function MbaTextTransf(){
         domElement.parentElement._mbaModel = this.getLastModel();
     };
 }
-MbaTextTransf.prototype = new MbaTransf2();
+MbaTextTransf.prototype = new MbaTransf();
 MbaTextTransf.prototype.constructor = MbaTextTransf;

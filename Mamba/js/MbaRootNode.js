@@ -7,7 +7,7 @@ function MbaRootNode(templateRoot){
     
 	MbaRootNode.prototype.init = function(templateRoot){
         checkType(templateRoot, MbaDom);
-        MbaNode2.prototype.init.call(this, null, templateRoot);
+        MbaNode.prototype.init.call(this, null, templateRoot);
 	};	
     
     MbaRootNode.prototype.getParent = function(){
@@ -23,7 +23,7 @@ function MbaRootNode(templateRoot){
     };
     
     MbaRootNode.prototype.getChildOffset = function(child, currentRoute) {
-        return MbaNode2.prototype.getChildOffset.call(this, child, currentRoute) + this._offsetInParent;
+        return MbaNode.prototype.getChildOffset.call(this, child, currentRoute) + this._offsetInParent;
     };
     
     MbaRootNode.prototype.appendDomIntoParent = function(dom, route){
@@ -34,14 +34,14 @@ function MbaRootNode(templateRoot){
     
     MbaRootNode.prototype.appendDom = function(child, childDom, route){
         if(this._parentDom != null)
-            MbaNode2.prototype.appendDom.call(this, child, childDom, route);
+            MbaNode.prototype.appendDom.call(this, child, childDom, route);
     }
         
     MbaRootNode.prototype.removeDom = function(dom, route){
         checkType(dom, MbaDom);
 		checkType(route, MbaRoute);
         if(this._parentDom != null)
-            MbaNode2.prototype.removeDom.call(this, dom, route);
+            MbaNode.prototype.removeDom.call(this, dom, route);
 	};
     
     MbaRootNode.prototype.startRender = function(model){
@@ -49,7 +49,7 @@ function MbaRootNode(templateRoot){
         this.render(model, this.getLastRoute());
     };
     
-    MbaRootNode.prototype.render = MbaNode2.prototype.callRenderOnChildren;
+    MbaRootNode.prototype.render = MbaNode.prototype.callRenderOnChildren;
     
     MbaRootNode.prototype.getModelValue = function(model, route){
         return toArray(model);

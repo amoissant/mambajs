@@ -4,12 +4,12 @@ function DebugVisitor(){
 	this._deep = -1;
 	
     DebugVisitor.prototype.beforeVisitNode = function(node){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         this._deep += 1;
         this.print(node);
     };
     DebugVisitor.prototype.afterVisitNode = function(node){
-		checkType(node, MbaNode2);
+		checkType(node, MbaNode);
 		this._deep -= 1;
 	};
 	DebugVisitor.prototype.print = function(node){

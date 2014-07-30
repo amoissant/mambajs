@@ -43,13 +43,13 @@ function MbaAccessorChain(){
     };
     
     MbaAccessorChain.prototype.prependAccessor = function(accessor){
-        checkType(accessor, MbaAccessor2);
+        checkType(accessor, MbaAccessor);
         this._accessors.splice(0, 0, accessor);
         return this;
     };
     
     MbaAccessorChain.prototype.appendAccessor = function(accessor){
-        checkType(accessor, MbaAccessor2);
+        checkType(accessor, MbaAccessor);
         this._accessors.push(accessor);
     };
     

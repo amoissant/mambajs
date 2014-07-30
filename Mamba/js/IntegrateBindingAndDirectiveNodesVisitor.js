@@ -19,7 +19,7 @@ function IntegrateBindingAndDirectiveNodesVisitor(){
         var anchor = templateBinding.getAnchor();
         //TODO si anchor est une classe et retroune plusieurs éléments de dom alors faut prendre en compte ce cas
         var htmlElementNode = anchor.getMbaNode();
-        var bindingNode = new MbaNodeBinding2(anchor, templateBinding);
+        var bindingNode = new MbaNodeBinding(anchor, templateBinding);
         bindingNode.replaceInTree(htmlElementNode);
         bindingNode.updateNodeReferenceIntoDomElement();
     };

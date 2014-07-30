@@ -1,14 +1,14 @@
 function DebugNodeAndAccessorVisitor(){
     
     DebugNodeAndAccessorVisitor.prototype.print = function(node){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         var nodeTypeName = this.getNodeTypeName(node);
         console.log(this.getIndentation(),
                     nodeTypeName,
                     ' - ',
                     node.getBaseDom().getDom());
         var accessorIndentation = this.getIndentation()+this.getNSpaces(nodeTypeName.length+2);
-        if(node instanceof MbaNodeBinding2){
+        if(node instanceof MbaNodeBinding){
             var templateBinding = node.getTemplateBinding();
             var accessorChains = templateBinding.getAccessorChains();
             
