@@ -84,6 +84,7 @@ function MbaTemplate(template, directivesPrecursor){
         this._rootDirective.visit(visitor);//TODO renommer cette méthode en accept
     };
     
+    
     MbaTemplate.prototype.updateDomForModel = function(model){
         if(model == this._superModel){
             this.render(model);
@@ -120,7 +121,6 @@ function MbaTemplate(template, directivesPrecursor){
             this.prepareForRender();
         this.updateSuperModelReference(model);
         this._rootNode.startRender(model);
-        this._rootDirective.connectBindingEvents();
     };
     
     MbaTemplate.prototype.getRenderedDom = function(){

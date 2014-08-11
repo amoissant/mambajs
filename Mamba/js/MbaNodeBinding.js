@@ -18,6 +18,10 @@ function MbaNodeBinding(baseDom, binding) {
         return this._templateBinding.getAccessorChains();
     };
        
+    MbaNodeBinding.prototype.getTransformations = function(){
+      return this._templateBinding.getTransformations();  
+    };
+    
     MbaNodeBinding.prototype.updateDom = function(model, route){
         checkType(route, MbaRoute);
         this._templateBinding.setAnchor(this.getRenderedDomForRoute(route));
@@ -25,10 +29,10 @@ function MbaNodeBinding(baseDom, binding) {
         this._templateBinding.render(model, route, parentDirectiveNode);
     };
 	
-    MbaNodeBinding.prototype.bindRefreshEvents = function(route){
+    MbaNodeBinding.prototype.prepareBindingEvents = function(route){
         checkType(route, MbaRoute);
         this._templateBinding.setAnchor(this.getRenderedDomForRoute(route));
-        this._templateBinding.bindEvents(this, route);
+        this._templateBinding.prepareBindingEvents(this, route);
     };
     
     MbaNodeBinding.prototype.updateNodeReferenceIntoDomElement = function(){

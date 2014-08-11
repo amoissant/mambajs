@@ -4000,6 +4000,40 @@ var testMbaV2 =
       OnAttend(dom.toString()).DEtreEgalA(expectedHtml);
   });
         
+  Ca('teste que les setter sont appelés avant les actions', function(){
+        var model = 
+            {text: "",
+             normalizedText: "",
+             toUpper: function(){this.normalizedText = this.text.toUpperCase();}};
+                
+        var html = 
+            '<input type="text"></input><span></span>'+
+            '<div></div>';
+        
+        var directive = 
+            {"text" : "input$value->keyup, span",
+             "normalizedText" : "div",
+             "/toUpper" : "input->keyup"};
+        
+        var mamba = new MbaTemplate(html, directive);
+        mamba.render(model);
+        //mamba.getRootNode().debug(true);
+        var renderedDom = mamba.getRenderedDom();
+        var input = mamba.findInRenderedDom('input').getDom(0);
+        var span = mamba.findInRenderedDom('span').getDom(0);
+        var div = mamba.findInRenderedDom('div').getDom(0);
+        var root = document.createElement('div');
+        appendInRoot(root, renderedDom);
+        
+        var expectedHtml = 
+            '<input type="text"><span></span><div></div>';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        input.value = 'toto';
+        input.dispatchEvent(new Event('keyup'));
+        OnAttend(model.text).DEtreEgalA('toto');
+        OnAttend(model.normalizedText).DEtreEgalA('TOTO');
+    }); 
         //TODO : tester et implémenter l'intégration de bindingNode avec ancre de binding qui retourne plusieurs éléments
    
 };

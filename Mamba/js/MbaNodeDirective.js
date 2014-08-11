@@ -240,13 +240,15 @@ function MbaNodeDirective(baseDom, templateDirective){
         var rootNode = this.getRootNode();
         rootNode.trySetParentDom();
         var updateRoute = this.getClosestRoute(route);
-        this.callRenderOnChildren(model, updateRoute);   
+        this.callRenderOnChildren(model, updateRoute);
+        this.getRootNode().whenDomUpdated();
     };
     
     MbaNodeDirective.prototype.updateForModelAndRoute = function(model, route){
         checkType(route, MbaRoute);
         var modelRoute = this._templateDirective.shortenRoute(route);
         this.render(model, modelRoute);
+        this.getRootNode().whenDomUpdated();
     };
     
     MbaNodeDirective.prototype.referenceModelIntoRenderedDom = function(modelRoute, modelIndex){

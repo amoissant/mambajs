@@ -35,6 +35,10 @@ function MbaNode(parent, baseDom){
         this._actionBindings.push(actionBinding);
     };
     
+    MbaNode.prototype.getActionBindings = function(){
+      return this._actionBindings;  
+    };
+    
     /**************************************************************/
     /****** méthodes relatives à l'arborescences de MbaNodes ******/
     /**************************************************************/
@@ -260,21 +264,21 @@ function MbaNode(parent, baseDom){
         checkType(route, MbaRoute);
         var initialDom = this.getInitialDom();
         this.setRenderedDomForRoute(initialDom, route);
-        this.bindRefreshEvents(route);
-        this.bindActionEvents(initialDom, route);
+        this.prepareBindingEvents(route);
+        this.prepareActionEvents(initialDom, route);
         return initialDom;
     };
     
-    MbaNode.prototype.bindRefreshEvents = function(route){
+    MbaNode.prototype.prepareBindingEvents = function(route){
         checkType(route, MbaRoute);
         //we do nothing here but subtypes do
     };
     
-    MbaNode.prototype.bindActionEvents = function(dom, route){
+    MbaNode.prototype.prepareActionEvents = function(dom, route){
         checkType(dom, MbaDom);
         checkType(route, MbaRoute);
         for(var i=0 ; i<this._actionBindings.length ; i++){
-            this._actionBindings[i].bindAction(dom, route, this);
+            this._actionBindings[i].prepareActionEventHandler(dom, route, this);
         }
     };
     
@@ -324,7 +328,6 @@ function MbaNode(parent, baseDom){
         }
         return offset;
 	};
-
     
 	MbaNode.prototype.removeDomIntoParent = function(dom, route){
         checkType(dom, MbaDom);
@@ -386,7 +389,6 @@ function MbaNode(parent, baseDom){
     MbaNode.prototype.updateFromClosestParentDirective = function(model, route){
         checkType(route, MbaRoute);
         var parentDirectiveNode = this.getParentDirectiveNode();
-        //parentDirectiveNode.updateChildrenForModelAndRoute(model, route);
         parentDirectiveNode.updateForModelAndRoute(model, route);
     };
     
@@ -398,6 +400,7 @@ function MbaNode(parent, baseDom){
     };
     
     MbaNode.prototype.callAcceptOnChildren = function(visitor){
+        checkType(visitor, MbaNodeVisitor);
         for(var i=0 ; i<this._children.length ; i++){
 			var currChild = this._children[i];
             currChild.accept(visitor);

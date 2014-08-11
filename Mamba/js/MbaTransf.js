@@ -81,7 +81,6 @@ function MbaTransf(){
         this.updateDomWithModel(domElement, newValue, oldValue);
         this.setOldValue(newValue, route);
         this.setSuperModel(model);//TODO on peut optimiser les perfs ici avec un évènement pour modifier la référence du supermodel
-        //this.referenceModelIntoDomElement(domElement);
         this.referenceModelIntoDom(dom);
     };
     
@@ -89,8 +88,17 @@ function MbaTransf(){
         return true;  
     };
     
-    MbaTransf.prototype.bindEvent = function(event, domElement, node, route){
+    MbaTransf.prototype.prepareBindingEventHandler = function(event, domElement, node, route){
         checkType(event, 'string');
+        checkType(domElement, 'dom');
+        checkType(node, MbaNode);
+        checkType(route, MbaRoute);
+        var eventHandler = this.createBindingEventHandler(domElement, node, route);
+        var eventConnector = this.createEventConnector(domElement, event, eventHandler);
+        this._eventConnectors.push(eventConnector);        
+    };
+    
+    MbaTransf.prototype.createBindingEventHandler = function(domElement, node, route){
         checkType(domElement, 'dom');
         checkType(node, MbaNode);
         checkType(route, MbaRoute);
@@ -101,12 +109,10 @@ function MbaTransf(){
             var newValue = transformation.readValueFromDom(domElement, oldValue);
             var model = transformation.getSuperModel();
             transformation.setNewValue(model, bindingRoute, newValue);   
-            //console.log('set new value : '+newValue);
             var parentDirectiveNode = node.getParentDirectiveNode();
             parentDirectiveNode.updateChildrenForModelAndRoute(model, bindingRoute);
         };
-        var eventConnector = this.createEventConnector(domElement, event, eventHandler);
-        this._eventConnectors.push(eventConnector);        
+        return eventHandler;
     };
     
     MbaTransf.prototype.createEventConnector = function(domElement, event, eventHandler){
@@ -120,23 +126,18 @@ function MbaTransf(){
         }
     };
     
-    MbaTransf.prototype.bindAllEvents = function(dom, node, route){
+    MbaTransf.prototype.prepareAllBindingHandler = function(dom, node, route){
         checkType(dom, MbaDom);
         checkType(node, MbaNode);
         checkType(route, MbaRoute);
         if(this.canReadValueFromDom()){
             var domElement = dom.getDom(0);
             for(var i=0 ; i<this._events.length ; i++){
-                this.bindEvent(this._events[i], domElement, node, route);
+                this.prepareBindingEventHandler(this._events[i], domElement, node, route);
             } 
         }
         else
             console.log('events ', this._events, ' will be ignored');            
-    };
-    
-    MbaTransf.prototype.referenceModelIntoDomElement = function(domElement){
-        checkType(domElement, 'dom');
-        domElement._mbaModel = this.getLastModel();
     };
 
     MbaTransf.prototype.referenceModelIntoDom = function(dom){

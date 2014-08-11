@@ -11,11 +11,6 @@ function MbaRootDirective(precursor){
         this._accessorChain = new MbaAccessorChain();
     };
     
-    MbaRootDirective.prototype.connectBindingEvents = function(){
-        var visitor = new ConnectEventsVisitor();
-        this.visit(visitor);
-    };
-    
     MbaRootDirective.prototype.debug = function(){
         var visitor = new MbaDirectiveDebugVisitor();
         this.visit(visitor);

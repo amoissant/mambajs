@@ -47,6 +47,7 @@ function MbaRootNode(templateRoot){
     MbaRootNode.prototype.startRender = function(model){
         this.trySetParentDom();
         this.render(model, this.getLastRoute());
+        this.whenDomUpdated();
     };
     
     MbaRootNode.prototype.render = MbaNode.prototype.callRenderOnChildren;
@@ -124,6 +125,12 @@ function MbaRootNode(templateRoot){
     MbaRootNode.prototype.updateForModelAndRoute = function(model, route){
         checkType(route, MbaRoute);
         this.startRender(model);
+        this.whenDomUpdated();
+    };
+    
+    MbaRootNode.prototype.whenDomUpdated = function(){
+        var visitor = new MbaConnectEventsVisitor();
+        this.accept(visitor);
     };
     
     if(arguments.length != 0){

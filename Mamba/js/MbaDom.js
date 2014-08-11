@@ -457,7 +457,7 @@ function MbaDom(dom){
     
     this.referenceModel = function(model){
         var dom = this.getDom();
-        //TODO optimiser pour las avec un seul element et raison deplus pour avoir une classe représentant un seul elément de dom
+        //TODO optimiser pour las avec un seul element et raison de plus pour avoir une classe représentant un seul elément de dom
         for(var i=0 ; i<dom.length ; i++){
             dom[i]._mbaModel = model;   
         }

@@ -1,5 +1,53 @@
 Test(function() {   
     
+    function appendInRoot (root, renderedDom){
+            var dom = renderedDom.getDom();
+            for(var i=0 ; i<dom.length ; i++){
+                root.appendChild(dom[i]);
+            }  
+        }
+      
+  Ca('teste que les evènements de binding et d\'action fonctionnent sur des nouveaux éléments', function(){
+        var model = 
+            {items: [],
+             newItem: "",
+             add: function(){this.items.push({name: this.newItem});},
+             del: function(item){this.items.splice(this.items.indexOf(item), 1);}};
+
+                
+        var html = 
+            '<input id="newItem" type="text"></input><button id="add">ajouter</button>'+
+            '<div class="itemCont"><input class="item" type="text"></input><button class="del">suppr</button></div>';
+        
+        var directive = 
+            {"newItem": "#newItem$value->blur",
+             "items": {"r00t": ".itemCont", "name": ".item$value->keyup"},
+             "/add": "#add->click",
+             "/del": ".del->click"};
+        
+        var mamba = new MbaTemplate(html, directive);
+        mamba.render(model);
+      
+        //TODO à écrire
+      
+        //mamba.getRootNode().debug(true);
+        /*var renderedDom = mamba.getRenderedDom();
+        var input = mamba.findInRenderedDom('input').getDom(0);
+        var span = mamba.findInRenderedDom('span').getDom(0);
+        var div = mamba.findInRenderedDom('div').getDom(0);
+        var root = document.createElement('div');
+        appendInRoot(root, renderedDom);
+        
+        var expectedHtml = 
+            '<input type="text"><span></span><div></div>';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        input.value = 'toto';
+        input.dispatchEvent(new Event('keyup'));
+        OnAttend(model.text).DEtreEgalA('toto');
+        OnAttend(model.normalizedText).DEtreEgalA('TOTO');*/
+      
+    }); 
 
     //TODO si un élément de dom bindé a un setter sur un évenement et qu'une action doit se déclencher sur ce même evènement alors
     // il  faut que le setter soit appelé avant l'action.

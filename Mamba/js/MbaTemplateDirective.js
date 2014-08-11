@@ -6,6 +6,7 @@ function MbaTemplateDirective(template, directive){
     this._rootAnchor;
     this._templateBindings;
     this._subTemplateDirectives;
+    //this._actionBindings;//à ajouter ici ?
     
     MbaTemplateDirective.prototype.init = function(template, directive){
         checkType(template, MbaDom);
@@ -13,6 +14,7 @@ function MbaTemplateDirective(template, directive){
         
         this._accessorChain = directive.getAccessorChain();
         this._rootSelector = directive.getRootSelector();
+        //this._actionBindings = directive.getActionBindings();
         this._template = template;
         this._templateBindings = [];
         this._subTemplateDirectives = [];

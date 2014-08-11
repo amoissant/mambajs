@@ -61,12 +61,12 @@ function MbaTemplateBinding(template, binding){
 		}
 	};
     
-    MbaTemplateBinding.prototype.bindEvents = function(node, route){
+    MbaTemplateBinding.prototype.prepareBindingEvents = function(node, route){
         checkType(node, MbaNode);
         checkType(route, MbaRoute);
         for(var i=0 ; i<this._transformations.length ; i++){
 			var currTransf = this._transformations[i];
-			currTransf.bindAllEvents(this.getAnchor(), node, route);
+			currTransf.prepareAllBindingHandler(this.getAnchor(), node, route);
 		}
     };
 	

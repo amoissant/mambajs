@@ -16,18 +16,18 @@ function DebugNodeVisitor(printIndexedRenderedDom){
     };
     
     DebugNodeVisitor.prototype.beforeVisitNode = function(node){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         this.increaseDeep();
         this.print(node);
     };
     
     DebugNodeVisitor.prototype.afterVisitNode = function(node){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
 		this.decreaseDeep();
     };
     
     DebugNodeVisitor.prototype.print = function(node){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         var nodeTypeName = this.getNodeTypeName(node);
         this.printNode(node, nodeTypeName);
 
@@ -40,12 +40,12 @@ function DebugNodeVisitor(printIndexedRenderedDom){
 	};
     
     DebugNodeVisitor.prototype.getNodeTypeName = function(node){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         return Object.getPrototypeOf(node).constructor.name;
     };    
     
     DebugNodeVisitor.prototype.printIndexedRoutes = function(node, nodeTypeName){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         checkType(nodeTypeName, 'string');
         var indexedRenderedDomIndentation = this.getIndentation()+this.getNSpaces(nodeTypeName.length);
         var indexedRoutes = node.getIndexedRoutes();
@@ -55,7 +55,7 @@ function DebugNodeVisitor(printIndexedRenderedDom){
     };
     
     DebugNodeVisitor.prototype.printNode = function(node, nodeTypeName){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         checkType(nodeTypeName, 'string');
         console.log(this.getIndentation(),
                     nodeTypeName,
@@ -64,7 +64,7 @@ function DebugNodeVisitor(printIndexedRenderedDom){
     };
         
     DebugNodeVisitor.prototype.printIndexedRenderedDom = function(node, nodeTypeName){
-        checkType(node, MbaNode2);
+        checkType(node, MbaNode);
         checkType(nodeTypeName, 'string');
         var indexedRenderedDom = node.getIndexedRenderedDom();
         var indexedRenderedDomIndentation = this.getIndentation()+this.getNSpaces(nodeTypeName.length);
