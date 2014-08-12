@@ -4034,6 +4034,66 @@ var testMbaV2 =
         OnAttend(model.text).DEtreEgalA('toto');
         OnAttend(model.normalizedText).DEtreEgalA('TOTO');
     }); 
+        
+    Ca('teste que les evènements de binding et d\'action fonctionnent sur des nouveaux éléments', function(){
+        var model = 
+            {items: [],
+             newItem: "",
+             add: function(){this.items.push({name: this.newItem});},
+             del: function(item){this.items.splice(this.items.indexOf(item), 1);}};
+
+                
+        var html = 
+            '<input id="newItem" type="text"></input><button id="add">ajouter</button>'+
+            '<div class="itemCont"><input class="item" type="text"></input><button class="del">suppr</button></div>';
+        
+        var directive = 
+            {"newItem": "#newItem$value->blur",
+             "items": {"r00t": ".itemCont", "name": ".item$value->keyup"},
+             "/add": "#add->click",
+             "/del": ".del->click"};
+        
+        var mamba = new MbaTemplate(html, directive);
+        mamba.render(model);
+      
+        //mamba.getRootNode().debug(true);
+        var renderedDom = mamba.getRenderedDom();
+        var newItemInput = mamba.findInRenderedDom('#newItem').getDom(0);
+        var addBtn = mamba.findInRenderedDom('#add').getDom(0);
+
+        var root = document.createElement('div');
+        appendInRoot(root, renderedDom);
+        
+        var expectedHtml = 
+            '<input id="newItem" type="text"><button id="add">ajouter</button>';
+        OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
+        
+        newItemInput.value = 'toto';
+        newItemInput.dispatchEvent(new Event('blur'));
+        addBtn.dispatchEvent(new Event('click'));
+        newItemInput.value = 'tutu';
+        newItemInput.dispatchEvent(new Event('blur'));
+        addBtn.dispatchEvent(new Event('click'));
+        newItemInput.value = 'titi';
+        newItemInput.dispatchEvent(new Event('blur'));
+        addBtn.dispatchEvent(new Event('click'));
+      
+        OnAttend(model.items.length).DEtreEgalA(3);
+        OnAttend(model.items[0].name).DEtreEgalA('toto');
+        OnAttend(model.items[1].name).DEtreEgalA('tutu');
+        OnAttend(model.items[2].name).DEtreEgalA('titi');
+      
+        var secondItemInput = mamba.findInRenderedDom('.item').getDom(1);
+        secondItemInput.value = 'tata';
+        secondItemInput.dispatchEvent(new Event('keyup'));
+        OnAttend(model.items[1].name).DEtreEgalA('tata');
+      
+        var secondItemBtn = mamba.findInRenderedDom('.del').getDom(1);
+        secondItemBtn.dispatchEvent(new Event('click'));
+        OnAttend(model.items.length).DEtreEgalA(2);
+        OnAttend(model.items[0].name).DEtreEgalA('toto');
+        OnAttend(model.items[1].name).DEtreEgalA('titi');
+    }); 
         //TODO : tester et implémenter l'intégration de bindingNode avec ancre de binding qui retourne plusieurs éléments
    
 };
