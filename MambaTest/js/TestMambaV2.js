@@ -4035,7 +4035,7 @@ var testMbaV2 =
         OnAttend(model.normalizedText).DEtreEgalA('TOTO');
     }); 
         
-    Ca('teste que les evènements de binding et d\'action fonctionnent sur des nouveaux éléments', function(){
+        Ca('teste que les evènements de binding et d\'action fonctionnent sur des nouveaux éléments', function(){
         var model = 
             {items: [],
              newItem: "",

@@ -409,7 +409,7 @@ function checkType(obj, type, arrayElementType){
 			return;
 		}
 		if(obj.length > 0){
-			if(arrayElementType == "dom"){
+			if(arrayElementType == "dom" || arrayElementType == 'domElement'){
 				if(!isDomElement(obj[0]))
 					console.log('ERROR : an array of '+arrayElementType+' is expected.');
 				return;	
@@ -424,7 +424,7 @@ function checkType(obj, type, arrayElementType){
 			}
 		}
 	}
-	else if(type == "dom"){
+	else if(type == "dom" || type == 'domElement'){
 		if($.isArray(obj) || !isDomElement(obj))
 			console.log('ERROR : instance of type "'+type+'" expected.');
 		return;
