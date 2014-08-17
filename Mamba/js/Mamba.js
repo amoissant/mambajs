@@ -1,9 +1,9 @@
 function Mamba(model, template, directive, anchor){//todo si template dom et  anchor on ignore anchor
 
-    this._model;//objet
-    this._template;//texte
-    this._directive;//objet
-    this._anchor;//dom element dans lequel insérer le dom rendu (optionnel) en faisant append
+    this._model;
+    this._template;
+    this._directive;
+    this._anchor;
     this._domTemplate;
     
     this.init(model, template, directive, anchor);
@@ -11,14 +11,27 @@ function Mamba(model, template, directive, anchor){//todo si template dom et  an
 
 Mamba.prototype.init = function(model, template, directive, anchor){
     this._model = model;
-    if(isDomElement(template)){//todo tester domArray
-        this._domTemplate = new MbaDomSingle(template);
-        anchor = this._domTemplate.getParent();
-        template = this._domTemplate.toString();
+    if(typeof(template) == 'string'){
+        this._template = template;
+        this.initAnchor(anchor);
     }
-    this._template = template;
+    else{
+        if(isDomElement(template))
+            this._domTemplate = new MbaDomSingle(template);
+        else if(template instanceof NodeList)
+            this._domTemplate = new MbaDom2(this.nodeListToDomArray(template));
+        else if(isDomElementArray(template))
+            this._domTemplate = new MbaDom2(template);
+        else
+            throw new Error('Unknow type for template, possible types are :\n'
+                            +'- a string representing your template.'
+                            +'- a dom element obtained by document.querySelector().'
+                            +'- a array of dom element obtained by $("selector").get().'
+                            +'- a NodeList object obtained by document.querySelectorAll().');
+        this._anchor = new MbaDomSingle(this._domTemplate.getParent());
+        this._template = this._domTemplate.toString();
+    }   
     this._directive = directive;
-    this.initAnchor(anchor);
 };
 
 Mamba.prototype.initAnchor = function(anchor){
@@ -26,6 +39,15 @@ Mamba.prototype.initAnchor = function(anchor){
         anchor = document.querySelector(anchor);
     if(anchor)
         this._anchor = new MbaDomSingle(anchor);
+};
+
+Mamba.prototype.nodeListToDomArray = function(nodeList){
+    checkType(nodeList, NodeList);
+    var domArray = [];
+    for(var i=0 ; i<nodeList.length ; i++){
+        domArray.push(nodeList[i]);
+    }
+    return domArray;
 };
 
 Mamba.prototype.render = function(){

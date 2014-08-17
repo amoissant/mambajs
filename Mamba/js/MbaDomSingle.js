@@ -34,8 +34,8 @@ MbaDomSingle.prototype.getParent = function(){
 };
 
 MbaDomSingle.prototype.positionInParent = function(){
-    var position = -1;
     if(this.hasParent()){
+        var position = -1;
         var siblings = this.getParent().childNodes;
         for(var i=0 ; i<siblings.length ; i++){
             if(siblings[i] == this._domElement){
@@ -43,8 +43,10 @@ MbaDomSingle.prototype.positionInParent = function(){
                 break;
             }
         }    
+        return position;
     }
-    return position;
+    else
+        throw new Error('MbaDomSingle.getPositionInParent is only applicable if a parent element exists.');
 };
 
 MbaDomSingle.prototype.removeFromParent = function(){
@@ -54,22 +56,25 @@ MbaDomSingle.prototype.removeFromParent = function(){
 MbaDomSingle.prototype.insertAtIndex = function(dom, index){
     checkType(dom, MbaDom2);
     if(dom instanceof MbaDomSingle){
-        if(this._domElement.childNodes.length <= index)
-            this._domElement.appendChild(dom.getElement());
-        else
-            this._domElement.insertBefore(elements[i], dom.getElement());
+        this.insertOneElementAtIndex(dom.getElement(), index);
     }
     else{
         var elements = dom.getElements();
         for(var i=0 ; i<elements.length ; i++){
-            if(this._domElement.childNodes.length <= index)
-                this._domElement.appendChild(elements[i]);
-            else
-                this._domElement.insertBefore(elements[i], this._domElement.childNodes[index]);
+            this.insertOneElementAtIndex(elements[i], index);
             index++;
         }
     }
         
+};
+
+MbaDomSingle.prototype.insertOneElementAtIndex = function(element, index){
+    checkType(element, 'domElement');
+    checkType(index, 'number');
+    if(this._domElement.childNodes.length <= index)
+        this._domElement.appendChild(element);
+    else
+        this._domElement.insertBefore(element, this._domElement.childNodes[index]);
 };
 
 MbaDomSingle.prototype.append = function(dom){
@@ -85,7 +90,6 @@ MbaDomSingle.prototype.append = function(dom){
     }
 };
 
-//TODO remplacer utils.domToString par cette fonction
 MbaDomSingle.prototype.toString = function(){
     return this._domElement.outerHTML;
 };

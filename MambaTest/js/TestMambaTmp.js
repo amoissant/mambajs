@@ -1,7 +1,6 @@
 Test(function() {   
     
   
-    
     Ca('teste l\'api mamba avec template texte et sans ancre', function(){
         var model = {name: 'toto'};
         var template = '<span></span>';
@@ -56,7 +55,7 @@ Test(function() {
         document.body.removeChild(root);
     });
     
-    Ca('teste l\'api mamba avec template dom et root avec éléments existants', function(){
+    Ca('teste l\'api mamba avec template dom et root avec éléments existants à la racine', function(){
         var model = {name: 'toto'};
         var directive = {name: 'span'}
         var root = document.createElement('div');
@@ -70,7 +69,40 @@ Test(function() {
         OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
         OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><b></b></div>');
         document.body.removeChild(root);
-    });   
+    });  
+    
+    Ca('teste l\'api mamba avec template NodeList et root avec éléments existants à la racine', function(){
+        var model = {name: 'toto'};
+        var directive = {name: 'span, div'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = '<a></a><span></span><div></div><b></b>';
+        document.body.appendChild(root);
+        var template = document.querySelectorAll('#root > span, #root > div');
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span><div>toto</div>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><div>toto</div><b></b></div>');
+        document.body.removeChild(root);
+    });  
+    
+    //TODO : ca doit marcher
+     /*Ca('teste l\'api mamba avec template NodeList et root avec éléments existants à la racine', function(){
+        var model = {name: 'toto'};
+        var directive = {name: 'span'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = '<a></a><span></span><span></span><b></b>';
+        document.body.appendChild(root);
+        var template = document.querySelectorAll('#root > span');
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span><span>toto</span>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><span>toto</span><b></b></div>');
+        document.body.removeChild(root);
+    });  */
     
 //TODO demo todo list : 
 /*
@@ -90,6 +122,15 @@ Test(function() {
  "/add": "#add->click",
  "/del": ".del->click",
  "/selectAll": "#selAll->click"}
+  
+avec binding par defaut : 
+ {"newItem": "#newItem",
+ "items": {"r00t": ".itemCont",
+           "name": ".item",
+           "selected": ".check"},
+ "/add": "#add",
+ "/del": ".del",
+ "/selectAll": "#selAll"}
 */
     
     //TODO faire API mamba : 
@@ -105,6 +146,7 @@ Test(function() {
         // - var dom = mamba.render();
         // - var dom = mamba.render(model); -> raccourcis pour setModel puis render()
         // - mamba.refresh(model); -> rafraichit le dom pour ce model. -> on peut passer un sous-modèle
+        // - mamba.setOptions({mode: manual}) -> pas de binding par defaut
     
     //TODO optimiser les render récursif en passant le modèle parent, si c'est aussi celui de l'enfant alors on le garde
     //TODO tester que les events sont ignorés si canReadValueFromDom renvoi false

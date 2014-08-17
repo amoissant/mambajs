@@ -98,6 +98,13 @@ function isArrayDomElement(array){
 	return false;
 }
 
+//TODO suppr fonction isArrauDomElement et la remplacer par celle-ci
+function isDomElementArray(object){
+    return object instanceof Array  
+           && object.length > 0
+           && isDomElement(object[0]);
+}
+
 function isDom(obj){
 	obj = toArray(obj);
 	return isArrayDomElement(obj);
