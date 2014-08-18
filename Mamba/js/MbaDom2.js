@@ -79,3 +79,11 @@ MbaDom2.prototype.removeFromParent = function(){
         parent.removeChild(this._dom[i]);
     }
 };
+
+MbaDom2.prototype.hasChildren = function(){
+    for(var i=0 ; i<this._dom.length; i++){
+        if(this._dom[i].childNodes.length > 0)
+            return true;
+    }
+    return false;
+};

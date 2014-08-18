@@ -28,43 +28,30 @@ function AddTextNodesVisitor(template){
         checkType(binding, MbaBinding);
         if(binding.getAnchorProvider() instanceof TextNodeAnchorProvider){
             var selector = binding.getSelector();
-            var anchor = this.getRelativeTemplate().find2(selector);
+            var anchor_ = this.getRelativeTemplate().find2(selector);
+            var anchor = new MbaDom2(anchor_.getDom());//TODO ménage après refacto MbaDom
             if(anchor.isEmpty())
-                throw new MbaError(0, 'Unable to find \''+binding.getSelector()
-                                   +'\' into template : '+this.getRelativeTemplate().toString());
-            if(this.anchorHasNoChildren(anchor)){
+                throw new Error('Unable to find \''+binding.getSelector()
+                                +'\' into template : '+this.getRelativeTemplate().toString());
+            if(!anchor.hasChildren()){
                 this.addTextNodeToAnchor(anchor);
             }
+            //commenté car on ne sais pas si on a déjà traité ces éléments de dom
+            //else throw new Error('You can\'t bind text into a dom element already having children : '+anchor.toString());
+            //TODO : ajouter ce contrôle pendant la phase de validation avant render 
         }        
     };
     
-    AddTextNodesVisitor.prototype.anchorHasNoChildren = function(anchor){
-        checkType(anchor, MbaDom);
-        if(this.anchorIsValid(anchor))
-            return anchor.getDom(0).childNodes.length == 0;
-        else
-            throw new MbaError(0, 'Anchor is not valid in our case');
-    };
-    
-    AddTextNodesVisitor.prototype.anchorIsValid = function(anchor){
-        checkType(anchor, MbaDom);
-        if(anchor.isEmpty())
-            return false;
-        else if(anchor.getDom().length != 1)
-            return false;
-        else if(anchor.getDom(0).childNodes.length > 1)
-            return false;
-        return true;
-    };
-    
     AddTextNodesVisitor.prototype.addTextNodeToAnchor = function(anchor){
-        checkType(anchor, MbaDom);
-        var textNodeElement = document.createTextNode('');
-        anchor.getDom(0).appendChild(textNodeElement);
+        checkType(anchor, MbaDom2);
+        var elements = anchor.getElements();
+        for(var i=0 ; i<elements.length ; i++){
+            elements[i].appendChild(document.createTextNode(''));
+        }
     };
     
     AddTextNodesVisitor.prototype.getRelativeTemplate = function(){
-      return this._subTemplates[this._subTemplates.length-1];  
+        return this._subTemplates[this._subTemplates.length-1];  
     };
     
     if(arguments.length != 0){

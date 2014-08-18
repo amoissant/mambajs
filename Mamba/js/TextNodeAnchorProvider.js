@@ -5,18 +5,16 @@ function TextNodeAnchorProvider(){
         checkType(selector, 'string');
 		
 		var anchor = template.find2(selector);
-		var textNodeElement; 
-		if(this.anchorContainsOneAndOnlyOneTextNode(anchor))
-			textNodeElement = anchor.getDom(0).childNodes[0];
-		else if(this.anchorHasNoChildren(anchor)){
-			textNodeElement = document.createTextNode('');
-			var anchorElement = anchor.getDom(0);
-			anchorElement.appendChild(textNodeElement);
-		}
+		var textNodeElements = [];
+		if(this.anchorContainsOneAndOnlyOneTextNode(anchor)){            
+            for(var i=0 ; i<anchor.getLength() ; i++){
+                textNodeElements.push(anchor.getDom(i).childNodes[0]);    
+            }
+        }
 		else	
 			this.throwAnError();
 		
-		return new MbaDom(textNodeElement);
+		return new MbaDom(textNodeElements);
 	};
 	TextNodeAnchorProvider.prototype.anchorHasNoChildren = function(anchor){
 		checkType(anchor, MbaDom);
@@ -27,9 +25,13 @@ function TextNodeAnchorProvider(){
 	
 	TextNodeAnchorProvider.prototype.anchorContainsOneAndOnlyOneTextNode = function(anchor){
 		checkType(anchor, MbaDom);
-		var anchorElement = anchor.getDom(0);
-		var children = anchorElement.childNodes;
-		return children.length == 1 && isATextNode(children[0]);
+        for(var i=0 ; i<anchor.getLength() ; i++){
+            var anchorElement = anchor.getDom(i);
+		    var children = anchorElement.childNodes;        
+            if(children.length != 1 || !isATextNode(children[0]))
+                return false;
+        }
+        return true;
 	};
 	
 	TextNodeAnchorProvider.prototype.throwAnError = function(){

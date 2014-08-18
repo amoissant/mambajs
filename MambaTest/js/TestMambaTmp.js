@@ -87,8 +87,7 @@ Test(function() {
         document.body.removeChild(root);
     });  
     
-    //TODO : ca doit marcher
-     /*Ca('teste l\'api mamba avec template NodeList et root avec éléments existants à la racine', function(){
+    Ca('teste que l\'on peut utiliser un selecteur css qui retourne plusieurs éléments du template pour le binding', function(){
         var model = {name: 'toto'};
         var directive = {name: 'span'}
         var root = document.createElement('div');
@@ -102,7 +101,7 @@ Test(function() {
         OnAttend(renderedDom).DEtreEgalA('<span>toto</span><span>toto</span>');
         OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><span>toto</span><b></b></div>');
         document.body.removeChild(root);
-    });  */
+    });
     
 //TODO demo todo list : 
 /*
@@ -159,6 +158,8 @@ avec binding par defaut :
     //TODO : réfléchir à l'intégration des raccourcis claviers
     //TODO avoir une méthode pour obtenir l'élément de domcorrespondant à une propriété du modèle getDom(model, 'newItem');
     //-> retourne le dom pour model et en particulier sa propriété 'newItem'. Le second paramètre est optionnel.
+    //TODO une fois le binding par défaut implémenté faire marcher ceci : 
+    //  <span class="name"></span><input class="name" type="text"></input>, {name: 'toto'}, {"name": ".name"}
    /*
     Cas à faire marcher (ou pas ya pas de r00t) : render et/ou binding           
           

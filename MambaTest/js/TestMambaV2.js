@@ -4093,8 +4093,6 @@ var testMbaV2 =
         OnAttend(model.items.length).DEtreEgalA(2);
         OnAttend(model.items[0].name).DEtreEgalA('toto');
         OnAttend(model.items[1].name).DEtreEgalA('titi');
-    }); 
-        //TODO : tester et implémenter l'intégration de bindingNode avec ancre de binding qui retourne plusieurs éléments
-   
+    });   
 };
 	
