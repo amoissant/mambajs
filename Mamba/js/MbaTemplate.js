@@ -39,12 +39,12 @@ function MbaTemplate(template, directivesPrecursor){
     
     MbaTemplate.prototype.findDom = function(selector){
         checkType(selector, 'string');
-        return this._template.find2(selector);
+        return this._template.find(selector);
     }
     
     MbaTemplate.prototype.findInRenderedDom = function(selector){
         checkType(selector, 'string');
-        return this._rootNode.getRenderedDom().find2(selector);
+        return this._rootNode.getRenderedDom().find(selector);
     }
     
     MbaTemplate.prototype.removeWhiteSpacesFromHtml = function(){

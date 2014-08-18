@@ -21,7 +21,7 @@ function TemplateDirectiveAndBindingVisitor(template, rootDirective){
         checkType(directive, MbaDirective);
         //TODO extract method
         if(directive.hasRoot()){
-            var subTemplate = this.getRelativeTemplate().find2(directive.getRootSelector());
+            var subTemplate = this.getRelativeTemplate().find(directive.getRootSelector());
             this._subTemplates.push(subTemplate);
         }
         else

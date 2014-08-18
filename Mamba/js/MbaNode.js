@@ -102,24 +102,7 @@ function MbaNode(parent, baseDom){
         }
         this._children = newChildren;
     };
-    
-	MbaNode.prototype.addChildAtIndex = function(child, index){
-		checkType(child, MbaNode);
-		checkType(index, 'number');
-		
-		var newChildren = [];
-		newChildren = newChildren.concat(_.first(this._children, index));
-		newChildren.push(child);
-		newChildren = newChildren.concat(_.rest(this._children, index));
-		
-		this._children = newChildren;
-	};
-    
-	MbaNode.prototype.removeChild = function(child){
-		checkType(child, MbaNode);
-		
-		this._children = _.without(this._children, child);
-	};
+
     //TODO à suppr, fait doublon avec celle dessous
     MbaNode.prototype.getChildPosition = function(child){
 		checkType(child, MbaNode);

@@ -3,7 +3,7 @@ function DefaultAnchorProvider(){
     DefaultAnchorProvider.prototype.getAnchor = function(template, selector){
         checkType(template, MbaDom);
         checkType(selector, 'string');
-        return template.find2(selector);
+        return template.find(selector);
     };
 }
 DefaultAnchorProvider.prototype = new AnchorProvider();

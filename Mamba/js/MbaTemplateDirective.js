@@ -37,7 +37,7 @@ function MbaTemplateDirective(template, directive){
     
     MbaTemplateDirective.prototype.findRootAnchor = function(){
         if(this.hasRoot())
-            this._rootAnchor = this._template.find2(this._rootSelector);
+            this._rootAnchor = this._template.find(this._rootSelector);
         else
             this._rootAnchor = this._template;
     };

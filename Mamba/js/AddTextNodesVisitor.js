@@ -12,7 +12,7 @@ function AddTextNodesVisitor(template){
     AddTextNodesVisitor.prototype.beforeVisitDirective = function(directive){
         checkType(directive, MbaDirective);
         if(directive.hasRoot()){
-            var subTemplate = this.getRelativeTemplate().find2(directive.getRootSelector());
+            var subTemplate = this.getRelativeTemplate().find(directive.getRootSelector());
             this._subTemplates.push(subTemplate);
         }
         else
@@ -28,7 +28,7 @@ function AddTextNodesVisitor(template){
         checkType(binding, MbaBinding);
         if(binding.getAnchorProvider() instanceof TextNodeAnchorProvider){
             var selector = binding.getSelector();
-            var anchor_ = this.getRelativeTemplate().find2(selector);
+            var anchor_ = this.getRelativeTemplate().find(selector);
             var anchor = new MbaDom2(anchor_.getDom());//TODO ménage après refacto MbaDom
             if(anchor.isEmpty())
                 throw new Error('Unable to find \''+binding.getSelector()

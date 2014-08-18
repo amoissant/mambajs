@@ -4,7 +4,7 @@ function TextNodeAnchorProvider(){
 		checkType(template, MbaDom);
         checkType(selector, 'string');
 		
-		var anchor = template.find2(selector);
+		var anchor = template.find(selector);
 		var textNodeElements = [];
 		if(this.anchorContainsOneAndOnlyOneTextNode(anchor)){            
             for(var i=0 ; i<anchor.getLength() ; i++){

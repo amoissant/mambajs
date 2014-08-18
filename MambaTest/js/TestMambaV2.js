@@ -65,18 +65,7 @@ var testMbaV2 =
 		OnAttend(domString).DEtreEgalA(res);
 	});
 
-	Ca('teste MbaDom.clone() ', function() {
-		var dom = new MbaDom('<div id="toto"></div><span id="tata"></span>');
-		var clone = dom.clone();
-				
-		OnAttend(clone instanceof MbaDom).DEtreVrai();
-		OnAttend(clone.getDom().length).DEtreEgalA(dom.getDom().length);
-		OnAttend(clone.getDom()[0].id).DEtreEgalA(dom.getDom()[0].id);
-		OnAttend(clone.getDom()[1].id).DEtreEgalA(dom.getDom()[1].id);
-	});
-
-
-	Ca('teste MbaDom.find() ', function() {
+	Ca('teste Mbadom.find() ', function() {
 		var dom = new MbaDom('<div id="toto"></div><span id="tata"></span>');
 	
 		var toto = dom.find('#toto');
@@ -94,36 +83,6 @@ var testMbaV2 =
 		OnAttend(tutu.isEmpty()).DEtreVrai();
 		OnAttend(tata.isEmpty()).DEtreFaux();
 	});
-	
-	Ca('teste MbaDom.replace() ', function() {
-		var dom = new MbaDom('<div id="toto"></div><span id="tata"></span>');
-		var toto = dom.find('#toto');
-		var tutu = new MbaDom('<div id="tutu"></div>');
-		
-		dom.replace(toto, tutu);
-		
-		var toto2 = dom.find('#toto');
-		var tutu2 = dom.find('#tutu');
-		
-		OnAttend(toto2.isEmpty()).DEtreVrai();
-		OnAttend(tutu2.isEmpty()).DEtreFaux();
-		OnAttend(tutu2.getDom()[0].id).DEtreEgalA('tutu');
-		OnAttend(dom.getDom()[0].id).DEtreEgalA('tutu');
-		OnAttend(dom.getDom()[1].id).DEtreEgalA('tata');
-	});
-
-	Ca('teste MbaDom.concat() ', function() {
-		var dom = new MbaDom('<div id="toto"></div><span id="tata"></span>');
-		var tutu = new MbaDom('<div id="tutu"></div>');
-		
-		dom.concat(tutu);
-		
-		OnAttend(dom.getDom()[0].id).DEtreEgalA('toto');
-		OnAttend(dom.getDom()[1].id).DEtreEgalA('tata');
-		OnAttend(dom.getDom()[2].id).DEtreEgalA('tutu');
-	});
-
-
 
 	Ca('teste que findInTemplate() lève une exception avec un template au format "string"', function() {
 		var template = '<div id="toto"></div><span id="tata"></span>';
@@ -394,232 +353,7 @@ var testMbaV2 =
 		OnAttend(mbaDom.find('#tutu, #toto').getId()).DEtreEgalA('1-3');
 		OnAttend(mbaDom.find('#titi, #toto, #root').getId()).DEtreEgalA('0-1-4');
 		OnAttend(mbaDom.find('#toto, #root, #titi').getId()).DEtreEgalA('0-1-4');
-	});
-		
-	Ca('teste MbaDom.removeParents() sur template pour récursivité', function(){
-		var template = 
-			'    <li class="dossier">'
-			+'        <div class="nom"></div>'
-			+'        <ul>'
-			+'            <li class="dossier"></li>'
-			+'        </ul>'
-			+'    </li>';
-		
-		var mbaDom = new MbaDom(template);
-		var dossier = mbaDom.find('.dossier');
-		
-		OnAttend(dossier.getDom().length).DEtreEgalA(2);
-		OnAttend(getDeep(dossier.getDom()[0])).DEtreEgalA(0);
-		OnAttend(getDeep(dossier.getDom()[1])).DEtreEgalA(2);
-		
-		dossier = dossier.removeParents();
-		
-		OnAttend(dossier.getDom().length).DEtreEgalA(1);
-		OnAttend(getDeep(dossier.getDom()[0])).DEtreEgalA(2);
-	});
-	
-	Ca('teste MbaDom.removeParents() sur template sans parent/enfant', function(){
-		var template = 
-			'    <li class="dossier">'
-			+'        <div class="nom"></div>'
-			+'   </li>'
-			+'   <ul>'
-			+'        <li class="dossier"></li>'
-			+'   </ul>';
-		
-		var mbaDom = new MbaDom(template);
-		var dossier = mbaDom.find('.dossier');
-		
-		OnAttend(dossier.getDom().length).DEtreEgalA(2);
-		OnAttend(getDeep(dossier.getDom()[0])).DEtreEgalA(0);
-		OnAttend(getDeep(dossier.getDom()[1])).DEtreEgalA(1);
-		
-		dossier = dossier.removeParents();
-		
-		OnAttend(dossier.getDom().length).DEtreEgalA(2);
-		OnAttend(getDeep(dossier.getDom()[0])).DEtreEgalA(0);
-		OnAttend(getDeep(dossier.getDom()[1])).DEtreEgalA(1);
-	});
-	
-	
-	Ca('teste MbaDom.removeChildren() sur template pour récursivité', function(){
-		var template = 
-			'    <li class="dossier">'
-			+'        <div class="nom"></div>'
-			+'        <ul>'
-			+'            <li class="dossier"></li>'
-			+'        </ul>'
-			+'    </li>';
-		
-		var mbaDom = new MbaDom(template);
-		var dossier = mbaDom.find('.dossier');
-		
-		OnAttend(dossier.getDom().length).DEtreEgalA(2);
-		OnAttend(getDeep(dossier.getDom()[0])).DEtreEgalA(0);
-		OnAttend(getDeep(dossier.getDom()[1])).DEtreEgalA(2);
-		
-		dossier = dossier.removeChildren();
-		
-		OnAttend(dossier.getDom().length).DEtreEgalA(1);
-		OnAttend(getDeep(dossier.getDom()[0])).DEtreEgalA(0);
-	});
-	
-	Ca('teste MbaDom.removeChildren() sur template sans parent/enfant', function(){
-		var template = 
-			'    <li class="dossier">'
-			+'        <div class="nom"></div>'
-			+'   </li>'
-			+'   <ul>'
-			+'        <li class="dossier"></li>'
-			+'   </ul>';
-		
-		var mbaDom = new MbaDom(template);
-		var dossier = mbaDom.find('.dossier');
-		
-		OnAttend(dossier.getDom().length).DEtreEgalA(2);
-		OnAttend(getDeep(dossier.getDom()[0])).DEtreEgalA(0);
-		OnAttend(getDeep(dossier.getDom()[1])).DEtreEgalA(1);
-		
-		dossier = dossier.removeChildren();
-		
-		OnAttend(dossier.getDom().length).DEtreEgalA(2);
-		OnAttend(getDeep(dossier.getDom()[0])).DEtreEgalA(0);
-		OnAttend(getDeep(dossier.getDom()[1])).DEtreEgalA(1);
-	});
-
-	Ca('teste que MbaDom.concat() insère les nouveaux éléments à la suite des autres si les éléments existants ont un parent.', 
-	   function(){
-		var mbaDom = new MbaDom('<span></span>');
-		
-		OnAttend(mbaDom.belongAnotherDom()).DEtreFaux();
-		var parent = $('<div id="parent"><br/></div>');
-		parent.prepend(mbaDom.getDom());
-		
-		OnAttend(mbaDom.belongAnotherDom()).DEtreVrai();
-		OnAttend(parent.children().length).DEtreEgalA(2);
-		
-		mbaDom.concat(new MbaDom('<span></span>'));
-		
-		OnAttend(parent.children().length).DEtreEgalA(3);
-		OnAttend(parent.children().get(0).nodeName).DEtreEgalA('SPAN');
-		OnAttend(parent.children().get(1).nodeName).DEtreEgalA('SPAN');
-		OnAttend(parent.children().get(2).nodeName).DEtreEgalA('BR');
-	});
-	
-	Ca('teste que MbaDom.keepNthFirst() supprime les éléments en trop du dom si ils ont un parent.', 
-	   function(){
-		var mbaDom = new MbaDom('<div></div><span></span>');
-		
-		OnAttend(mbaDom.belongAnotherDom()).DEtreFaux();
-		
-		var parent = $('<div id="parent"></div>');
-		parent.append(mbaDom.getDom());
-		
-		OnAttend(mbaDom.belongAnotherDom()).DEtreVrai();
-		OnAttend(parent.children().length).DEtreEgalA(2);
-		
-		mbaDom.keepNthFirst(1);
-		
-		OnAttend(parent.children().length).DEtreEgalA(1);
-		OnAttend(parent.children().get(0).nodeName).DEtreEgalA('DIV');
-	});
-	
-
-	Ca('teste MbaDom.insertAtIndex() sur un MbaDom qui n\'est pas inséré dans le dom (pas de parent)',
-	   function(){
-		
-		var dom = new MbaDom('<div id="toto"></div><div id="tata"></div>');
-		var domToInsert = new MbaDom('<div id="tutu"></div><div id="titi"></div>');
-		
-		dom.insertAtIndex(domToInsert, 0);
-		
-		OnAttend(dom.getDom().length).DEtreEgalA(4);
-		OnAttend(dom.getDom(0).id).DEtreEgalA('tutu');
-		OnAttend(dom.getDom(1).id).DEtreEgalA('titi');
-		OnAttend(dom.getDom(2).id).DEtreEgalA('toto');
-		OnAttend(dom.getDom(3).id).DEtreEgalA('tata');
-	});
-	
-	Ca('teste MbaDom.insertAtIndex(0) sur un MbaDom qui est inséré dans le dom',
-	   function(){
-		
-		var dom = new MbaDom('<div id="toto"></div><div id="tata"></div>');
-		var parent = $('<div id="parent"></div>');
-		parent.append(dom.getDom());
-		
-		var domToInsert = new MbaDom('<div id="tutu"></div><div id="titi"></div>');
-		
-		dom.insertAtIndex(domToInsert, 0);
-				
-		OnAttend(parent.children().length).DEtreEgalA(4);
-		OnAttend(parent.children().get(0).id).DEtreEgalA('tutu');
-		OnAttend(parent.children().get(1).id).DEtreEgalA('titi');
-		OnAttend(parent.children().get(2).id).DEtreEgalA('toto');
-		OnAttend(parent.children().get(3).id).DEtreEgalA('tata');
-	});
-	
-	Ca('teste MbaDom.insertAtIndex(n) sur un MbaDom qui est inséré dans le dom',
-	   function(){
-		
-		var dom = new MbaDom('<div id="toto"></div><div id="tata"></div>');
-		var parent = $('<div id="parent"></div>');
-		parent.append(dom.getDom());
-		
-		var domToInsert = new MbaDom('<div id="tutu"></div><div id="titi"></div>');
-		
-		dom.insertAtIndex(domToInsert, 2);
-		
-		OnAttend(parent.children().length).DEtreEgalA(4);
-		OnAttend(parent.children().get(0).id).DEtreEgalA('toto');
-		OnAttend(parent.children().get(1).id).DEtreEgalA('tata');
-		OnAttend(parent.children().get(2).id).DEtreEgalA('tutu');
-		OnAttend(parent.children().get(3).id).DEtreEgalA('titi');
-	});
-	
-	Ca('teste l\'ajout d\'un élément à l\'index 0 dans un MbaDom vide lève une exception', function(){
-		var root = new MbaDom();
-		var domToAppend = new MbaDom('<span>toto</span>')
-		
-		try{
-			root.insertChildAtIndex(domToAppend, 0);
-		}
-		catch(e){
-			return;
-		}
-		OnAttend(false).DEtreVrai()
-	});
-	
-	Ca('teste l\'ajout d\'un élément à l\'index 0 dans un MbaDom sans enfant', function(){
-		var root = new MbaDom('<div id="root"></div>');
-		var domToAppend =  new MbaDom('<span>toto</span>')
-		
-		root.insertChildAtIndex(domToAppend, 0);
-		OnAttend(root.toString()).DEtreEgalA('<div id="root"><span>toto</span></div>');
-	});
-	
-	Ca('teste l\'ajout d\'un élément à l\'index 0 dans un MbaDom avec enfant', function(){
-		var root = new MbaDom('<div id="root">titi</div>');
-		var domToAppend =  new MbaDom('<span>toto</span>')
-		
-		root.insertChildAtIndex(domToAppend, 0);
-		OnAttend(root.toString()).DEtreEgalA('<div id="root"><span>toto</span>titi</div>');
-	});
-	
-	Ca('teste l\'ajout de plusieurs éléments à l\'index 0 dans un MbaDom sans enfant', function(){
-		var root = new MbaDom('<div id="root"></div>');
-		var domToAppend =  new MbaDom('<span>toto</span><span>titi</span>')
-		
-		root.insertChildAtIndex(domToAppend, 0);
-		OnAttend(root.toString()).DEtreEgalA('<div id="root"><span>toto</span><span>titi</span></div>');
-	});
-	
-	Ca('teste l\'ajout de plusieurs éléments à l\'index 1 dans un MbaDom avec enfant', function(){
-		var root = new MbaDom('<div id="root">tutu</div>');
-		var domToAppend =  new MbaDom('<span>toto</span><span>titi</span>')
-		
-		root.insertChildAtIndex(domToAppend, 1);
-		OnAttend(root.toString()).DEtreEgalA('<div id="root">tutu<span>toto</span><span>titi</span></div>');
-	});
+	});		
 	
 	Ca('teste que l\'ajout sur un MbaDom représentant plusieurs éléments lève une exception', function(){
 		var root = new MbaDom('<div id="root"></div><div id="rootBis"></div>');
@@ -631,39 +365,6 @@ var testMbaV2 =
 			return;
 		}
 		OnAttend(false).DEtreVrai();
-	});
-	
-	Ca('teste la suppression des éléments enfants entre deux index dans un MbaDom', function(){
-		var root = new MbaDom('<div id="root"></div>');
-				
-		root.appendChild(new MbaDom('<span>toto</span>'));
-		root.appendChild(new MbaDom('<span>titi</span>'));
-		root.appendChild(new MbaDom('<span>tata</span>'));
-		root.appendChild(new MbaDom('<span>tutu</span>'));
-		
-		var removedDom = root.removeChildrenBetween(1, 2);
-		
-		OnAttend(root.toString()).DEtreEgalA('<div id="root"><span>toto</span><span>tutu</span></div>');
-		OnAttend(removedDom.toString()).DEtreEgalA('<span>titi</span><span>tata</span>');
-	});
-	
-	Ca('teste la suppression d\'éléments entre deux index dans un MbaDom', function(){
-		var mbaDom = new MbaDom('<div id="1"></div><div id="2"></div><div id="3"></div><div id="4"></div>');
-		var removedDom = mbaDom.removeRangeInclude(1,2);
-		
-		OnAttend(mbaDom.toString()).DEtreEgalA('<div id="1"></div><div id="4"></div>');
-		OnAttend(removedDom.toString()).DEtreEgalA('<div id="2"></div><div id="3"></div>');
-	});
-	
-	Ca('teste que MbaDom.removeRangeInclude lève une exception si les indexs sont hors limite', function(){
-		var mbaDom = new MbaDom('<div id="1"></div><div id="2"></div><div id="3"></div><div id="4"></div>');
-		try{
-			mbaDom.removeRangeInclude(1,4);
-		}catch(e){
-			OnAttend(e.code).DEtreEgalA(2);
-			return;
-		}
-		OnAttend(true).DEtreFaux();
 	});
  	
  	Ca('teste que MbaDom.addMbaId ajoute une propriété _mbaId aux éléments de dom ainsi qu\'aux textNode', function(){
@@ -4093,6 +3794,108 @@ var testMbaV2 =
         OnAttend(model.items.length).DEtreEgalA(2);
         OnAttend(model.items[0].name).DEtreEgalA('toto');
         OnAttend(model.items[1].name).DEtreEgalA('titi');
-    });   
+    });
+        
+            Ca('teste l\'api mamba avec template texte et sans ancre', function(){
+        var model = {name: 'toto'};
+        var template = '<span></span>';
+        var directive = {name: 'span'};
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+    });
+    
+    Ca('teste l\'api mamba avec template texte et ancre dom', function(){
+        var model = {name: 'toto'};
+        var template = '<span></span>';
+        var directive = {name: 'span'}
+        var anchor = document.createElement('div');
+        var mamba = new Mamba(model, template, directive, anchor);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+        OnAttend(domToString(anchor)).DEtreEgalA('<div><span>toto</span></div>');
+    });
+    
+    Ca('teste l\'api mamba avec template texte et ancre selecteur css', function(){
+        var model = {name: 'toto'};
+        var template = '<span></span>';
+        var directive = {name: 'span'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        document.body.appendChild(root);
+        var mamba = new Mamba(model, template, directive, '#root');
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><span>toto</span></div>');
+        document.body.removeChild(root);
+    });
+    
+    Ca('teste l\'api mamba avec template dom et sans ancre', function(){
+        var model = {name: 'toto'};
+        var template = '<span></span>';
+        var directive = {name: 'span'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = template;
+        document.body.appendChild(root);
+        template = document.querySelector('#root > span');
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><span>toto</span></div>');
+        document.body.removeChild(root);
+    });
+    
+    Ca('teste l\'api mamba avec template dom et root avec éléments existants à la racine', function(){
+        var model = {name: 'toto'};
+        var directive = {name: 'span'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = '<a></a><span></span><b></b>';
+        document.body.appendChild(root);
+        var template = document.querySelector('#root > span');
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><b></b></div>');
+        document.body.removeChild(root);
+    });  
+    
+    Ca('teste l\'api mamba avec template NodeList et root avec éléments existants à la racine', function(){
+        var model = {name: 'toto'};
+        var directive = {name: 'span, div'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = '<a></a><span></span><div></div><b></b>';
+        document.body.appendChild(root);
+        var template = document.querySelectorAll('#root > span, #root > div');
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span><div>toto</div>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><div>toto</div><b></b></div>');
+        document.body.removeChild(root);
+    });  
+    
+    Ca('teste que l\'on peut utiliser un selecteur css qui retourne plusieurs éléments du template pour le binding', function(){
+        var model = {name: 'toto'};
+        var directive = {name: 'span'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = '<a></a><span></span><span></span><b></b>';
+        document.body.appendChild(root);
+        var template = document.querySelectorAll('#root > span');
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span><span>toto</span>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><span>toto</span><b></b></div>');
+        document.body.removeChild(root);
+    });
 };
 	
