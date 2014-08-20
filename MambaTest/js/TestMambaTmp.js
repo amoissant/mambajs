@@ -1,7 +1,13 @@
 Test(function() {   
     
-
-    
+    Ca('teste la création de dom à partir d\'une chaine', function(){
+        var stringDom = '<span id="toto"></span><div id="tutu"></div>';
+        var dom = stringToDom(stringDom);
+        
+        OnAttend(dom.length).DEtreEgalA(2);
+        OnAttend(dom[0].id).DEtreEgalA('toto');
+        OnAttend(dom[1].id).DEtreEgalA('tutu');
+    });
 //TODO demo todo list : 
 /*
 <input id="newItem" type="text"></input><button id="add">ajouter</button><button id="selAll">tous</button>

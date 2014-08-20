@@ -26,7 +26,7 @@ function MbaNodeConstructor(){
 		checkType(parentNode, MbaNode);
 		checkType(domElement, 'dom');
 		
-		var baseDom = new MbaDom(domElement);
+		var baseDom = new MbaDom([domElement]);//TODO MbaNodeSingle
 		var node = new MbaNodeHtmlElement(parentNode, baseDom);
 		var children = getDomChildren(domElement);//TODO ca marche pas avec un domElement.children direct ?
 		var childrenNodes = this.createMbaNodesForElements(node, children);

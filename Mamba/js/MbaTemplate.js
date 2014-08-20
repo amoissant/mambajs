@@ -15,7 +15,7 @@ function MbaTemplate(template, directivesPrecursor){
         this._rootDirective = new MbaRootDirective(directivesPrecursor);
         this._html = template;
         this.removeWhiteSpacesFromHtml();
-        this._template = new MbaDom(this._html);
+        this._template = new MbaDomFromString(this._html);
         this._templateDirective = null;
         this._rootNode = null;
         this._isReadyForRender = false;

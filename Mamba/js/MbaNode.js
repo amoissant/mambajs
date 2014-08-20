@@ -211,7 +211,7 @@ function MbaNode(parent, baseDom){
 	};
         
     MbaNode.prototype.getRenderedDom = function(){
-        var renderedDom = new MbaDom();
+        var renderedDom = new MbaDomEmpty();
         for(var index in this._indexedRenderedDom){
             renderedDom.add(this.getRenderedDomForIndex(index));
         }

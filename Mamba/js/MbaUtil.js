@@ -247,10 +247,10 @@ function match(obj, other){
 	return match;
 }
 
-function findInTemplate2(template, selector){
+function findInTemplate(template, selector){
 	//TODO pas très safe mais optimisé, refacto c'est moche  
-    if(!(template instanceof Array))
-        throw new Error('template must be an array');
+    if(template.length > 0 && !isDomSet(template))
+        throw new Error('template must be an array or a NodeList');
     
     if(template.length >= 1){
         if(template[0].parentNode)
@@ -274,9 +274,9 @@ function findInTemplate2(template, selector){
         return [];
 }
 
-function findInTemplate(template, selector){
-	if(!isDom(template))
-		throw new Error("template must be a dom element or an array of dom elements.");
+function findInTemplate_(template, selector){//TOOD à suppr
+	if(!isDomElement(template) && !isDomSet(template))
+		throw new Error("template must be a dom element or an set of dom elements.");
 
 	var tmpParent = $('<div></div>').get()[0];
 	template = toArray(template);
@@ -299,63 +299,6 @@ function findInTemplate(template, selector){
 }
 
 
-function replaceInTemplate(template, srcElement, targetElement){
-	
-	// ici on est obligé de rajouter un parent à
-	// srcElement sinon le 'replaceWith' de jQuery ne fonctionne pas
-	var tmpRoot = $('<div></div>').append($(template));
-
-	if ($.isArray(srcElement) && srcElement.length >= 1) {
-		var anchor = $(srcElement[0]);
-		if(!$.contains(tmpRoot.get(0), anchor.get(0))){
-			console.log('ERROR : srcElement isn\'t a child of template');
-			/*console.log(template);
-			console.log(tmpRoot);
-			console.log(anchor);*/
-		}
-		anchor.replaceWith(targetElement);
-		for ( var i = 1; i < srcElement.length; i++) {
-			$(srcElement[i]).remove();
-		}
-	} else {
-		$(srcElement).replaceWith(targetElement);
-	}
-	template = tmpRoot.children().get();
-
-	return template;
-}
-
-
-function replaceInTemplate_string(template, srcElement, targetElement){
-	var templateString = domToString(template);
-	var srcString = domToString(srcElement);
-	var targetString = domToString(targetElement);
-
-	if(srcString != ""){
-		var r = new RegExp(srcString, "g");
-		templateString = templateString.replace(r, targetString);
-
-		template = $(templateString).get();
-	}
-	else{
-		console.log('ERROR : srcElement is empty.');
-	}
-		
-	return template;
-}
-
-
-function replaceInTemplate2(template, srcElement, targetElement){
-		checkType(template, 'string');
-		checkType(srcElement, 'string');
-		checkType(targetElement, 'string');
-		
-		var r = new RegExp(srcElement, "g");
-		template = template.replace(r,targetElement);
-			
-		return template;
-}
-
 
 function toArray(obj){
 	if(obj == null)
@@ -365,16 +308,6 @@ function toArray(obj){
 	else
 		return obj;
 }
-
-/*
-function toArray(obj){
-	if(!$.isArray(obj))
-		return [obj];
-	else if(obj == null)
-		return [];
-	else
-		return obj;
-}*/
 
 
 function firstIsChildOfSecond(first, second){
@@ -444,6 +377,15 @@ function checkType(obj, type, arrayElementType){
 		console.log('ERROR : instance of type "'+type.name+'" expected.');
 		return;
 	}
+}
+
+function isDomSet(dom){
+    return (dom.length > 0) && (((dom instanceof Array) && isDomElement(dom[0])) || (dom instanceof NodeList));
+}
+
+function checkIsDomSet(dom){
+    if(!isDomSet(dom))
+        console.log('ERROR : Is not a set of dom element : ', dom);
 }
 
 function oneElementIsOfType(array, type){
@@ -517,4 +459,12 @@ function pushAll(context, anotherArray){
         context.push(anotherArray[i]);
     }
 };
+
+function stringToDom(string){
+    var root = document.createElement('div');
+    root.innerHTML = string;
+    
+    var domArray = [];
+    return root.childNodes;
+}
 

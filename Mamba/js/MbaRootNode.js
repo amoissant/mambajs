@@ -61,7 +61,7 @@ function MbaRootNode(templateRoot){
     };
     
     MbaRootNode.prototype.getRenderedDom = function(){
-        var renderedDom = new MbaDom();
+        var renderedDom = new MbaDomEmpty();
         for(var i=0 ; i<this._children.length ; i++){
 		  var currChild = this._children[i];
 		  renderedDom.add(currChild.getRenderedDom());
@@ -74,7 +74,7 @@ function MbaRootNode(templateRoot){
         this.getRenderedDom();//TODO on peut optimiser en ajoutant/supprimant dans this_renderedDom quand on fait appendDom/removeDom
         var firstElementWithParent = this.findFirstRenderedDomElementWithParent();
         if(firstElementWithParent != null){
-            this._parentDom = new MbaDom(firstElementWithParent.parentElement);
+            this._parentDom = new MbaDom([firstElementWithParent.parentElement]);//TODO MbaNodeSingle
             this._offsetInParent = this.getPositionInParent(firstElementWithParent);
         }
     };

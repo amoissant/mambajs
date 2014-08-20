@@ -17,7 +17,7 @@ function MbaBindingText(cssSelector, anchorProvider, firstTransf){
 		else	
 			this.throwAnError();
 		
-		return new MbaDom(textNodeElement);
+		return new MbaDom([textNodeElement]);//TODO MbaDomSingle
 	};
 	MbaBindingText.prototype.anchorHasNoChildren = function(anchor){
 		checkType(anchor, MbaDom);

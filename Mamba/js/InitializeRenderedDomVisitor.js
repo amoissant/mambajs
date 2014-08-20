@@ -5,7 +5,7 @@ function InitializeRenderedDomVisitor(){
         //checkType(indexInParent, 'number');//TODO si on a pas besoin de l'index alors le virer sinon le passer correctement
         
         if(node instanceof MbaNodeDirective)
-            node.setRenderedDom(new MbaDom());
+            node.setRenderedDom(new MbaDomEmpty());
     };
     
     InitializeRenderedDomVisitor.prototype.afterVisitNode = function(node, indexInParent){

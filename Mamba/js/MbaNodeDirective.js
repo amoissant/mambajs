@@ -162,7 +162,7 @@ function MbaNodeDirective(baseDom, templateDirective){
     
     
     MbaNodeDirective.prototype.getInitialDom = function(){
-        return new MbaDom();
+        return new MbaDomEmpty();
     };
             
     MbaNodeDirective.prototype.appendDom = function(child, childDom, route){

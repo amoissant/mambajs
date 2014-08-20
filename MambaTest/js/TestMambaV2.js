@@ -36,13 +36,13 @@ var testMbaV2 =
 
 	Ca('teste domToString sur du dom', function() {
 		var domString = '<div id="root"></div>';
-		var dom = $.parseHTML(domString)[0];
+		var dom = stringToDom(domString)[0];
 		OnAttend(domToString(dom)).DEtreEgalA(domString);
 	});
 
 	Ca('teste domToString sur un tableau', function() {
 		var domString = '<div id="root"></div>';
-		var dom = $.parseHTML(domString)[0];
+		var dom = stringToDom(domString)[0];
 		var domJQuery = $(domString).get(0);
 		var domArray = [ dom, domJQuery ];
 		OnAttend(domToString(domArray)).DEtreEgalA(domString + domString);
@@ -50,23 +50,22 @@ var testMbaV2 =
 
 	Ca(	'teste l\'initialisation d\'une instance de la classe MbaDom. ',
 		function() {
-			var dom = new MbaDom('<div id="toto"></div><span id="tata"></span>');
+			var dom = new MbaDomFromString('<div id="toto"></div><span id="tata"></span>');
 
-			OnAttend($.isArray(dom.getDom())).DEtreVrai();
 			OnAttend(dom.getDom().length).DEtreEgalA(2);
-			OnAttend(isDom(dom.getDom())).DEtreVrai();
+			OnAttend(isDomSet(dom.getDom())).DEtreVrai();
 		});
 
 	Ca('teste MbaDom.toString() ', function() {
 		var domString = '<div id="toto"></div><span id="tata"></span>';
-		var dom = new MbaDom(domString);
+		var dom = new MbaDomFromString(domString);
 		var res = dom.toString();
 		
-		OnAttend(domString).DEtreEgalA(res);
+		OnAttend(res).DEtreEgalA(domString);
 	});
 
 	Ca('teste Mbadom.find() ', function() {
-		var dom = new MbaDom('<div id="toto"></div><span id="tata"></span>');
+		var dom = new MbaDomFromString('<div id="toto"></div><span id="tata"></span>');
 	
 		var toto = dom.find('#toto');
 		
@@ -75,7 +74,7 @@ var testMbaV2 =
 	});
 
 	Ca('teste MbaDom.isEmpty() ', function() {
-		var dom = new MbaDom('<div id="toto"></div><span id="tata"></span>');
+		var dom = new MbaDomFromString('<div id="toto"></div><span id="tata"></span>');
 	
 		var tutu = dom.find('#tutu');
 		var tata = dom.find('#tata');
@@ -97,7 +96,7 @@ var testMbaV2 =
 	
 	Ca('teste que findInTemplate() accepte les selecteurs css'
 			+ ' et retourne un elément de dom', function() {
-		var template = $.parseHTML('<div id="toto"></div><span id="tata"></span>');
+		var template = stringToDom('<div id="toto"></div><span id="tata"></span>');
 		var domElement = findInTemplate(template, '#toto');
 
 		OnAttend(domElement).DeNePasEtreNull();
@@ -108,7 +107,7 @@ var testMbaV2 =
 				+ 'objet que celui du template si le template est un dom.',
 		function() {
 			var template = '<div id="toto"></div><span id="tata"></span>';
-			var dom = $.parseHTML(template);
+			var dom = stringToDom(template);
 			dom[1].setAttribute('customattr', 'I\'m tata');
 			var domElement = findInTemplate(dom, '#tata');
 
@@ -122,17 +121,17 @@ var testMbaV2 =
 			+ ' et peut retourner plusieurs eléments de dom', function() {
 		template = '<div id="toto" class="tutu"></div>'
 				+ '<span id="tata" class="tutu"></span>';
-		template = $.parseHTML(template);
+		template = stringToDom(template);
 		var domElements = findInTemplate(template, '.tutu');
 		OnAttend(domElements).DeNePasEtreNull();
-		OnAttend($.isArray(domElements)).DEtreVrai();
+		OnAttend(isDomSet(domElements)).DEtreVrai();
 		OnAttend(domElements.length).DEtreEgalA(2);
 	});
 
 	Ca('teste que findInTemplate() retourne l\'élément voulu même si celui-ci '
 			+ 'est à la racine', function() {
 		var template = '<div id="root"><div id="toto"></div>';
-		template = $.parseHTML(template);
+		template = stringToDom(template);
 		var root = findInTemplate(template, "#root");
 		var toto = findInTemplate(template, "#toto");
 
@@ -144,7 +143,7 @@ var testMbaV2 =
 
 	Ca(	'teste que findInTemplate() peut trouver un élément dans un tableau',
 		function() {
-			var template = [ $('<div id="root">')[0], $('<div id="root2">')[0] ];
+			var template = stringToDom('<div id="root"><div id="root2">');
 
 			var root = findInTemplate(template, '#root');
 			OnAttend(root[0].id).DEtreEgalA('root');
@@ -155,11 +154,11 @@ var testMbaV2 =
 
 	Ca(	'teste que findInTemplate() peut trouver plusieurs élements',
 		function() {
-			var template = $.parseHTML('<div id="root">'
+			var template = stringToDom('<div id="root">'
 					+ '<div id="toto1"></div>' + '<div id="toto2"></div>'
 					+ '</div>');
 			var res = findInTemplate(template, '#toto1, #toto2');
-			OnAttend($.isArray(res)).DEtreVrai();
+			OnAttend(isDomSet(res)).DEtreVrai();
 			OnAttend(res.length).DEtreEgalA(2);
 			OnAttend(res[0].id).DEtreEgalA('toto1');
 			OnAttend(res[1].id).DEtreEgalA('toto2');
@@ -167,167 +166,35 @@ var testMbaV2 =
 
 	Ca('teste que findInTemplate() peut retourner une sous-partie des '
 			+ 'éléments à la racine', function() {
-		var template = $.parseHTML('<div id="toto"></div>'
+		var template = stringToDom('<div id="toto"></div>'
 				+ '<div id="tata"></div>' + '<div id="titi"></div>'
 				+ '<div id="tutu"></div>');
 
 		var res = findInTemplate(template, '#toto, #tata, #titi');
 
-		OnAttend($.isArray(res)).DEtreVrai();
+		OnAttend(isDomSet(res)).DEtreVrai();
 		OnAttend(res.length).DEtreEgalA(3);
 		OnAttend(res[0].id).DEtreEgalA('toto');
 		OnAttend(res[1].id).DEtreEgalA('tata');
 		OnAttend(res[2].id).DEtreEgalA('titi');
 	});
         
-    Ca('teste que findInTemplate2 ne modifie pas la position des éléments dans le dom', function(){
+    Ca('teste que findInTemplate ne modifie pas la position des éléments dans le dom', function(){
         var htmlString = '<div id="root"><div id="first"></div><div id="second"></div><div id="third"></div></div>';
         var html = $(htmlString).get();
         var second = html[0].childNodes[1];
-        var found = findInTemplate2([second], '#second');
+        var found = findInTemplate([second], '#second');
         
         OnAttend(found.length).DEtreEgalA(1);
         OnAttend(found[0]).DEtreEgalA(second);
         OnAttend(new MbaDom(html).toString()).DEtreEgalA(htmlString);
     });
         
-	Ca('teste que replaceInTemplate() remplace un élément à la racine par un '
-			+ 'autre élement', function() {
-		var template = $
-				.parseHTML('<div id="root"></div><div id="toto"></div>');
-		var src = findInTemplate(template, '#root');
-		var target = $('<div id="root">')[0];
-		target.textContent = 'je suis root et vide';
-		template = replaceInTemplate(template, src, target);
-
-		OnAttend(template.length).DEtreEgalA(2);
-		var root = findInTemplate(template, '#root')[0];
-		OnAttend(root).DeNePasEtreNull();
-		OnAttend(root.textContent).DEtreEgalA('je suis root et vide');
-		var toto = findInTemplate(template, '#toto')[0];
-		OnAttend(toto).DeNePasEtreNull();
-		OnAttend(toto.id).DEtreEgalA('toto');
-	});
-
-	Ca('teste que replaceInTemplate() remplace un élément pas à la racine par '
-			+ 'un autre élement', function() {
-		var template = $
-				.parseHTML('<div id="root"><div id="toto"></div></div>');
-		var src = findInTemplate(template, '#toto');
-		var target = $('<div id="toto">')[0];
-		target.textContent = 'je suis toto';
-		template = replaceInTemplate(template, src, target);
-
-		OnAttend(template.length).DEtreEgalA(1);
-		var toto = findInTemplate(template, '#toto')[0];
-		OnAttend(toto).DeNePasEtreNull();
-		OnAttend(toto.textContent).DEtreEgalA('je suis toto');
-	});
-
-	Ca('teste que replaceInTemplate() remplace un élément à la racine par '
-			+ 'plusieurs éléments', function() {
-		var template = $
-				.parseHTML('<div id="root"><div id="toto"></div></div>');
-		var src = findInTemplate(template, '#root');
-		var target = [ $('<div id="root">')[0], $('<div id="root2">')[0] ];
-		template = replaceInTemplate(template, src, target);
-
-		OnAttend(template.length).DEtreEgalA(2);
-		var root = findInTemplate(template, '#root')[0];
-		OnAttend(root.id).DEtreEgalA('root');
-		var root2 = findInTemplate(template, '#root2')[0];
-		OnAttend(root2.id).DEtreEgalA('root2');
-	});
-
-	Ca('teste que replaceInTemplate() remplace un élément pas à la racine par '
-			+ 'plusieurs éléments', function() {
-		var template = $
-				.parseHTML('<div id="root"><div id="toto"></div></div>');
-		var src = findInTemplate(template, '#toto');
-		var target = [ $('<div id="toto1">')[0], $('<div id="toto2">')[0] ];
-		template = replaceInTemplate(template, src, target);
-
-		OnAttend(template.length).DEtreEgalA(1);
-		var toto = findInTemplate(template, '#toto1')[0];
-		OnAttend(toto.id).DEtreEgalA('toto1');
-		var toto2 = findInTemplate(template, '#toto2')[0];
-		OnAttend(toto2.id).DEtreEgalA('toto2');
-	});
-
-	Ca('teste que replaceInTemplate() remplace plusieurs éléments à la racine '
-			+ 'par un élément', function() {
-		var template = $
-				.parseHTML('<div id="root1"></div><div id="root2"></div>');
-		var src = findInTemplate(template, '#root1, #root2');
-		var target = $('<div id="toto">')[0];
-		template = replaceInTemplate(template, src, target);
-
-		OnAttend(template.length).DEtreEgalA(1);
-		var toto = findInTemplate(template, '#toto')[0];
-		OnAttend(toto.id).DEtreEgalA('toto');
-	});
-
-	Ca('teste que replaceInTemplate() remplace plusieurs éléments pas à la '
-			+ 'racine par un élément', function() {
-		var template = $.parseHTML('<div id="root">' + '<div id="toto1"></div>'
-				+ '<div id="toto2"></div>' + '</div>')[0];
-		var src = findInTemplate(template, '#toto1, #toto2');
-		var target = $('<div id="toto">')[0];
-		template = replaceInTemplate(template, src, target);
-
-		OnAttend(template.length).DEtreEgalA(1);
-		var toto = findInTemplate(template, '#toto')[0];
-		OnAttend(toto.id).DEtreEgalA('toto');
-		var toto1 = findInTemplate(template, '#toto1')[0];
-		OnAttend(toto1).DEtreNull();
-		var toto2 = findInTemplate(template, '#toto2')[0];
-		OnAttend(toto2).DEtreNull();
-	});
-
-	Ca('teste que replaceInTemplate() remplace plusieurs éléments à la racine '
-			+ 'par plusieurs éléments', function() {
-		var template = $.parseHTML('<div id="root1"></div>'
-				+ '<div id="root2"></div>');
-		var src = findInTemplate(template, '#root1, #root2');
-		var target = [ $('<div id="toto1">')[0], $('<div id="toto2">')[0] ];
-		template = replaceInTemplate(template, src, target);
-
-		OnAttend(template.length).DEtreEgalA(2);
-		var toto1 = findInTemplate(template, '#toto1')[0];
-		OnAttend(toto1.id).DEtreEgalA('toto1');
-		var toto2 = findInTemplate(template, '#toto2')[0];
-		OnAttend(toto2.id).DEtreEgalA('toto2');
-		var root1 = findInTemplate(template, '#root1')[0];
-		OnAttend(root1).DEtreNull();
-		var root2 = findInTemplate(template, '#root2')[0];
-		OnAttend(root2).DEtreNull();
-	});
-
-	Ca('teste que replaceInTemplate() remplace plusieurs éléments pas à la '
-			+ 'racine par plusieurs éléments', function() {
-		var template = $.parseHTML('<div id="root">' + '<div id="toto1"></div>'
-				+ '<div id="toto2"></div>' + '</div>')[0];
-		var src = findInTemplate(template, '#toto1, #toto2');
-		var target = [ $('<div id="tata1">')[0], $('<div id="tata2">')[0] ];
-		template = replaceInTemplate(template, src, target);
-
-		OnAttend(template.length).DEtreEgalA(1);
-		var toto1 = findInTemplate(template, '#toto1')[0];
-		OnAttend(toto1).DEtreNull();
-		;
-		var toto2 = findInTemplate(template, '#toto2')[0];
-		OnAttend(toto2).DEtreNull();
-		var tata1 = findInTemplate(template, '#tata1')[0];
-		OnAttend(tata1.id).DEtreEgalA('tata1');
-		var tata2 = findInTemplate(template, '#tata2')[0];
-		OnAttend(tata2.id).DEtreEgalA('tata2');
-	});
-
 	Ca('teste que addIdToDom() ajoute un numéro unique à chaque élément de dom', function(){
 		
 		var template = '<div id="root"><span id="toto"></span><div id="tata"></div><div id="tutu"><span id="titi"></span></div></div>';
 			
-		var mbaDom = new MbaDom(template);
+		var mbaDom = new MbaDomFromString(template);
 		mbaDom.addMbaId();
 		var dom = mbaDom.getDom();
 		
@@ -342,7 +209,7 @@ var testMbaV2 =
 	Ca('test que MbaDom.getId() retourne un numéro unique pour un ou plusieurs éléments de dom', function(){
 		var template = '<div id="root"><span id="toto"></span><div id="tata"></div><div id="tutu"><span id="titi"></span></div></div>';
 			
-		var mbaDom = new MbaDom(template);
+		var mbaDom = new MbaDomFromString(template);
 		mbaDom.addMbaId();
 		var dom = mbaDom.getDom();
 
@@ -356,8 +223,8 @@ var testMbaV2 =
 	});		
 	
 	Ca('teste que l\'ajout sur un MbaDom représentant plusieurs éléments lève une exception', function(){
-		var root = new MbaDom('<div id="root"></div><div id="rootBis"></div>');
-		var domToAppend =  new MbaDom('<span>toto</span>')
+		var root = new MbaDomFromString('<div id="root"></div><div id="rootBis"></div>');
+		var domToAppend =  new MbaDomFromString('<span>toto</span>')
 		
 		try{
 			root.insertChildAtIndex(domToAppend, 0);
@@ -368,7 +235,7 @@ var testMbaV2 =
 	});
  	
  	Ca('teste que MbaDom.addMbaId ajoute une propriété _mbaId aux éléments de dom ainsi qu\'aux textNode', function(){
- 		var mbaDom = new MbaDom('<div id="root">toto<div id="tutu"></div></div><div id="root2"></div>');
+ 		var mbaDom = new MbaDomFromString('<div id="root">toto<div id="tutu"></div></div><div id="root2"></div>');
  		mbaDom.addMbaId();
  		
  		var root = mbaDom.getDom(0);
@@ -388,7 +255,7 @@ var testMbaV2 =
     MbaTransfMock.prototype.constructor = MbaTransfMock();
     
  	Ca('teste que MbaBindingText.getAnchor() retourne le seul textNode de l\'ancre', function(){
- 		var template = new MbaDom('<div id="toto">tutu</div>');
+ 		var template = new MbaDomFromString('<div id="toto">tutu</div>');
  		var binding = new MbaBindingText('#toto', new DefaultAnchorProvider(), new MbaTransfMock());
  		
  		var anchor = binding.getAnchor(template);
@@ -397,7 +264,7 @@ var testMbaV2 =
  	});
  	
  	Ca('teste que MbaBindingText.getAnchor() créé et insère un textNode dans l\'ancre s\'il n\'y en a pas', function(){
- 		var template = new MbaDom('<div id="toto"></div>');
+ 		var template = new MbaDomFromString('<div id="toto"></div>');
  		var binding = new MbaBindingText('#toto', new DefaultAnchorProvider(), new MbaTransfMock());
  		
  		var anchor = binding.getAnchor(template);
@@ -408,7 +275,7 @@ var testMbaV2 =
  	});
  	
  	Ca('teste que MbaBindingText.getAnchor() lève une exception si l\'ancre contient un enfant non textNode', function(){
- 		var template = new MbaDom('<div id="toto"><div id="child"></div></div>');
+ 		var template = new MbaDomFromString('<div id="toto"><div id="child"></div></div>');
  		var binding = new MbaBindingText('#toto', new DefaultAnchorProvider(), new MbaTransfMock());
  		try{
  			var anchor = binding.getAnchor(template);
@@ -966,7 +833,7 @@ var testMbaV2 =
     });
     
     Ca('teste la création d\'un MbaTemplateBinding', function(){
-        var template = new MbaDom('<body><div id="toto"></div></body>');
+        var template = new MbaDomFromString('<body><div id="toto"></div></body>');
         var binding = new MbaBinding('#toto', new DefaultAnchorProvider(), new MbaTransfMock());
         var templateBinding = new MbaTemplateBinding(template, binding);
                 
@@ -1304,7 +1171,7 @@ var testMbaV2 =
     }
     
     Ca('teste que le render pour un MbaTmplateBinding modifie l\'ancre avec la valeur du modèle', function(){
-        var template = new MbaDom('<div id="root"><div id="toto"></div></div>');
+        var template = new MbaDomFromString('<div id="root"><div id="toto"></div></div>');
         var toto = template.find('#toto').getDom(0);
         var model = {name: 'tutu'};
         var templatebinding = createTemplateBindingForTest(template, '#toto', 'name');
@@ -1313,12 +1180,12 @@ var testMbaV2 =
         //OnAttend(toto.innerHTML).DEtreEgalA(model.name);//commenté car déprécié
     });
     
-    Ca('teste setTemplate sur un MbaTmplateBinding recalcule l\'ancre, le rendu se fait sur le nouveau template', function(){
-        var template = new MbaDom('<div id="root"><div id="toto"></div></div>');
+    Ca('teste setTemplate sur un MbaTemplateBinding recalcule l\'ancre, le rendu se fait sur le nouveau template', function(){
+        var template = new MbaDomFromString('<div id="root"><div id="toto"></div></div>');
         var toto = template.find('#toto');
         var totoDomElement = toto.getDom(0);
         var model = {name: 'tutu'};
-        var templatebinding = createTemplateBindingForTest(new MbaDom(), '#toto', 'name');
+        var templatebinding = createTemplateBindingForTest(new MbaDomEmpty(), '#toto', 'name');
         
         OnAttend(templatebinding.getAnchor().isEmpty()).DEtreVrai();
         templatebinding.setTemplate(template);
@@ -1330,7 +1197,7 @@ var testMbaV2 =
     
     //TODO gérer le cas où la transformation supprime l'ancre dans le parent
     /*Ca('teste que l\'élément à mettre à jour est réinséré dans son parent avant d\'être mis à jour', function(){
-        var template = new MbaDom('<div id="root"><div id="toto"></div></div>');
+        var template = new MbaDomFromString('<div id="root"><div id="toto"></div></div>');
         var toto = template.find('#toto');
         var totoDomElement = toto.getDom(0);
         var templatebinding = createTemplateBindingWithTransformationWichRemoveElementIfModelValueIsNull(template, '#toto', 'name');
@@ -1723,7 +1590,7 @@ var testMbaV2 =
             root.appendChild(messages.getDom(i));
         }
         
-        var mbaRoot = new MbaDom(root);
+        var mbaRoot = new MbaDomSingle(root);
         OnAttend(mbaRoot.toString()).DEtreEgalA('<div id="root"><span></span><div class="message">tutu</div><div id="stuff"></div></div>');
          
         model.push({text: 'toto'});
@@ -1749,7 +1616,7 @@ var testMbaV2 =
             root.appendChild(messages.getDom(i));
         }
         
-        var mbaRoot = new MbaDom(root);
+        var mbaRoot = new MbaDomSingle(root);
         OnAttend(mbaRoot.toString()).DEtreEgalA('<div id="root"><div class="message">tutu</div><div id="stuff"></div></div>');
          
         model.push({text: 'toto'});
@@ -1774,7 +1641,7 @@ var testMbaV2 =
             root.appendChild(messages.getDom(i));
         }
         
-        var mbaRoot = new MbaDom(root);
+        var mbaRoot = new MbaDomSingle(root);
         OnAttend(mbaRoot.toString()).DEtreEgalA('<div id="root"><div class="message">tutu</div></div>');
          
         model.push({text: 'toto'});
