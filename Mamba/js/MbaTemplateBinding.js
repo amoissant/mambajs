@@ -36,11 +36,6 @@ function MbaTemplateBinding(template, binding){
         return this._anchor;
     };
     
-    MbaTemplateBinding.prototype.setAnchor = function(anchor){
-        checkType(anchor, MbaDom);
-        this._anchor = anchor;
-    }; 
-    
     MbaTemplateBinding.prototype.setTemplate = function(template){
         checkType(template, template);
         this._template = template;
@@ -52,21 +47,23 @@ function MbaTemplateBinding(template, binding){
         this._transformations = this._transformations.concat(templateBinding.getTransformations());
     };
     
-    MbaTemplateBinding.prototype.render = function (model, route, parentDirectiveNode){
+    MbaTemplateBinding.prototype.render = function (dom, model, route, parentDirectiveNode){
+        checkType(dom, MbaDom);
         checkType(route, MbaRoute);
         checkType(parentDirectiveNode, MbaNode);
 		for(var i=0 ; i<this._transformations.length ; i++){
 			var currTransf = this._transformations[i];
-			currTransf.update(this.getAnchor(), model, route, parentDirectiveNode);
+            currTransf.update(dom, model, route, parentDirectiveNode);
 		}
 	};
     
-    MbaTemplateBinding.prototype.prepareBindingEvents = function(node, route){
+    MbaTemplateBinding.prototype.prepareBindingEvents = function(dom, node, route){
+        checkType(dom, MbaDom);
         checkType(node, MbaNode);
         checkType(route, MbaRoute);
         for(var i=0 ; i<this._transformations.length ; i++){
 			var currTransf = this._transformations[i];
-			currTransf.prepareAllBindingHandler(this.getAnchor(), node, route);
+            currTransf.prepareAllBindingHandler(dom, node, route);
 		}
     };
 	

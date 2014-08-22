@@ -19,9 +19,7 @@ IntegrateBindingAndDirectiveNodesVisitor.prototype.visitTemplateBinding = functi
     checkType(directiveIndex, 'number');
     checkType(bindingIndex, 'number');
 
-    var anchor = templateBinding.getAnchor();
-    var anchorElements = anchor.getDom(); 
-    //TODO refacto pour utiliser MbaDom2 et avoir une fonction toMbaNodeSingleArray() pour itérer sur les éléments
+    var anchorElements = templateBinding.getAnchor().getElements(); 
     for (var i = 0; i < anchorElements.length; i++) {
         var currAnchor = new MbaDom([anchorElements[i]]);//TODO MbaNodeSingle
         var htmlElementNode = currAnchor.getMbaNode();

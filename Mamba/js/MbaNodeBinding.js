@@ -24,15 +24,13 @@ function MbaNodeBinding(baseDom, binding) {
     
     MbaNodeBinding.prototype.updateDom = function(model, route){
         checkType(route, MbaRoute);
-        this._templateBinding.setAnchor(this.getRenderedDomForRoute(route));
         var parentDirectiveNode = this.getParentDirectiveNode();
-        this._templateBinding.render(model, route, parentDirectiveNode);
+        this._templateBinding.render(this.getRenderedDomForRoute(route), model, route, parentDirectiveNode);
     };
 	
     MbaNodeBinding.prototype.prepareBindingEvents = function(route){
         checkType(route, MbaRoute);
-        this._templateBinding.setAnchor(this.getRenderedDomForRoute(route));
-        this._templateBinding.prepareBindingEvents(this, route);
+        this._templateBinding.prepareBindingEvents(this.getRenderedDomForRoute(route), this, route);
     };
     
     MbaNodeBinding.prototype.updateNodeReferenceIntoDomElement = function(){

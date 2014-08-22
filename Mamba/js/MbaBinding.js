@@ -28,11 +28,6 @@ function MbaBinding(cssSelector, anchorProvider, firstTransf){
             this._transformations[i].getAccessorChain().prependAll(accessorChain);
         }    
     };
-    
-	MbaBinding.prototype.computeAnchor_ = function(template){
-		checkType(template, MbaDom);
-		this._anchor = this.getAnchor(template);
-	};
 	
 	MbaBinding.prototype.getSelector = function(){
 		return this._selector;

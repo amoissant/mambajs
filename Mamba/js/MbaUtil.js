@@ -383,10 +383,21 @@ function isDomSet(dom){
     return (dom.length > 0) && (((dom instanceof Array) && isDomElement(dom[0])) || (dom instanceof NodeList));
 }
 
+function isDomSetOrEmpty(dom){
+    return (dom instanceof Array) || (dom instanceof NodeList);
+}
+
+
 function checkIsDomSet(dom){
     if(!isDomSet(dom))
+        console.log('ERROR : Is not a non empty set of dom element : ', dom);
+}
+
+function checkIsDomSetOrEmpty(dom){
+    if(!isDomSetOrEmpty(dom))
         console.log('ERROR : Is not a set of dom element : ', dom);
 }
+
 
 function oneElementIsOfType(array, type){
     for(var i=0 ; i<array.length ; i++){
@@ -408,7 +419,7 @@ function checkArgNb(args, nb){
         throw new Error('bad number of argument');
 }
 
-function getDomChildren(element){
+function getDomChildren_(element){
 	checkType(element, 'dom');
 	
 	var children = element.childNodes;
@@ -424,7 +435,7 @@ function isATextNode(node){
 	return node.nodeName == "#text";
 }
 
-function getDomElementWithPath(renderedDom, path){
+function getDomElementWithPath_(renderedDom, path){
 	checkType(renderedDom, MbaDom);
 
 	var domPath = path;
@@ -463,8 +474,6 @@ function pushAll(context, anotherArray){
 function stringToDom(string){
     var root = document.createElement('div');
     root.innerHTML = string;
-    
-    var domArray = [];
     return root.childNodes;
 }
 

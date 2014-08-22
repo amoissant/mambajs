@@ -6,7 +6,7 @@ function MbaDom2(dom){
 }
 
 MbaDom2.prototype.init = function(dom){
-    checkType(dom, 'array', 'domElement');
+    checkIsDomSet(dom);
     this._dom = dom;
     if(!this.childrenHaveSameParent())
         throw new Error('All the dom elements must have the same parent.');
@@ -60,7 +60,7 @@ MbaDom2.prototype.positionInParent = function(){
     return minPosition;
 };
 
-//TODO factoriser code avec MbaDom2
+//TODO factoriser code
 MbaDom2.prototype.positionInParentOfNthElement = function(nth){
     var position = -1;
     var siblings = this.getParent().childNodes;

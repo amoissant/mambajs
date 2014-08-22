@@ -45,16 +45,17 @@ AddActionBindingIntoNodesVisitor.prototype.findDomForActionBinding = function(ac
     if(selectors.length==0 || selectors[selectors.length-1]!=actionSelector)
         selectors.push(actionSelector);
     var combinedSelector = selectors.join(' ');
-    var dom = this._template.find(combinedSelector);
-    if(dom.isEmpty())
-        throw new MbaError(22, 'Can\"t find dom element with selector \''+combinedSelector+'\' for action \''+actionBinding.getAction()
+    var domElement = this._template.selectOneMax(combinedSelector);
+    if(domElement == null)
+        throw new MbaError(22, 'Can\"t find dom element with selector \''+combinedSelector
+                           +'\' for action \''+actionBinding.getAction()
                            +'\' in template. It must exist in template and be a descendant of nearest parent r00t.');
-    return dom;
+    return domElement;
 }
 
 AddActionBindingIntoNodesVisitor.prototype.visitActionBinding = function(actionBinding){
     checkType(actionBinding, MbaActionBinding);
-    var dom = this.findDomForActionBinding(actionBinding);
-    var node = dom.getDom(0).mbaNode;
+    var domElement = this.findDomForActionBinding(actionBinding);
+    var node = domElement.mbaNode;
     node.addActionBinding(actionBinding);
 }; 

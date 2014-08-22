@@ -4,24 +4,36 @@ function MbaDom(dom){
         this.init(dom);
 }
 
-MbaDom.prototype.init = function (dom){
-    //checkIsDomSet(dom);//TODO à remettre
-    this.dom = dom;
+MbaDom.prototype.init = function(dom){
+    checkIsDomSet(dom);
+    this._dom = dom;
+    if(!this.childrenHaveSameParent()){
+        var errorMessage = 'All the dom elements must have the same parent.';
+        console.log('ERROR : '+errorMessage);
+        //throw new Error(errorMessage);
+    }
+    if(this.isEmpty()){
+        var errorMessage = 'The provided dom element array must not be empty.';
+        console.log('ERROR : '+errorMessage);
+        //throw new Error(errorMessage);
+    }
+    //todo check enfant on des positions consécutives dans le parent !
+    //todo il faudrait peut être faire cette vérification qui doit être couteuse seulement avant le premier render pour valider le template et les directives ?
 };
 
 MbaDom.prototype.getDom = function(index){
     if(index != null){
         checkType(index, 'number');
-        return this.dom[index];
+        return this._dom[index];
     }
     else
-        return this.dom;
+        return this._dom;
 };
 
 MbaDom.prototype.getChildren = function(){
     var childrenElements = [];
-    for(var i=0 ; i< this.dom.length ; i++){
-        var currElement = this.dom[i];
+    for(var i=0 ; i< this._dom.length ; i++){
+        var currElement = this._dom[i];
         for(var j=0 ; j<currElement.childNodes.length ; j++){
             childrenElements.push(currElement.childNodes[j]);
         }
@@ -30,57 +42,81 @@ MbaDom.prototype.getChildren = function(){
 }
 
 MbaDom.prototype.getMbaNode = function(){
-    if(this.isEmpty() || this.dom.length > 1) 
+    if(this.isEmpty() || this._dom.length > 1) 
         throw new MbaError(0, "getMbaNode is only applicable for MbaDom representing one and only one dom element.");
-    return this.dom[0].mbaNode;
+    return this._dom[0].mbaNode;
 };
 
 MbaDom.prototype.getMbaNodes = function(){
     if(this.isEmpty())
         throw new MbaError(0, "getMbaNodes is not applicable if dom is empty.")
     var mbaNodes = [];
-    for(var i=0 ; i<this.dom.length ; i++){
-        mbaNodes.push(this.dom[i].mbaNode);
+    for(var i=0 ; i<this._dom.length ; i++){
+        mbaNodes.push(this._dom[i].mbaNode);
     }
     return mbaNodes;
 };
 
 MbaDom.prototype.toString = function(){
     var stringRepresentations = [];
-    for(var i=0 ; i<this.dom.length ; i++){
-        stringRepresentations.push(this.dom[i].outerHTML);
+    for(var i=0 ; i<this._dom.length ; i++){
+        stringRepresentations.push(this._dom[i].outerHTML);
     }
     return stringRepresentations.join('');
 };
 
 MbaDom.prototype.cloneWithoutChildren = function(){
     var clonedDom = []; 
-    for(var i=0 ; i<this.dom.length; i++){
-        var currElement = this.dom[i];
+    for(var i=0 ; i<this._dom.length; i++){
+        var currElement = this._dom[i];
         clonedDom.push(currElement.cloneNode(false));
     }
     return new MbaDom(clonedDom);
 }    
 
+MbaDom.prototype.select = function(selector){
+    return findInTemplate(this._dom, selector);
+};
+
+MbaDom.prototype.selectUnique = function(selector){
+    var foundElements = findInTemplate(this._dom, selector);//TODO écrire méthode directe sans passer par un tableau
+    if(foundElements.length != 1)
+        throw new Error('One and only one element expected.');
+    return foundElements[0];
+};
+
+MbaDom.prototype.selectOneMax = function(selector){
+    var foundElements = findInTemplate(this._dom, selector);//TODO écrire méthode directe sans passer par un tableau
+    if(foundElements.length > 1)
+        throw new Error('Maximum one one element expected.');
+    return foundElements.length == 1 ? foundElements[0] : null;
+};
+
+
 MbaDom.prototype.find = function(selector){
     checkType(selector, 'string');
-    return new MbaDom(findInTemplate(this.dom, selector));
+    var foundDom = findInTemplate(this._dom, selector);
+    if(foundDom.length == 0)
+        return new MbaDomEmpty();
+    else
+        return new MbaDom(foundDom);
 };
 
 MbaDom.prototype.add = function (dom){
     checkType(dom, MbaDom);
 
-    this.dom = this.dom.concat(dom.getDom());
+    this._dom = this._dom.concat(dom.getDom());
 };
 
 MbaDom.prototype.isEmpty = function(){
-    return this.dom.length == 0;
+    return this._dom.length == 0;
 };
 
+//TODO à supprimer si non utilisé
 MbaDom.prototype.getId = function(){
     var ids= [];
-    for(var i=0 ; i<this.dom.length ; i++){
-        ids.push(this.dom[i]._mbaId);
+    for(var i=0 ; i<this._dom.length ; i++){
+        ids.push(this._dom[i]._mbaId);
     }
 
     ids.sort(function(a, b){return a-b;});
@@ -93,11 +129,11 @@ MbaDom.prototype.getId = function(){
 };
 
 MbaDom.prototype.hasMbaId = function(){
-    return this.dom.length > 0 && this.dom[0] != null && this.dom[0]._mbaId != null;
+    return this._dom.length > 0 && this._dom[0] != null && this._dom[0]._mbaId != null;
 };
 
 MbaDom.prototype.addMbaId = function(){
-    this.addMbaIdWithStartValue(this.dom, 0);
+    this.addMbaIdWithStartValue(this._dom, 0);
 };
 
 MbaDom.prototype.addMbaIdWithStartValue = function(arrayDom, id){
@@ -113,16 +149,16 @@ MbaDom.prototype.remove = function(dom){
     checkType(dom, MbaDom);
 
     var elements = dom.getDom();
-    this.dom.splice(this.dom.indexOf(dom), 1);
+    this._dom.splice(this._dom.indexOf(dom), 1);
 }
 
 MbaDom.prototype.getLength = function(){
-    return this.dom.length;
+    return this._dom.length;
 }
 
 MbaDom.prototype.containsElement = function(element){
-    for(var i=0 ; i<this.dom.length ; i++){
-        var currElement = this.dom[i];
+    for(var i=0 ; i<this._dom.length ; i++){
+        var currElement = this._dom[i];
         if(currElement == element)
             return true;
     }
@@ -213,3 +249,72 @@ MbaDom.prototype.referenceModel = function(model){
     }
 };
 
+
+
+
+
+/***************************************************************************************************************/
+
+
+
+
+
+MbaDom.prototype.getElements = function(){
+    return this._dom;
+};
+
+MbaDom.prototype.getParent = function(){
+    if(this.isEmpty())
+        return null;
+    else
+        return this._dom[0].parentElement;
+};
+
+MbaDom.prototype.childrenHaveSameParent = function(){
+    if(!this.isEmpty()){
+        var firstParent = this._dom[0].parentElement;
+        for(var i=1 ; i<this._dom.length ; i++){
+            if(this._dom[i].parentElement != firstParent)
+                return false;
+        }    
+    }
+    return true;
+};
+
+MbaDom.prototype.positionInParent = function(){
+    var minPosition = this.getParent().childNodes.length;
+    for(var i=0 ; i<this._dom.length ; i++){
+        var currPosition = this.positionInParentOfNthElement(i);
+        if(currPosition < minPosition)
+            minPosition = currPosition;
+    }
+    return minPosition;
+};
+
+//TODO factoriser code
+MbaDom.prototype.positionInParentOfNthElement = function(nth){
+    var position = -1;
+    var siblings = this.getParent().childNodes;
+    for(var i=0 ; i<siblings.length ; i++){
+        if(siblings[i] == this._dom[nth]){
+            position = i;
+            break;
+        }
+    }    
+    return position;
+};
+
+MbaDom.prototype.removeFromParent = function(){
+    var parent = this.getParent();
+    for(var i=0 ; i<this._dom.length ; i++){
+        parent.removeChild(this._dom[i]);
+    }
+};
+
+MbaDom.prototype.hasChildren = function(){
+    for(var i=0 ; i<this._dom.length; i++){
+        if(this._dom[i].childNodes.length > 0)
+            return true;
+    }
+    return false;
+};

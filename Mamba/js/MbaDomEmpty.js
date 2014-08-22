@@ -1,5 +1,5 @@
 function MbaDomEmpty(){
-    MbaDom.prototype.init.call(this, []);
+    this._dom = [];
 }
 MbaDomEmpty.prototype = new MbaDom();
 MbaDomEmpty.prototype.constructor = MbaDomEmpty;

@@ -390,10 +390,6 @@ function MbaNode(parent, baseDom){
 		}
     };
     
-    MbaNode.prototype.getId = function(){
-        return this._baseDom.getId();
-    }
-    
 	if(arguments.length  > 0)
 		this.init(parent, baseDom);
 }

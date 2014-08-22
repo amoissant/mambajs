@@ -14,7 +14,7 @@ function TextNodeAnchorProvider(){
 		else	
 			this.throwAnError();
 		
-		return new MbaDom(textNodeElements);
+        return new MbaAnchor(textNodeElements);
 	};
 	TextNodeAnchorProvider.prototype.anchorHasNoChildren = function(anchor){
 		checkType(anchor, MbaDom);

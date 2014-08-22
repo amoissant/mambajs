@@ -218,8 +218,8 @@ var testMbaV2 =
 		OnAttend(mbaDom.find('#tata').getId()).DEtreEgalA('2');
 		OnAttend(mbaDom.find('#toto, #tutu').getId()).DEtreEgalA('1-3');
 		OnAttend(mbaDom.find('#tutu, #toto').getId()).DEtreEgalA('1-3');
-		OnAttend(mbaDom.find('#titi, #toto, #root').getId()).DEtreEgalA('0-1-4');
-		OnAttend(mbaDom.find('#toto, #root, #titi').getId()).DEtreEgalA('0-1-4');
+		OnAttend(mbaDom.find('#tutu, #toto, #tata').getId()).DEtreEgalA('1-2-3');
+		OnAttend(mbaDom.find('#toto, #tata, #tutu').getId()).DEtreEgalA('1-2-3');
 	});		
 	
 	Ca('teste que l\'ajout sur un MbaDom représentant plusieurs éléments lève une exception', function(){
@@ -1258,13 +1258,13 @@ var testMbaV2 =
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
         mbaTemplate.render(model);
         var rootNode = mbaTemplate.getRootNode(); 
-        var tutuBefore = mbaTemplate.findInRenderedDom('.name').getDom(0);
-        var tataBefore = mbaTemplate.findInRenderedDom('.name').getDom(1);
+        var tutuBefore = mbaTemplate.selectInRenderedDom('.name')[0];
+        var tataBefore = mbaTemplate.selectInRenderedDom('.name')[1];
             
         model.push({name: "titi"});
         mbaTemplate.render(model);
-        var tutuAfter = mbaTemplate.findInRenderedDom('.name').getDom(0);
-        var tataAfter = mbaTemplate.findInRenderedDom('.name').getDom(1);
+        var tutuAfter = mbaTemplate.selectInRenderedDom('.name')[0];
+        var tataAfter = mbaTemplate.selectInRenderedDom('.name')[1];
         
         //rootNode.debug(true);
         var htmlRendered = '<div id="root"><div class="name">tutu</div><div class="name">tata</div><div class="name">titi</div></div>';
@@ -1283,12 +1283,12 @@ var testMbaV2 =
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);        
         mbaTemplate.render(model);
         var rootNode = mbaTemplate.getRootNode(); 
-        var tutuBefore = mbaTemplate.findInRenderedDom('.name').getDom(0);
-        var tataBefore = mbaTemplate.findInRenderedDom('.name').getDom(1);
+        var tutuBefore = mbaTemplate.selectInRenderedDom('.name')[0];
+        var tataBefore = mbaTemplate.selectInRenderedDom('.name')[1];
             
         model.pop();
         mbaTemplate.render(model);
-        var tutuAfter = mbaTemplate.findInRenderedDom('.name').getDom(0);
+        var tutuAfter = mbaTemplate.selectInRenderedDom('.name')[0];
         
         //rootNode.debug(true);
         var htmlRendered = '<div id="root"><div class="name">tutu</div></div><div id="stuff"></div>';
@@ -1305,7 +1305,7 @@ var testMbaV2 =
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
         mbaTemplate.render(model);
         var rootNode = mbaTemplate.getRootNode(); 
-        var tataBefore = mbaTemplate.findInRenderedDom('.name').getDom(1);
+        var tataBefore = mbaTemplate.selectInRenderedDom('.name')[1];
         OnAttend(tataBefore).DeNePasEtreNull();
         
         model.pop();
@@ -1314,7 +1314,7 @@ var testMbaV2 =
         model.push({name: "tata"});
         mbaTemplate.render(model);
         //rootNode.debug(true);
-        var tataAfter = mbaTemplate.findInRenderedDom('.name').getDom(1);
+        var tataAfter = mbaTemplate.selectInRenderedDom('.name')[1];
         
         var htmlRendered = '<div id="root"><div class="name">tutu</div><div class="name">tata</div></div><div id="stuff"></div>';
         OnAttend(mbaTemplate.getRenderedDom().toString()).DEtreEgalA(htmlRendered);
@@ -1660,7 +1660,7 @@ var testMbaV2 =
         mbaTemplate.render(model);
         //mbaTemplate.getRootNode().debug(true);
         var dom = mbaTemplate.getRenderedDom();
-        var toto = mbaTemplate.findInRenderedDom('#toto').getDom(0);
+        var toto = mbaTemplate.selectInRenderedDom('#toto')[0];
         OnAttend(dom.toString()).DEtreEgalA('<div attr="tutu" id="toto"></div>');
         OnAttend(model.didIt).DEtreFaux();
         
@@ -1676,7 +1676,7 @@ var testMbaV2 =
         
         var mbaTemplate = new MbaTemplate(html, directive);
         mbaTemplate.render(model);
-        var toto = mbaTemplate.findInRenderedDom('#toto').getDom(0);
+        var toto = mbaTemplate.selectInRenderedDom('#toto')[0];
         OnAttend(model.didIt).DEtreFaux();
         
         model = {didIt: false, doIt: function(){this.didIt = true;}};
@@ -1712,7 +1712,7 @@ var testMbaV2 =
         mbaTemplate.render(model);
        // mbaTemplate.getRootNode().debug(true);
         var dom = mbaTemplate.getRenderedDom();
-        var toto = mbaTemplate.findInRenderedDom('#toto').getDom(0);
+        var toto = mbaTemplate.selectInRenderedDom('#toto')[0];
         OnAttend(dom.toString()).DEtreEgalA(html);
         OnAttend(model.sub.didIt).DEtreFaux();
         
@@ -1729,7 +1729,7 @@ var testMbaV2 =
         mbaTemplate.render(model);
        // mbaTemplate.getRootNode().debug(true);
         var dom = mbaTemplate.getRenderedDom();
-        var toto = mbaTemplate.findInRenderedDom('#toto').getDom(0);
+        var toto = mbaTemplate.selectInRenderedDom('#toto')[0];
         OnAttend(dom.toString()).DEtreEgalA(html);
         OnAttend(model.sub.didIt).DEtreFaux();
         
@@ -1746,7 +1746,7 @@ var testMbaV2 =
         mbaTemplate.render(model);
         //mbaTemplate.getRootNode().debug(true);
         var dom = mbaTemplate.getRenderedDom();
-        var toto = mbaTemplate.findInRenderedDom('#toto').getDom(0);
+        var toto = mbaTemplate.selectInRenderedDom('#toto')[0];
         OnAttend(dom.toString()).DEtreEgalA(html);
         OnAttend(model.didIt).DEtreFaux();
         
@@ -2535,7 +2535,7 @@ var testMbaV2 =
         mbaTemplate.render(model);
         //mbaTemplate.getRootNode().debug(true);
         
-        var toto = mbaTemplate.findInRenderedDom('#toto').getDom(0);
+        var toto = mbaTemplate.selectInRenderedDom('#toto')[0];
         toto.setAttribute('attr', 'tata');
         toto.dispatchEvent(new Event('click'));
         
@@ -2549,7 +2549,7 @@ var testMbaV2 =
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
         mbaTemplate.render(model);
         
-        var toto = mbaTemplate.findInRenderedDom('#toto').getDom(0);
+        var toto = mbaTemplate.selectInRenderedDom('#toto')[0];
         var totoTextNode = toto.childNodes[0];
         totoTextNode.textContent = 'tata';
         toto.dispatchEvent(new Event('click'));
@@ -2566,7 +2566,7 @@ var testMbaV2 =
         var model2 = {name: "toto"};
         mbaTemplate.render(model2);
         
-        var toto = mbaTemplate.findInRenderedDom('#toto').getDom(0);
+        var toto = mbaTemplate.selectInRenderedDom('#toto')[0];
         toto.setAttribute('attr', 'tata');
         toto.dispatchEvent(new Event('click'));
         
@@ -2581,8 +2581,8 @@ var testMbaV2 =
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
         mbaTemplate.render(model);
         
-        var input = mbaTemplate.findInRenderedDom('input').getDom(0);
-        var span = mbaTemplate.findInRenderedDom('span').getDom(0);
+        var input = mbaTemplate.selectInRenderedDom('input')[0];
+        var span = mbaTemplate.selectInRenderedDom('span')[0];
         
         OnAttend(input.value).DEtreEgalA('toto');
         OnAttend(span.innerHTML).DEtreEgalA('toto');
@@ -2610,10 +2610,10 @@ var testMbaV2 =
         //rootNode.debug(true);
         
         var dom = mbaTemplate.getRenderedDom().getDom();
-        var propInput = mbaTemplate.findInRenderedDom('#prop').getDom(0);
-        var propSpan = mbaTemplate.findInRenderedDom('#prop_').getDom(0);
-        var subPropInput = mbaTemplate.findInRenderedDom('#subprop').getDom(0);
-        var subPropSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(0);
+        var propInput = mbaTemplate.selectInRenderedDom('#prop')[0];
+        var propSpan = mbaTemplate.selectInRenderedDom('#prop_')[0];
+        var subPropInput = mbaTemplate.selectInRenderedDom('#subprop')[0];
+        var subPropSpan = mbaTemplate.selectInRenderedDom('#subprop_')[0];
         
         OnAttend(dom[0]).DEtre(propInput);
         OnAttend(dom[1]).DEtre(propSpan);
@@ -2655,10 +2655,10 @@ var testMbaV2 =
         //rootNode.debug(true);
         
         var dom = mbaTemplate.getRenderedDom().getDom();
-        var propInput = mbaTemplate.findInRenderedDom('#prop').getDom(0);
-        var propSpan = mbaTemplate.findInRenderedDom('#prop_').getDom(0);
-        var subPropInput = mbaTemplate.findInRenderedDom('#subprop').getDom(0);
-        var subPropSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(0);
+        var propInput = mbaTemplate.selectInRenderedDom('#prop')[0];
+        var propSpan = mbaTemplate.selectInRenderedDom('#prop_')[0]
+        var subPropInput = mbaTemplate.selectInRenderedDom('#subprop')[0];
+        var subPropSpan = mbaTemplate.selectInRenderedDom('#subprop_')[0];
         
         OnAttend(dom[0]).DEtre(propInput);
         OnAttend(dom[1]).DEtre(propSpan);
@@ -2710,18 +2710,18 @@ var testMbaV2 =
         var dom = mbaTemplate.getRenderedDom();
         OnAttend(dom.toString()).DEtreEgalA(renderedHtml);
         
-        var totoInput = mbaTemplate.findInRenderedDom('#prop').getDom(0);
-        var totoSpan = mbaTemplate.findInRenderedDom('#prop_').getDom(0);
-        var bobInput = mbaTemplate.findInRenderedDom('#prop').getDom(1);
-        var bobSpan = mbaTemplate.findInRenderedDom('#prop_').getDom(1);
-        var tutuInput = mbaTemplate.findInRenderedDom('#subprop').getDom(0);
-        var tutuSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(0);
-        var titiInput = mbaTemplate.findInRenderedDom('#subprop').getDom(1);
-        var titiSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(1);
-        var patrickInput = mbaTemplate.findInRenderedDom('#subprop').getDom(2);
-        var patrickSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(2);
-        var sandyInput = mbaTemplate.findInRenderedDom('#subprop').getDom(3);
-        var sandySpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(3);
+        var totoInput = mbaTemplate.selectInRenderedDom('#prop')[0];
+        var totoSpan = mbaTemplate.selectInRenderedDom('#prop_')[0];
+        var bobInput = mbaTemplate.selectInRenderedDom('#prop')[1];
+        var bobSpan = mbaTemplate.selectInRenderedDom('#prop_')[1];
+        var tutuInput = mbaTemplate.selectInRenderedDom('#subprop')[0];
+        var tutuSpan = mbaTemplate.selectInRenderedDom('#subprop_')[0];
+        var titiInput = mbaTemplate.selectInRenderedDom('#subprop')[1];
+        var titiSpan = mbaTemplate.selectInRenderedDom('#subprop_')[1];
+        var patrickInput = mbaTemplate.selectInRenderedDom('#subprop')[2];
+        var patrickSpan = mbaTemplate.selectInRenderedDom('#subprop_')[2];
+        var sandyInput = mbaTemplate.selectInRenderedDom('#subprop')[3];
+        var sandySpan = mbaTemplate.selectInRenderedDom('#subprop_')[3];
         
         totoInput.value += '2';
         totoInput.dispatchEvent(new Event('blur'));
@@ -2802,18 +2802,18 @@ var testMbaV2 =
         var dom = mbaTemplate.getRenderedDom();
         OnAttend(dom.toString()).DEtreEgalA(renderedHtml);
         
-        var totoInput = mbaTemplate.findInRenderedDom('#prop').getDom(0);
-        var totoSpan = mbaTemplate.findInRenderedDom('#prop_').getDom(0);
-        var bobInput = mbaTemplate.findInRenderedDom('#prop').getDom(1);
-        var bobSpan = mbaTemplate.findInRenderedDom('#prop_').getDom(1);
-        var tutuInput = mbaTemplate.findInRenderedDom('#subprop').getDom(0);
-        var tutuSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(0);
-        var titiInput = mbaTemplate.findInRenderedDom('#subprop').getDom(1);
-        var titiSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(1);
-        var patrickInput = mbaTemplate.findInRenderedDom('#subprop').getDom(2);
-        var patrickSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(2);
-        var sandyInput = mbaTemplate.findInRenderedDom('#subprop').getDom(3);
-        var sandySpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(3);
+        var totoInput = mbaTemplate.selectInRenderedDom('#prop')[0];
+        var totoSpan = mbaTemplate.selectInRenderedDom('#prop_')[0];
+        var bobInput = mbaTemplate.selectInRenderedDom('#prop')[1];
+        var bobSpan = mbaTemplate.selectInRenderedDom('#prop_')[1];
+        var tutuInput = mbaTemplate.selectInRenderedDom('#subprop')[0];
+        var tutuSpan = mbaTemplate.selectInRenderedDom('#subprop_')[0];
+        var titiInput = mbaTemplate.selectInRenderedDom('#subprop')[1];
+        var titiSpan = mbaTemplate.selectInRenderedDom('#subprop_')[1];
+        var patrickInput = mbaTemplate.selectInRenderedDom('#subprop')[2];
+        var patrickSpan = mbaTemplate.selectInRenderedDom('#subprop_')[2];
+        var sandyInput = mbaTemplate.selectInRenderedDom('#subprop')[3];
+        var sandySpan = mbaTemplate.selectInRenderedDom('#subprop_')[3];
         
         totoInput.value += '2';
         totoInput.dispatchEvent(new Event('blur'));
@@ -2894,18 +2894,18 @@ var testMbaV2 =
         var dom = mbaTemplate.getRenderedDom();
         OnAttend(dom.toString()).DEtreEgalA(renderedHtml);
         
-        var totoInput = mbaTemplate.findInRenderedDom('#prop').getDom(0);
-        var totoSpan = mbaTemplate.findInRenderedDom('#prop_').getDom(0);
-        var bobInput = mbaTemplate.findInRenderedDom('#prop').getDom(1);
-        var bobSpan = mbaTemplate.findInRenderedDom('#prop_').getDom(1);
-        var tutuInput = mbaTemplate.findInRenderedDom('#subprop').getDom(0);
-        var tutuSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(0);
-        var titiInput = mbaTemplate.findInRenderedDom('#subprop').getDom(1);
-        var titiSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(1);
-        var patrickInput = mbaTemplate.findInRenderedDom('#subprop').getDom(2);
-        var patrickSpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(2);
-        var sandyInput = mbaTemplate.findInRenderedDom('#subprop').getDom(3);
-        var sandySpan = mbaTemplate.findInRenderedDom('#subprop_').getDom(3);
+        var totoInput = mbaTemplate.selectInRenderedDom('#prop')[0];
+        var totoSpan = mbaTemplate.selectInRenderedDom('#prop_')[0];
+        var bobInput = mbaTemplate.selectInRenderedDom('#prop')[1];
+        var bobSpan = mbaTemplate.selectInRenderedDom('#prop_')[1];
+        var tutuInput = mbaTemplate.selectInRenderedDom('#subprop')[0];
+        var tutuSpan = mbaTemplate.selectInRenderedDom('#subprop_')[0];
+        var titiInput = mbaTemplate.selectInRenderedDom('#subprop')[1];
+        var titiSpan = mbaTemplate.selectInRenderedDom('#subprop_')[1];
+        var patrickInput = mbaTemplate.selectInRenderedDom('#subprop')[2];
+        var patrickSpan = mbaTemplate.selectInRenderedDom('#subprop_')[2];
+        var sandyInput = mbaTemplate.selectInRenderedDom('#subprop')[3];
+        var sandySpan = mbaTemplate.selectInRenderedDom('#subprop_')[3];
         
         totoInput.value += '2';
         totoInput.dispatchEvent(new Event('blur'));
@@ -2978,7 +2978,7 @@ var testMbaV2 =
         mbaTemplate.render(model);
         
         var dom = mbaTemplate.getRenderedDom();
-        var select = mbaTemplate.findInRenderedDom('select').getDom(0);
+        var select = mbaTemplate.selectInRenderedDom('select')[0];
         var renderedHtml = '<select><option>toto</option><option>tutu</option><option>tata</option><option>titi</option></select>';
         OnAttend(dom.toString()).DEtreEgalA(renderedHtml);   
         OnAttend(select.value).DEtreEgalA('tata');
@@ -3019,7 +3019,7 @@ var testMbaV2 =
         var root = document.createElement('div');
         root.appendChild(dom.getDom(0));
         
-        var button = mbaTemplate.findInRenderedDom('#button').getDom(0);
+        var button = mbaTemplate.selectInRenderedDom('#button')[0];
         button.dispatchEvent(new Event('click'));
         OnAttend(root.innerHTML).DEtreEgalA('<div class="message">toto</div><input id="button" type="button">');
     });
@@ -3295,9 +3295,9 @@ var testMbaV2 =
         var expectedHtml = '<input placeholder="taper un message ici" id="message" type="text"><input id="add" value="Ajouter" type="button"><input id="delete" value="Vider" type="button">';
         OnAttend(dom.toString()).DEtreEgalA(expectedHtml);   
         
-        var messageInput = mamba.findInRenderedDom('#message').getDom(0);
-        var addBtn = mamba.findInRenderedDom('#add').getDom(0);
-        var deleteBtn = mamba.findInRenderedDom('#delete').getDom(0);
+        var messageInput = mamba.selectInRenderedDom('#message')[0];
+        var addBtn = mamba.selectInRenderedDom('#add')[0];
+        var deleteBtn = mamba.selectInRenderedDom('#delete')[0];
         
         messageInput.value = 'toto';
         messageInput.dispatchEvent(new Event('blur'));
@@ -3393,9 +3393,9 @@ var testMbaV2 =
         mamba.render(model);
         //mamba.getRootNode().debug(true);
         var renderedDom = mamba.getRenderedDom();
-        var input = mamba.findInRenderedDom('#message').getDom(0);
-        var add = mamba.findInRenderedDom('#addBtn').getDom(0);
-        var empty = mamba.findInRenderedDom('#emptyBtn').getDom(0);//TODO faire une fonction qui retourne un élément de dom
+        var input = mamba.selectInRenderedDom('#message')[0];
+        var add = mamba.selectInRenderedDom('#addBtn')[0];
+        var empty = mamba.selectInRenderedDom('#emptyBtn')[0];//TODO faire une fonction qui retourne un élément de dom
         var root = document.createElement('div');
         appendInRoot(root, renderedDom);
         
@@ -3490,9 +3490,9 @@ var testMbaV2 =
         mamba.render(model);
         //mamba.getRootNode().debug(true);
         var renderedDom = mamba.getRenderedDom();
-        var input = mamba.findInRenderedDom('#message').getDom(0);
-        var add = mamba.findInRenderedDom('#addBtn').getDom(0);
-        var empty = mamba.findInRenderedDom('#emptyBtn').getDom(0);//TODO faire une fonction qui retourne un élément de dom
+        var input = mamba.selectInRenderedDom('#message')[0];
+        var add = mamba.selectInRenderedDom('#addBtn')[0];
+        var empty = mamba.selectInRenderedDom('#emptyBtn')[0];//TODO faire une fonction qui retourne un élément de dom
         var root = document.createElement('div');
         appendInRoot(root, renderedDom);
         
@@ -3587,9 +3587,9 @@ var testMbaV2 =
         mamba.render(model);
         //mamba.getRootNode().debug(true);
         var renderedDom = mamba.getRenderedDom();
-        var input = mamba.findInRenderedDom('input').getDom(0);
-        var span = mamba.findInRenderedDom('span').getDom(0);
-        var div = mamba.findInRenderedDom('div').getDom(0);
+        var input = mamba.selectInRenderedDom('input')[0];
+        var span = mamba.selectInRenderedDom('span')[0];
+        var div = mamba.selectInRenderedDom('div')[0];
         var root = document.createElement('div');
         appendInRoot(root, renderedDom);
         
@@ -3626,8 +3626,8 @@ var testMbaV2 =
       
         //mamba.getRootNode().debug(true);
         var renderedDom = mamba.getRenderedDom();
-        var newItemInput = mamba.findInRenderedDom('#newItem').getDom(0);
-        var addBtn = mamba.findInRenderedDom('#add').getDom(0);
+        var newItemInput = mamba.selectInRenderedDom('#newItem')[0];
+        var addBtn = mamba.selectInRenderedDom('#add')[0];
 
         var root = document.createElement('div');
         appendInRoot(root, renderedDom);
@@ -3651,12 +3651,12 @@ var testMbaV2 =
         OnAttend(model.items[1].name).DEtreEgalA('tutu');
         OnAttend(model.items[2].name).DEtreEgalA('titi');
       
-        var secondItemInput = mamba.findInRenderedDom('.item').getDom(1);
+        var secondItemInput = mamba.selectInRenderedDom('.item')[1];
         secondItemInput.value = 'tata';
         secondItemInput.dispatchEvent(new Event('keyup'));
         OnAttend(model.items[1].name).DEtreEgalA('tata');
       
-        var secondItemBtn = mamba.findInRenderedDom('.del').getDom(1);
+        var secondItemBtn = mamba.selectInRenderedDom('.del')[1];
         secondItemBtn.dispatchEvent(new Event('click'));
         OnAttend(model.items.length).DEtreEgalA(2);
         OnAttend(model.items[0].name).DEtreEgalA('toto');

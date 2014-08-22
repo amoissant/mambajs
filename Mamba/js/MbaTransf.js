@@ -77,7 +77,7 @@ function MbaTransf(){
         if(newValue instanceof Array)
             throw new MbaError(23, 'Received an array for model, user \'r00t\' directive to set what dom to repeat.');
         var oldValue = this.getOldValue(route);
-        var domElement = dom.getDom(0);//TODO : sous-type de MbaDom pour représenter un seul élément de dom ?
+        var domElement = dom.getDom(0);//TODO : MbaDomSingle
         this.updateDomWithModel(domElement, newValue, oldValue);
         this.setOldValue(newValue, route);
         this.setSuperModel(model);//TODO on peut optimiser les perfs ici avec un évènement pour modifier la référence du supermodel

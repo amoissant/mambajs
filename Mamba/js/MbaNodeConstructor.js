@@ -11,7 +11,7 @@ function MbaNodeConstructor(){
     
 	MbaNodeConstructor.prototype.createMbaNodesForElements = function(parentNode, domElements){
 		checkType(parentNode, MbaNode);
-		checkType(domElements, 'array', 'dom');
+		checkIsDomSetOrEmpty(domElements);
 		
 		var nodes = [];
 		for(var i=0 ; i<domElements.length ; i++){
@@ -28,7 +28,7 @@ function MbaNodeConstructor(){
 		
 		var baseDom = new MbaDom([domElement]);//TODO MbaNodeSingle
 		var node = new MbaNodeHtmlElement(parentNode, baseDom);
-		var children = getDomChildren(domElement);//TODO ca marche pas avec un domElement.children direct ?
+		var children = domElement.childNodes;
 		var childrenNodes = this.createMbaNodesForElements(node, children);
 		node.setChildren(childrenNodes);
 		node.referenceMeIntoDomElement(baseDom);
