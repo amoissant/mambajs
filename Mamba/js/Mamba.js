@@ -1,4 +1,4 @@
-function Mamba(model, template, directive, anchor){//todo si template dom et  anchor on ignore anchor
+function Mamba(model, template, directive, anchor){
 
     this._model;
     this._template;
@@ -19,9 +19,9 @@ Mamba.prototype.init = function(model, template, directive, anchor){
         if(isDomElement(template))
             this._domTemplate = new MbaDomSingle(template);
         else if(template instanceof NodeList)
-            this._domTemplate = new MbaDom2(this.nodeListToDomArray(template));
+            this._domTemplate = new MbaDom(this.nodeListToDomArray(template));
         else if(isDomElementArray(template))
-            this._domTemplate = new MbaDom2(template);
+            this._domTemplate = new MbaDom(template);
         else
             throw new Error('Unknow type for template, possible types are :\n'
                             +'- a string representing your template.'
@@ -54,13 +54,13 @@ Mamba.prototype.render = function(){
     var mbaTemplate = new MbaTemplate(this._template, this._directive);
     mbaTemplate.render(this._model);
     var renderedDom = mbaTemplate.getRenderedDom();
-    var renderedDom2 = new MbaDom2(renderedDom.getDom());//TODO ménage après refacto MbaDom 
+    var renderedDom2 = new MbaDom(renderedDom.getElements());//TODO ménage après refacto MbaDom 
     this.insertRenderedDomIntoAnchor(renderedDom2);
-    return renderedDom.getDom();
+    return renderedDom.getElements();
 };
 
 Mamba.prototype.insertRenderedDomIntoAnchor = function(renderedDom){
-    checkType(renderedDom, MbaDom2);
+    checkType(renderedDom, MbaDom);
     if(this._anchor){
         if(this._domTemplate){
             var insertIndex = this._domTemplate.positionInParent();

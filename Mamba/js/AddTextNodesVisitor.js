@@ -29,7 +29,7 @@ function AddTextNodesVisitor(template){
         if(binding.getAnchorProvider() instanceof TextNodeAnchorProvider){
             var selector = binding.getSelector();
             var anchor_ = this.getRelativeTemplate().find(selector);
-            var anchor = new MbaDom2(anchor_.getDom());//TODO ménage après refacto MbaDom
+            var anchor = new MbaDom(anchor_.getElements());
             if(anchor.isEmpty())
                 throw new Error('Unable to find \''+binding.getSelector()
                                 +'\' into template : '+this.getRelativeTemplate().toString());
@@ -43,7 +43,7 @@ function AddTextNodesVisitor(template){
     };
     
     AddTextNodesVisitor.prototype.addTextNodeToAnchor = function(anchor){
-        checkType(anchor, MbaDom2);
+        checkType(anchor, MbaDom);
         var elements = anchor.getElements();
         for(var i=0 ; i<elements.length ; i++){
             elements[i].appendChild(document.createTextNode(''));

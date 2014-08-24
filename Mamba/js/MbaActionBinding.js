@@ -89,7 +89,7 @@ MbaActionBinding.prototype.prepareActionEventHandler = function(dom, route, node
     checkType(dom, MbaDom);
     checkType(route, MbaRoute);
     checkType(node, MbaNode);
-    var domElement = dom.getDom(0);
+    var domElement = dom.getElement(0);
     var eventHandler = this.createActionEventHandler(domElement, route, node);
 
     for(var i=0 ; i< this._events.length ; i++){

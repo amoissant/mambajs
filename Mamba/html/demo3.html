@@ -110,7 +110,7 @@
     }
     
     function appendInBody (renderedDom){
-        var dom = renderedDom.getDom();
+        var dom = renderedDom.getElements();
         var content = document.querySelector('#content');
         for(var i=0 ; i<dom.length ; i++){
             content.appendChild(dom[i]);

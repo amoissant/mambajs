@@ -60,7 +60,7 @@ function DebugNodeVisitor(printIndexedRenderedDom){
         console.log(this.getIndentation(),
                     nodeTypeName,
                     ' - ',
-                    node.getBaseDom().getDom());
+                    node.getBaseDom().getElements());
     };
         
     DebugNodeVisitor.prototype.printIndexedRenderedDom = function(node, nodeTypeName){
@@ -69,7 +69,7 @@ function DebugNodeVisitor(printIndexedRenderedDom){
         var indexedRenderedDom = node.getIndexedRenderedDom();
         var indexedRenderedDomIndentation = this.getIndentation()+this.getNSpaces(nodeTypeName.length);
         for(var index in indexedRenderedDom){
-            console.log(indexedRenderedDomIndentation+'   - ', index, indexedRenderedDom[index].getDom());
+            console.log(indexedRenderedDomIndentation+'   - ', index, indexedRenderedDom[index].getElements());
         }  
     };
     

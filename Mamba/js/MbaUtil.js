@@ -58,7 +58,7 @@ function selectHack (dom){
 	var template = new MbaDom(dom);
 	var select = template.find('select');
 	if(!select.isEmpty()){
-		var dom = select.getDom()
+		var dom = select.getElements()
 		for(var i=0 ; i<dom.length ; i++){
 			var currSelect = dom[i];
 			if(currSelect.attributes["value"] != null){
@@ -390,7 +390,7 @@ function isDomSetOrEmpty(dom){
 
 function checkIsDomSet(dom){
     if(!isDomSet(dom))
-        console.log('ERROR : Is not a non empty set of dom element : ', dom);
+        console.log('ERROR : Is not a set of dom elements with at least one element : ', dom);
 }
 
 function checkIsDomSetOrEmpty(dom){
@@ -448,10 +448,10 @@ function getDomElementWithPath_(renderedDom, path){
 	domPath = toArray(domPath);
 	
 	if(domPath.length == 1){
-		return renderedDom.getDom(domPath[0]);
+		return renderedDom.getElement(domPath[0]);
 	}
 	else {
-		var subDomElement = getDomChildren(renderedDom.getDom(domPath[0]));
+		var subDomElement = getDomChildren(renderedDom.getElement(domPath[0]));
 		var subRenderedDom = new MbaDom(subDomElement);
 		domPath.shift();
 		return getDomElementWithPath(subRenderedDom, domPath);

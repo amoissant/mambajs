@@ -40,17 +40,17 @@ function MbaTemplate(template, directivesPrecursor){
     MbaTemplate.prototype.findDom = function(selector){
         checkType(selector, 'string');
         return this._template.find(selector);
-    }
+    };
     
     MbaTemplate.prototype.findInRenderedDom = function(selector){
         checkType(selector, 'string');
         return this._rootNode.getRenderedDom().find(selector);
-    }
+    };
     
     MbaTemplate.prototype.selectInRenderedDom = function(selector){
         checkType(selector, 'string');
         return this._rootNode.getRenderedDom().select(selector);
-    }
+    };
     
     MbaTemplate.prototype.removeWhiteSpacesFromHtml = function(){
 		this._html = this._html.replace(/>\s*</g, "><");

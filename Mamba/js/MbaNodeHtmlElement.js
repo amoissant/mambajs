@@ -5,7 +5,7 @@ function MbaNodeHtmlElement(parent, baseDom) {
 	};
     
 	MbaNodeHtmlElement.prototype.getDomElement = function() {
-		return this._baseDom.getDom(0);
+		return this._baseDom.getElement(0);
 	};
 	
 	if (arguments.length > 0)

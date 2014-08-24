@@ -88,7 +88,7 @@ Benchmark.prototype.timeSearchForModel = function(){
 };
 
 Benchmark.prototype.getRenderedDom = function(){
-    return this._benchTemplate.getRenderedDom().getDom();
+    return this._benchTemplate.getRenderedDom().getElements();
 };
 
 
@@ -108,7 +108,7 @@ Benchmark.prototype.getRenderedDom = function(){
  mbaTemplate.render(bench);
  mbaTemplate.getRootNode().debug(true);
  
- var benchDom = mbaTemplate.getRenderedDom().getDom();
+ var benchDom = mbaTemplate.getRenderedDom().getElements();
  for(var i=0 ; i<benchDom.length ; i++){
      document.body.appendChild(benchDom[i]);
  }

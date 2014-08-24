@@ -16,9 +16,9 @@ function DebugVisitor(){
         console.log(this.getIndentation(),
                     Object.getPrototypeOf(node).constructor.name,
                     ' - ',
-                    node.getBaseDom().getDom(),
+                    node.getBaseDom().getElements(),
                     ' - ',
-                    node.getRenderedDom().getDom());
+                    node.getRenderedDom().getElements());
 	};
 	DebugVisitor.prototype.getIndentation = function(){
 		var indentation = '';

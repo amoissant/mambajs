@@ -1,13 +1,36 @@
 Test(function() {   
     
-    Ca('teste la création de dom à partir d\'une chaine', function(){
-        var stringDom = '<span id="toto"></span><div id="tutu"></div>';
-        var dom = stringToDom(stringDom);
+  
+      Ca('teste que l\'insertion des éléments de dom se fait au bon endroit', function(){
+        var html = '<div class="person"><div class="name"></div><div class="tel"></div><div class="job"></div></div>';
+        var directivePrecursor = {r00t: '.person',
+                                  name: '.name',
+                                  tel: {r00t: '.tel', number: '.tel'},
+                                  job: '.job'};
+        var mbaTemplate = new MbaTemplate(html, directivePrecursor);
+                
+        var model = {name: "toto", 
+                     tel: [{number: "1234"}],
+                     job: "student"};
+        var htmlRendered = 
+            '<div class="person"><div class="name">toto</div><div class="tel">1234</div><div class="job">student</div></div>';
+        mbaTemplate.render(model);
+        var rootNode = mbaTemplate.getRootNode(); 
+        //rootNode.debug(true);
+        //rootNode.debugAccessors();
+        OnAttend(mbaTemplate.getRenderedDom().toString()).DEtreEgalA(htmlRendered);
+        OnAttend(rootNode.indexedRenderedDomIsValid()).DEtreVrai();
         
-        OnAttend(dom.length).DEtreEgalA(2);
-        OnAttend(dom[0].id).DEtreEgalA('toto');
-        OnAttend(dom[1].id).DEtreEgalA('tutu');
+        model.tel.push({number: "5678"});
+        mbaTemplate.render(model);
+        htmlRendered = 
+            '<div class="person"><div class="name">toto</div><div class="tel">1234</div><div class="tel">5678</div>'+
+            '<div class="job">student</div></div>';
+        //rootNode.debug(true);
+        OnAttend(mbaTemplate.getRenderedDom().toString()).DEtreEgalA(htmlRendered);
+        OnAttend(rootNode.indexedRenderedDomIsValid()).DEtreVrai();
     });
+  
 //TODO demo todo list : 
 /*
 <input id="newItem" type="text"></input><button id="add">ajouter</button><button id="selAll">tous</button>

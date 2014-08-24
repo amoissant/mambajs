@@ -26,7 +26,7 @@ function MbaNodeConstructor(){
 		checkType(parentNode, MbaNode);
 		checkType(domElement, 'dom');
 		
-		var baseDom = new MbaDom([domElement]);//TODO MbaNodeSingle
+		var baseDom = new MbaDomSingle(domElement);//TODO MbaNodeSingle
 		var node = new MbaNodeHtmlElement(parentNode, baseDom);
 		var children = domElement.childNodes;
 		var childrenNodes = this.createMbaNodesForElements(node, children);
@@ -38,7 +38,7 @@ function MbaNodeConstructor(){
     MbaNodeConstructor.prototype.constructTree = function(templateRoots){
         checkType(templateRoots, MbaDom);
         this._rootNode = new MbaRootNode(templateRoots);
-        var rootNodeChildren = this.createMbaNodesForElements(this._rootNode, templateRoots.getDom());
+        var rootNodeChildren = this.createMbaNodesForElements(this._rootNode, templateRoots.getElements());
         this._rootNode.setChildren(rootNodeChildren);
     };
 	

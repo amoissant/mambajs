@@ -273,7 +273,7 @@ function MbaNode(parent, baseDom){
 	MbaNode.prototype.referenceMeIntoDomElement = function(mbaDom){
 		checkType(mbaDom, MbaDom);
 		
-		var dom = mbaDom.getDom();
+		var dom = mbaDom.getElements();
 		for(var i=0 ; i<dom.length ; i++){
 			var currDom = dom[i];
 			currDom.mbaNode = this;
@@ -293,14 +293,14 @@ function MbaNode(parent, baseDom){
         var currentRoute = this.getClosestRoute(route);
         var dom = this.getRenderedDomForRoute(currentRoute);
         var offset = this.getChildOffset(child, currentRoute);        
-        dom.insertChildAtIndex2(childDom, offset);//TODO à renommer
+        dom.insertAtIndex(childDom, offset);
     };
     
     MbaNode.prototype.getChildOffset = function(child, route){
 		checkType(child, MbaNode);
         checkType(route, MbaRoute);
 		
-		var offset = 0;
+		var offset = -1;
         var children = this.getChildren();
         for(var i=0 ; i<children.length ; i++){
             var currChild = children[i];

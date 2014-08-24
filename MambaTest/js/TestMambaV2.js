@@ -52,8 +52,8 @@ var testMbaV2 =
 		function() {
 			var dom = new MbaDomFromString('<div id="toto"></div><span id="tata"></span>');
 
-			OnAttend(dom.getDom().length).DEtreEgalA(2);
-			OnAttend(isDomSet(dom.getDom())).DEtreVrai();
+			OnAttend(dom.getElements().length).DEtreEgalA(2);
+			OnAttend(isDomSet(dom.getElements())).DEtreVrai();
 		});
 
 	Ca('teste MbaDom.toString() ', function() {
@@ -70,7 +70,7 @@ var testMbaV2 =
 		var toto = dom.find('#toto');
 		
 		OnAttend(toto instanceof MbaDom).DEtreVrai();
-		OnAttend(toto.getDom()[0].id).DEtreEgalA('toto');
+		OnAttend(toto.getElements()[0].id).DEtreEgalA('toto');
 	});
 
 	Ca('teste MbaDom.isEmpty() ', function() {
@@ -196,7 +196,7 @@ var testMbaV2 =
 			
 		var mbaDom = new MbaDomFromString(template);
 		mbaDom.addMbaId();
-		var dom = mbaDom.getDom();
+		var dom = mbaDom.getElements();
 		
 		OnAttend(findInTemplate(dom, '#root')[0]._mbaId).DEtreEgalA(0);
 		OnAttend(findInTemplate(dom, '#toto')[0]._mbaId).DEtreEgalA(1);
@@ -211,7 +211,7 @@ var testMbaV2 =
 			
 		var mbaDom = new MbaDomFromString(template);
 		mbaDom.addMbaId();
-		var dom = mbaDom.getDom();
+		var dom = mbaDom.getElements();
 
 		OnAttend(mbaDom.getId()).DEtreEgalA('0');
 		OnAttend(mbaDom.find('#root').getId()).DEtreEgalA('0');
@@ -221,27 +221,15 @@ var testMbaV2 =
 		OnAttend(mbaDom.find('#tutu, #toto, #tata').getId()).DEtreEgalA('1-2-3');
 		OnAttend(mbaDom.find('#toto, #tata, #tutu').getId()).DEtreEgalA('1-2-3');
 	});		
-	
-	Ca('teste que l\'ajout sur un MbaDom représentant plusieurs éléments lève une exception', function(){
-		var root = new MbaDomFromString('<div id="root"></div><div id="rootBis"></div>');
-		var domToAppend =  new MbaDomFromString('<span>toto</span>')
-		
-		try{
-			root.insertChildAtIndex(domToAppend, 0);
-		}catch(e){
-			return;
-		}
-		OnAttend(false).DEtreVrai();
-	});
  	
  	Ca('teste que MbaDom.addMbaId ajoute une propriété _mbaId aux éléments de dom ainsi qu\'aux textNode', function(){
  		var mbaDom = new MbaDomFromString('<div id="root">toto<div id="tutu"></div></div><div id="root2"></div>');
  		mbaDom.addMbaId();
  		
- 		var root = mbaDom.getDom(0);
+ 		var root = mbaDom.getElement(0);
  		var toto = root.childNodes.item(0);
  		var tutu = root.childNodes.item(1);
- 		var root2 = mbaDom.getDom(1);
+ 		var root2 = mbaDom.getElement(1);
  		
  		OnAttend(root._mbaId).DEtreEgalA(0);
  		OnAttend(toto._mbaId).DEtreEgalA(1);
@@ -260,7 +248,7 @@ var testMbaV2 =
  		
  		var anchor = binding.getAnchor(template);
  		
- 		OnAttend(anchor.getDom(0).textContent).DEtreEgalA('tutu');
+ 		OnAttend(anchor.getElement(0).textContent).DEtreEgalA('tutu');
  	});
  	
  	Ca('teste que MbaBindingText.getAnchor() créé et insère un textNode dans l\'ancre s\'il n\'y en a pas', function(){
@@ -268,10 +256,10 @@ var testMbaV2 =
  		var binding = new MbaBindingText('#toto', new DefaultAnchorProvider(), new MbaTransfMock());
  		
  		var anchor = binding.getAnchor(template);
- 		var createdTextNode = template.find('#toto').getDom(0).childNodes[0];
+ 		var createdTextNode = template.find('#toto').getElement(0).childNodes[0];
  		
  		OnAttend(isATextNode(createdTextNode)).DEtreVrai();
- 		OnAttend(anchor.getDom(0).textContent).DEtreEgalA('');
+ 		OnAttend(anchor.getElement(0).textContent).DEtreEgalA('');
  	});
  	
  	Ca('teste que MbaBindingText.getAnchor() lève une exception si l\'ancre contient un enfant non textNode', function(){
@@ -789,9 +777,9 @@ var testMbaV2 =
         var directive = directiveTwoLevelsWithRoot;
         var mbaTemplate = new MbaTemplate(template, directive);    
     
-        var toto = mbaTemplate.findDom('#toto').getDom(0);
-        var tutu = mbaTemplate.findDom('#tutu').getDom(0);
-        var tata = mbaTemplate.findDom('#tata').getDom(0);
+        var toto = mbaTemplate.findDom('#toto').getElement(0);
+        var tutu = mbaTemplate.findDom('#tutu').getElement(0);
+        var tata = mbaTemplate.findDom('#tata').getElement(0);
         
         OnAttend(toto.childNodes[0]).DEtreNull();
         OnAttend(tutu.childNodes[0]).DEtreNull();
@@ -1170,36 +1158,11 @@ var testMbaV2 =
         return createTemplateBindingForTestTransformationParam(template, anchorSelector, modelProperty, transformation);
     }
     
-    Ca('teste que le render pour un MbaTmplateBinding modifie l\'ancre avec la valeur du modèle', function(){
-        var template = new MbaDomFromString('<div id="root"><div id="toto"></div></div>');
-        var toto = template.find('#toto').getDom(0);
-        var model = {name: 'tutu'};
-        var templatebinding = createTemplateBindingForTest(template, '#toto', 'name');
-        
-        //templatebinding.render(model, new MbaRoute(['0']));            
-        //OnAttend(toto.innerHTML).DEtreEgalA(model.name);//commenté car déprécié
-    });
-    
-    Ca('teste setTemplate sur un MbaTemplateBinding recalcule l\'ancre, le rendu se fait sur le nouveau template', function(){
-        var template = new MbaDomFromString('<div id="root"><div id="toto"></div></div>');
-        var toto = template.find('#toto');
-        var totoDomElement = toto.getDom(0);
-        var model = {name: 'tutu'};
-        var templatebinding = createTemplateBindingForTest(new MbaDomEmpty(), '#toto', 'name');
-        
-        OnAttend(templatebinding.getAnchor().isEmpty()).DEtreVrai();
-        templatebinding.setTemplate(template);
-        //OnAttend(templatebinding.getAnchor().equals(toto)).DEtreVrai();//commenté car déprécié
-        
-        //templatebinding.render(model, new MbaRoute(['0']));            
-        //OnAttend(totoDomElement.innerHTML).DEtreEgalA(model.name);//commenté car déprécié
-    });
-    
     //TODO gérer le cas où la transformation supprime l'ancre dans le parent
     /*Ca('teste que l\'élément à mettre à jour est réinséré dans son parent avant d\'être mis à jour', function(){
         var template = new MbaDomFromString('<div id="root"><div id="toto"></div></div>');
         var toto = template.find('#toto');
-        var totoDomElement = toto.getDom(0);
+        var totoDomElement = toto.getElement(0);
         var templatebinding = createTemplateBindingWithTransformationWichRemoveElementIfModelValueIsNull(template, '#toto', 'name');
         //Il faut demander au node parent de re-insérer l'enfant au bon endroit
         //La transformation ne peut pas savoir à quel endroit le ré-insérer
@@ -1587,7 +1550,7 @@ var testMbaV2 =
         
         root.appendChild(document.createElement('span'));
         for(var i=0 ; i<messages.getLength() ; i++){
-            root.appendChild(messages.getDom(i));
+            root.appendChild(messages.getElement(i));
         }
         
         var mbaRoot = new MbaDomSingle(root);
@@ -1613,7 +1576,7 @@ var testMbaV2 =
         root.id = 'root';
         
         for(var i=0 ; i<messages.getLength() ; i++){
-            root.appendChild(messages.getDom(i));
+            root.appendChild(messages.getElement(i));
         }
         
         var mbaRoot = new MbaDomSingle(root);
@@ -1638,7 +1601,7 @@ var testMbaV2 =
         root.id = 'root';
         
         for(var i=0 ; i<messages.getLength() ; i++){
-            root.appendChild(messages.getDom(i));
+            root.appendChild(messages.getElement(i));
         }
         
         var mbaRoot = new MbaDomSingle(root);
@@ -2609,7 +2572,7 @@ var testMbaV2 =
         var rootNode = mbaTemplate.getRootNode();
         //rootNode.debug(true);
         
-        var dom = mbaTemplate.getRenderedDom().getDom();
+        var dom = mbaTemplate.getRenderedDom().getElements();
         var propInput = mbaTemplate.selectInRenderedDom('#prop')[0];
         var propSpan = mbaTemplate.selectInRenderedDom('#prop_')[0];
         var subPropInput = mbaTemplate.selectInRenderedDom('#subprop')[0];
@@ -2654,7 +2617,7 @@ var testMbaV2 =
         var rootNode = mbaTemplate.getRootNode();
         //rootNode.debug(true);
         
-        var dom = mbaTemplate.getRenderedDom().getDom();
+        var dom = mbaTemplate.getRenderedDom().getElements();
         var propInput = mbaTemplate.selectInRenderedDom('#prop')[0];
         var propSpan = mbaTemplate.selectInRenderedDom('#prop_')[0]
         var subPropInput = mbaTemplate.selectInRenderedDom('#subprop')[0];
@@ -2991,7 +2954,7 @@ var testMbaV2 =
         var mamba = new MbaTemplate(html, directive);
         mamba.render(model);
         var root = document.createElement('div');
-        var renderedDom = mamba.getRenderedDom().getDom();
+        var renderedDom = mamba.getRenderedDom().getElements();
         for(var i=0 ; i<renderedDom.length ; i++){
             root.appendChild(renderedDom[i]);
         }
@@ -3017,7 +2980,7 @@ var testMbaV2 =
         OnAttend(dom.toString()).DEtreEgalA('<input id="button" type="button">');
         
         var root = document.createElement('div');
-        root.appendChild(dom.getDom(0));
+        root.appendChild(dom.getElement(0));
         
         var button = mbaTemplate.selectInRenderedDom('#button')[0];
         button.dispatchEvent(new Event('click'));
@@ -3335,7 +3298,7 @@ var testMbaV2 =
     
     //TODO remplacer par la fonction d'api qui insert le renderedDom dans un selecteur ou un élément de dom
     function appendInRoot (root, renderedDom){
-            var dom = renderedDom.getDom();
+            var dom = renderedDom.getElements();
             for(var i=0 ; i<dom.length ; i++){
                 root.appendChild(dom[i]);
             }  
@@ -3558,7 +3521,7 @@ var testMbaV2 =
       var mamba = new MbaTemplate(html, directive);
       mamba.render(model);
       var dom = mamba.getRenderedDom();
-      var titiElement = dom.getDom(1);
+      var titiElement = dom.getElement(1);
       
       var expectedHtml = '<div class="element"><span>toto</span></div><div class="element"><span>titi</span></div><div class="element"><span>tutu</span></div>';
       OnAttend(dom.toString()).DEtreEgalA(expectedHtml);
@@ -3764,5 +3727,15 @@ var testMbaV2 =
         OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><span>toto</span><b></b></div>');
         document.body.removeChild(root);
     });
+        
+    Ca('teste la création de dom à partir d\'une chaine', function(){
+        var stringDom = '<span id="toto"></span><div id="tutu"></div>';
+        var dom = stringToDom(stringDom);
+        
+        OnAttend(dom.length).DEtreEgalA(2);
+        OnAttend(dom[0].id).DEtreEgalA('toto');
+        OnAttend(dom[1].id).DEtreEgalA('tutu');
+    });
+    
 };
 	

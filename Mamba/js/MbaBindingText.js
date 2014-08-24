@@ -8,27 +8,27 @@ function MbaBindingText(cssSelector, anchorProvider, firstTransf){
 		var anchor = template.find(this._selector);
 		var textNodeElement; 
 		if(this.anchorContainsOneAndOnlyOneTextNode(anchor))
-			textNodeElement = anchor.getDom(0).childNodes[0];
+			textNodeElement = anchor.getElement(0).childNodes[0];
 		else if(this.anchorHasNoChildren(anchor)){
 			textNodeElement = document.createTextNode('');
-			var anchorElement = anchor.getDom(0);
+			var anchorElement = anchor.getElement(0);
 			anchorElement.appendChild(textNodeElement);
 		}
 		else	
 			this.throwAnError();
 		
-		return new MbaDom([textNodeElement]);//TODO MbaDomSingle
+		return new MbaDomSingle(textNodeElement);
 	};
 	MbaBindingText.prototype.anchorHasNoChildren = function(anchor){
 		checkType(anchor, MbaDom);
-		var anchorElement = anchor.getDom(0);
+		var anchorElement = anchor.getElement(0);
 		var children = anchorElement.childNodes;
 		return children.length == 0;
 	};
 	
 	MbaBindingText.prototype.anchorContainsOneAndOnlyOneTextNode = function(anchor){
 		checkType(anchor, MbaDom);
-		var anchorElement = anchor.getDom(0);
+		var anchorElement = anchor.getElement(0);
 		var children = anchorElement.childNodes;
 		return children.length == 1 && isATextNode(children[0]);
 	};

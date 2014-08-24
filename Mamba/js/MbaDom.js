@@ -7,6 +7,7 @@ function MbaDom(dom){
 MbaDom.prototype.init = function(dom){
     checkIsDomSet(dom);
     this._dom = dom;
+    //TODO transformer en assert
     if(!this.childrenHaveSameParent()){
         var errorMessage = 'All the dom elements must have the same parent.';
         console.log('ERROR : '+errorMessage);
@@ -17,19 +18,12 @@ MbaDom.prototype.init = function(dom){
         console.log('ERROR : '+errorMessage);
         //throw new Error(errorMessage);
     }
+    
     //todo check enfant on des positions consécutives dans le parent !
     //todo il faudrait peut être faire cette vérification qui doit être couteuse seulement avant le premier render pour valider le template et les directives ?
-};
+}
 
-MbaDom.prototype.getDom = function(index){
-    if(index != null){
-        checkType(index, 'number');
-        return this._dom[index];
-    }
-    else
-        return this._dom;
-};
-
+//TODO utilisé que dans les tests et apparement que pour des MbaDom représentant un élément, à mettre dans MbaDomSingle
 MbaDom.prototype.getChildren = function(){
     var childrenElements = [];
     for(var i=0 ; i< this._dom.length ; i++){
@@ -65,7 +59,9 @@ MbaDom.prototype.toString = function(){
     return stringRepresentations.join('');
 };
 
-MbaDom.prototype.cloneWithoutChildren = function(){
+//TOOD à suppr
+/*
+MbaDom.prototype.cloneWithoutChildren_ = function(){
     var clonedDom = []; 
     for(var i=0 ; i<this._dom.length; i++){
         var currElement = this._dom[i];
@@ -73,6 +69,7 @@ MbaDom.prototype.cloneWithoutChildren = function(){
     }
     return new MbaDom(clonedDom);
 }    
+*/
 
 MbaDom.prototype.select = function(selector){
     return findInTemplate(this._dom, selector);
@@ -105,7 +102,7 @@ MbaDom.prototype.find = function(selector){
 MbaDom.prototype.add = function (dom){
     checkType(dom, MbaDom);
 
-    this._dom = this._dom.concat(dom.getDom());
+    this._dom = this._dom.concat(dom.getElements());
 };
 
 MbaDom.prototype.isEmpty = function(){
@@ -148,7 +145,7 @@ MbaDom.prototype.addMbaIdWithStartValue = function(arrayDom, id){
 MbaDom.prototype.remove = function(dom){
     checkType(dom, MbaDom);
 
-    var elements = dom.getDom();
+    var elements = dom.getElements();
     this._dom.splice(this._dom.indexOf(dom), 1);
 }
 
@@ -173,8 +170,8 @@ MbaDom.prototype.appendChild = function(dom){
     }
     else{
         for(var i=0 ; i<dom.getLength() ; i++){
-            var currElement = dom.getDom(i);
-            this.getDom(0).appendChild(currElement);
+            var currElement = dom.getElement(i);
+            this.getElement(0).appendChild(currElement);
         }
     }
 };
@@ -187,9 +184,9 @@ MbaDom.prototype.removeChild = function(dom){
     }
     else{
         for(var i=0 ; i<dom.getLength() ; i++){
-            var currElement = dom.getDom(i);
+            var currElement = dom.getElement(i);
             try{
-                this.getDom(0).removeChild(currElement);
+                this.getElement(0).removeChild(currElement);
             }catch(e){
                 console.log('toto');
             }
@@ -197,20 +194,26 @@ MbaDom.prototype.removeChild = function(dom){
     }
 };
 
-MbaDom.prototype.insertChildAtIndex2 = function(dom, index){
+/*
+MbaDom.prototype.insertChildAtIndex2_ = function(dom, index){
     checkType(dom, MbaDom);
     checkType(index, 'number');
 
+    console.log('Error : not a MbaDomSingle : ', this);
+    if(this.getLength() != 1){
+        console.log('Error : not a MbaDomSingle : ', this);
+        throw new Error('not a mbaDomSingle');
+    }
     index--;//because we want to insert before element at 'index'
 
     if(this.getLength() == 1){
-        var domElement = this.getDom(0);
+        var domElement = this.getElement(0);
         if(index > domElement.childNodes.length)
             throw new Error('Can\'t insert an element after the last one.');
 
         var childAfter = domElement.childNodes[index];
         for (var i = dom.getLength() - 1; i >= 0; i--) {
-            var currChildElement = dom.getDom(i);
+            var currChildElement = dom.getElement(i);
             if (domElement.hasChildNodes()) {
                 domElement.insertBefore(currChildElement, childAfter);
             } else {
@@ -222,6 +225,7 @@ MbaDom.prototype.insertChildAtIndex2 = function(dom, index){
     else
         throw new Error('the \'insertChildAtIndex\' method is only allowed on MbaDom representing one dom element.');
 };
+*/
 
 MbaDom.prototype.equals = function(other){
     checkType(other, MbaDom);
@@ -229,7 +233,7 @@ MbaDom.prototype.equals = function(other){
         return false;
 
     for(var i=0 ; i <other.getLength() ; i++){
-        if(!this.containsElement(other.getDom(i)))
+        if(!this.containsElement(other.getElement(i)))
             return false;
     }
     return true;
@@ -237,12 +241,12 @@ MbaDom.prototype.equals = function(other){
 
 //TODO mettre au propre avec une classe dédié aux éléments de dom unique
 MbaDom.prototype.referenceModelIntoParent = function(model){
-    var parent = this.getDom(0).parentElement;
+    var parent = this.getElement(0).parentElement;
     parent._mbaModel = model;
 };
 
 MbaDom.prototype.referenceModel = function(model){
-    var dom = this.getDom();
+    var dom = this.getElements();
     //TODO optimiser pour las avec un seul element et raison de plus pour avoir une classe représentant un seul elément de dom
     for(var i=0 ; i<dom.length ; i++){
         dom[i]._mbaModel = model;   
@@ -262,6 +266,11 @@ MbaDom.prototype.referenceModel = function(model){
 MbaDom.prototype.getElements = function(){
     return this._dom;
 };
+
+MbaDom.prototype.getElement = function(index){//TODO une fois cette fonction mise remplacer les getElement(0) par des getElement() mais d'un MbaDomSingle
+    return this._dom[index];
+};
+
 
 MbaDom.prototype.getParent = function(){
     if(this.isEmpty())

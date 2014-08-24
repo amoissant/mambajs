@@ -6,7 +6,7 @@ function DebugNodeAndAccessorVisitor(){
         console.log(this.getIndentation(),
                     nodeTypeName,
                     ' - ',
-                    node.getBaseDom().getDom());
+                    node.getBaseDom().getElements());
         var accessorIndentation = this.getIndentation()+this.getNSpaces(nodeTypeName.length+2);
         if(node instanceof MbaNodeBinding){
             var templateBinding = node.getTemplateBinding();

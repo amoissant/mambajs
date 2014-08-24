@@ -7,7 +7,6 @@
 	<script type="text/javascript" src="../js/Mamba.js"></script>
 	<script type="text/javascript" src="../js/MbaUtil.js"></script>
 	<script type="text/javascript" src="../js/MbaDom.js"></script>
-    <script type="text/javascript" src="../js/MbaDom2.js"></script>
     <script type="text/javascript" src="../js/MbaDomSingle.js"></script>
     <script type="text/javascript" src="../js/MbaDirective.js"></script>
     <script type="text/javascript" src="../js/MbaRootDirective.js"></script>
@@ -136,7 +135,7 @@
                 mbaTemplate.render(model);
                 rootNode = mbaTemplate.getRootNode();
                 rootNode.debug(true);
-                var dom = mbaTemplate.getRenderedDom().getDom();
+                var dom = mbaTemplate.getRenderedDom().getElements();
 				
 				$('#result').empty();
 				$('#result').append(dom);

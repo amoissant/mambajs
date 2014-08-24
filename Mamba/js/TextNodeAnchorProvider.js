@@ -8,7 +8,7 @@ function TextNodeAnchorProvider(){
 		var textNodeElements = [];
 		if(this.anchorContainsOneAndOnlyOneTextNode(anchor)){            
             for(var i=0 ; i<anchor.getLength() ; i++){
-                textNodeElements.push(anchor.getDom(i).childNodes[0]);    
+                textNodeElements.push(anchor.getElement(i).childNodes[0]);    
             }
         }
 		else	
@@ -18,7 +18,7 @@ function TextNodeAnchorProvider(){
 	};
 	TextNodeAnchorProvider.prototype.anchorHasNoChildren = function(anchor){
 		checkType(anchor, MbaDom);
-		var anchorElement = anchor.getDom(0);
+		var anchorElement = anchor.getElement(0);
 		var children = anchorElement.childNodes;
 		return children.length == 0;
 	};
@@ -26,7 +26,7 @@ function TextNodeAnchorProvider(){
 	TextNodeAnchorProvider.prototype.anchorContainsOneAndOnlyOneTextNode = function(anchor){
 		checkType(anchor, MbaDom);
         for(var i=0 ; i<anchor.getLength() ; i++){
-            var anchorElement = anchor.getDom(i);
+            var anchorElement = anchor.getElement(i);
 		    var children = anchorElement.childNodes;        
             if(children.length != 1 || !isATextNode(children[0]))
                 return false;

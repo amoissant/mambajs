@@ -21,7 +21,7 @@ IntegrateBindingAndDirectiveNodesVisitor.prototype.visitTemplateBinding = functi
 
     var anchorElements = templateBinding.getAnchor().getElements(); 
     for (var i = 0; i < anchorElements.length; i++) {
-        var currAnchor = new MbaDom([anchorElements[i]]);//TODO MbaNodeSingle
+        var currAnchor = new MbaDomSingle(anchorElements[i]);
         var htmlElementNode = currAnchor.getMbaNode();
         var bindingNode = new MbaNodeBinding(currAnchor, templateBinding);
         bindingNode.replaceInTree(htmlElementNode);
