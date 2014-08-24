@@ -18,9 +18,7 @@ Mamba.prototype.init = function(model, template, directive, anchor){
     else{
         if(isDomElement(template))
             this._domTemplate = new MbaDomSingle(template);
-        else if(template instanceof NodeList)
-            this._domTemplate = new MbaDom(this.nodeListToDomArray(template));
-        else if(isDomElementArray(template))
+        else if(isDomSet(template))
             this._domTemplate = new MbaDom(template);
         else
             throw new Error('Unknow type for template, possible types are :\n'

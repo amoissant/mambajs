@@ -25,15 +25,6 @@ var testMbaV2 =
 			OnAttend(res).DEtre(array);
 		});
 
-	Ca('teste isjQuery', function() {
-		OnAttend(isJQuery(null)).DEtreFaux();
-		OnAttend(isJQuery('toto')).DEtreFaux();
-		OnAttend(isJQuery([ 'toto', 'tutu' ])).DEtreFaux();
-		OnAttend(isJQuery($('<div id="root"></div>'))).DEtreVrai();
-		OnAttend(isJQuery($('<div id="root"></div>').get())).DEtreFaux();
-		OnAttend(isJQuery($('<div id="root"></div>')[0])).DEtreFaux();
-	});
-
 	Ca('teste domToString sur du dom', function() {
 		var domString = '<div id="root"></div>';
 		var dom = stringToDom(domString)[0];

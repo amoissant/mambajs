@@ -7,20 +7,11 @@ MBA_CST.DIRECTIVE ="01R3C71V3";
 MBA_CST.MAMBA ="mamba";
 MBA_CST.REF_FUNCTIONS = {};
 
-var $mamba = function(model, template, directivePrec){
-	return new Mamba(model, template, directivePrec).render();
-};
-
-
-
 /* Fonctions de transformation du dom */
 
 var DOM_TRANSF = {};
 
 DOM_TRANSF.text = function(dom, newValue, oldValue){
-	/*if(newValue == null)
-		return;*/
-	
 	if(!isATextNode(dom))
 		console.log('WARNING : surement un problème dans la directive.');//TODO faire une meilleur gestion des erreurs et aide au débug
 	dom.textContent = newValue;
@@ -54,158 +45,14 @@ function toggleAttr (dom, newValue, oldValue, attribute, operation){
 	}
 }
 
-function selectHack (dom){
-	var template = new MbaDom(dom);
-	var select = template.find('select');
-	if(!select.isEmpty()){
-		var dom = select.getElements()
-		for(var i=0 ; i<dom.length ; i++){
-			var currSelect = dom[i];
-			if(currSelect.attributes["value"] != null){
-				currSelect.value = currSelect.attributes["value"].value;
-				DOM_TRANSF.remAttr(currSelect, true, null, 'value');
-			}
-		}
-	}
-}
-
-/* Autres fonctions utilisées dans Mamba */
-
-function isModelArray(obj){
-	if(!$.isArray(obj))
-		return false;
-	
-	for(var i=0 ; i<obj.length ; i++){
-		if(!(obj[i] instanceof MbaModel))
-			return false;
-	}
-	return true;
-}
+/* Fonctions utilitaires et d\'assert */
 
 function isDomElement(element){
 	return element instanceof HTMLElement || element instanceof Text;
 }
 
-function isArrayDomElement(array){
-	if($.isArray(array)){
-		for(var i=0 ; i<array.length ; i++){
-			if(!isDomElement(array[i])){
-				return false;
-			}	
-		}
-		return true;
-	}
-	return false;
-}
-
-//TODO suppr fonction isArrauDomElement et la remplacer par celle-ci
-function isDomElementArray(object){
-    return object instanceof Array  
-           && object.length > 0
-           && isDomElement(object[0]);
-}
-
-function isDom(obj){
-	obj = toArray(obj);
-	return isArrayDomElement(obj);
-}
-
-function isArrayString(array){
-	if(array.length == 0){
-		return false;
-	}
-	else{
-		for(var i=0 ; i<array.length ; i++){
-			if(typeof array[i] != 'string'){
-				return false;
-			}	
-		}
-	}
-	return true;
-}
-
-function isEmptyArray(obj){
-	return $.isArray(obj) && obj.length == 0;
-}
-
-
-function getDirectiveProperties(directive){
-	var filteredProperties = [];
-	var properties = Object.keys(directive);
-	for(var i=0 ; i<properties.length ; i++){
-		var currProp = properties[i];
-		if(currProp != MBA_CST.VISITED && currProp != MBA_CST.DIRECTIVE)
-			filteredProperties.push(currProp); 
-	}
-	
-	return filteredProperties;
-}
-
-
-function isDirective(obj){
-	return isBinding(obj);
-}
-
-function isBinding(obj){
-	return isValidBinding(obj);
-}
-
-function isDirectiveArray(array){
-	for(var i=0 ; i<array.length ; i++){
-		if(!isDirective(array[i]))
-			return false;
-	}
-	return true;
-}
-
-function bindingMatchModel(binding, model){
-	if(model == null || binding == null){
-		return false;
-	}
-
-	var properties = getDirectiveProperties(binding);
-	for(var i=0 ; i<properties.length ; i++){
-		var prop = properties[i];	
-		var bindingVal = binding[prop];
-
-		if(model[prop] == null){
-			return false;
-		}
-				
-		if(isBinding(bindingVal)){
-			if(!bindingMatchModel(bindingVal, model[prop]))
-				return false;
-		}		
-	}	
-
-	return true;
-}
-
-
-function isJQuery(obj){
-	return obj != null && obj.jquery != null;
-}
-
-function domToString_old(dom){
-	var res = '';
-	
-	if($.isArray(dom)){
-		for(var i in dom){
-			res += domToString(dom[i]);
-		}
-	}
-	else{
-		if(isDomElement(dom))
-			res = dom.outerHTML;
-		else if (isJQuery(dom))
-			res = domToString(dom.get());
-			
-	}
-	return res;
-}
-
 function domToString(dom){
-	if(isArrayDomElement(dom)){
+	if(isDomSet(dom)){
 		var res = [];
 		for(var i=0 ; i<dom.length ; i++){
 			var currDom = dom[i];
@@ -215,38 +62,9 @@ function domToString(dom){
 	}else if(isDomElement(dom)){
 		return dom.outerHTML;
 	}else{
-		console.log('ERROR : dom or array of dom expected');
-		console.log(dom);
+		console.log('ERROR : dom or array of dom expected', dom);
 	}
 }
-
-
-function cloneDom(dom){
-	var clone = $(domToString(dom)).get();
-	
-	if(clone.length == 1)
-		return clone[0];
-	else if (clone.length > 1)
-		return clone;
-	else
-		return null;
-}
-
-
-//TODO : tester match
-/*
- * Le 'is' de jquery correspond à une disjonction, ici on
- * calcule la conjonction.
- */
-function match(obj, other){
-	var match = true;
-	obj = toArray(obj);
-	for(var i=0 ; i<obj.length ; i++){
-		match &= $(obj[i]).is(other);
-	}
-	return match;
-}
-
 
 function toArray(obj){
 	if(obj == null)
@@ -258,32 +76,6 @@ function toArray(obj){
 }
 
 
-function firstIsChildOfSecond(first, second){
-	if(first == second)
-		return false;
-	
-	var parent = first.parentNode;
-	while(parent != null){
-		if(parent == second)
-			return true;
-		else
-			parent = parent.parentNode;
-	}
-	
-	return false;
-}
-
-function getDeep(element){
-	if($.isArray(element))
-		element = element[0];
-	
-	var deep = 0;
-	while(element.parentElement != null){
-		element = element.parentElement;
-		deep++;
-	}
-	return deep;
-}
 //TODO : contrainte pour un binding : un sous-binding ne peut utiliser des selecteurs que s'ils appartienent au __root__ du parent.
 
 function checkType(obj, type, arrayElementType){
@@ -367,50 +159,9 @@ function checkArgNb(args, nb){
         throw new Error('bad number of argument');
 }
 
-function getDomChildren_(element){
-	checkType(element, 'dom');
-	
-	var children = element.childNodes;
-	var childrenArray = [];
-	for(var i=0 ; i<children.length ; i++){
-		childrenArray.push(children[i]);
-	}
-	return childrenArray;
-}
-
-
 function isATextNode(node){
 	return node.nodeName == "#text";
 }
-
-function getDomElementWithPath_(renderedDom, path){
-	checkType(renderedDom, MbaDom);
-
-	var domPath = path;
-	if(arguments.length > 2){
-		domPath = [];
-		for(var i=1; i<arguments.length ; i++){
-			domPath.push(arguments[i]);
-		}
-	}		
-	domPath = toArray(domPath);
-	
-	if(domPath.length == 1){
-		return renderedDom.getElement(domPath[0]);
-	}
-	else {
-		var subDomElement = getDomChildren(renderedDom.getElement(domPath[0]));
-		var subRenderedDom = new MbaDom(subDomElement);
-		domPath.shift();
-		return getDomElementWithPath(subRenderedDom, domPath);
-	}
-}
-
-function routeFromString(routeString){
-    checkType(routeString, 'string');
-    return eval('['+routeString+']');
-}
-
 
 function pushAll(context, anotherArray){
     checkType(anotherArray, Array);
