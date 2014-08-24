@@ -16,6 +16,7 @@ MbaDomSingle.prototype.init = function(domElement){
     }
         
     this._domElement = domElement;
+    MbaDom.prototype.init.call(this, [domElement]);
 };
 
 MbaDomSingle.prototype.getElement = function(){
@@ -130,5 +131,17 @@ MbaDomSingle.prototype.insertChildAtIndex2 = function(dom, index){
     this.insertAtIndex(dom, --index);
 };
 */
+
+MbaDomSingle.prototype.getChildren = function(){
+    /*var childrenElements = [];
+    for(var i=0 ; i< this._dom.length ; i++){
+        var currElement = this._dom[i];
+        for(var j=0 ; j<currElement.childNodes.length ; j++){
+            childrenElements.push(currElement.childNodes[j]);
+        }
+    }*/
+    return new MbaDom(this._domElement.childNodes);
+};
+
 
 

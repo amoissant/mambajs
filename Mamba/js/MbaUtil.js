@@ -247,58 +247,6 @@ function match(obj, other){
 	return match;
 }
 
-function findInTemplate(template, selector){
-	//TODO pas très safe mais optimisé, refacto c'est moche  
-    if(template.length > 0 && !isDomSet(template))
-        throw new Error('template must be an array or a NodeList');
-    
-    if(template.length >= 1){
-        if(template[0].parentNode)
-            return template[0].parentNode.querySelectorAll(selector);
-        else{
-            var parent = document.createElement('div');
-            for(var i=0 ; i<template.length ; i++){
-                if(template[i].parentNode)
-                    throw new Error('implement this case when not all template\'s elements have a parent');
-                else
-                    parent.appendChild(template[i]);
-            }
-            var foundElements = parent.querySelectorAll(selector);
-            for(var i=0 ; i<template.length ; i++){
-                parent.removeChild(template[i]);
-            }            
-            return foundElements;
-        }
-    }
-    else
-        return [];
-}
-
-function findInTemplate_(template, selector){//TOOD à suppr
-	if(!isDomElement(template) && !isDomSet(template))
-		throw new Error("template must be a dom element or an set of dom elements.");
-
-	var tmpParent = $('<div></div>').get()[0];
-	template = toArray(template);
-	var parents = [];
-	for(var i=0 ; i<template.length ; i++){
-		var currElement = template[i];
-		parents.push(currElement.parentNode);
-	}
-	$(tmpParent).append(template);
-	var foundElements = $(tmpParent).find(selector).get();
-	for(var i=0 ; i<template.length ; i++){
-		var currElement = template[i];
-		var currParent = parents[i];
-		if(currParent != null)
-			currParent.appendChild(currElement);
-		else
-			tmpParent.removeChild(currElement);
-	}
-	return foundElements;
-}
-
-
 
 function toArray(obj){
 	if(obj == null)

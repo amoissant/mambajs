@@ -83,24 +83,13 @@ var testMbaV2 =
 		OnAttend(tata.isEmpty()).DEtreFaux();
 	});
 
-	Ca('teste que findInTemplate() lève une exception avec un template au format "string"', function() {
-		var template = '<div id="toto"></div><span id="tata"></span>';
-		try{
-			var domElement = findInTemplate(template, '#toto');
-		}catch(e){
-			return;
-		}
-
-		OnAttend(true).DEtreFaux();
-	});
-	
 	Ca('teste que findInTemplate() accepte les selecteurs css'
 			+ ' et retourne un elément de dom', function() {
-		var template = stringToDom('<div id="toto"></div><span id="tata"></span>');
-		var domElement = findInTemplate(template, '#toto');
+		var template = new MbaDomFromString('<div id="toto"></div><span id="tata"></span>');
+		var domElement = template.selectOneMax('#toto');
 
 		OnAttend(domElement).DeNePasEtreNull();
-		OnAttend(domElement[0].id).DEtreEgalA('toto');
+		OnAttend(domElement.id).DEtreEgalA('toto');
 	});
 
 	Ca(	'teste que findInTemplate() retourne le même '
@@ -109,20 +98,21 @@ var testMbaV2 =
 			var template = '<div id="toto"></div><span id="tata"></span>';
 			var dom = stringToDom(template);
 			dom[1].setAttribute('customattr', 'I\'m tata');
-			var domElement = findInTemplate(dom, '#tata');
+            var mbaDom = new MbaDom(dom);
+			var domElement = mbaDom.selectOneMax('#tata');
 
 			OnAttend(domElement).DeNePasEtreNull();
-			OnAttend(domElement[0].id).DEtreEgalA('tata');
-			OnAttend(domElement[0].getAttribute('customattr'))
+			OnAttend(domElement.id).DEtreEgalA('tata');
+			OnAttend(domElement.getAttribute('customattr'))
 					.DEtreEgalA('I\'m tata');
 		});
 
 	Ca('teste que findInTemplate() accepte les selecteurs css'
 			+ ' et peut retourner plusieurs eléments de dom', function() {
-		template = '<div id="toto" class="tutu"></div>'
+		var template = '<div id="toto" class="tutu"></div>'
 				+ '<span id="tata" class="tutu"></span>';
-		template = stringToDom(template);
-		var domElements = findInTemplate(template, '.tutu');
+		template = new MbaDomFromString(template);
+		var domElements = template.select('.tutu');
 		OnAttend(domElements).DeNePasEtreNull();
 		OnAttend(isDomSet(domElements)).DEtreVrai();
 		OnAttend(domElements.length).DEtreEgalA(2);
@@ -130,34 +120,33 @@ var testMbaV2 =
 
 	Ca('teste que findInTemplate() retourne l\'élément voulu même si celui-ci '
 			+ 'est à la racine', function() {
-		var template = '<div id="root"><div id="toto"></div>';
-		template = stringToDom(template);
-		var root = findInTemplate(template, "#root");
-		var toto = findInTemplate(template, "#toto");
+		var template = new MbaDomFromString('<div id="root"><div id="toto"></div>');
+		var root = template.selectOneMax("#root");
+		var toto = template.selectOneMax("#toto");
 
-		OnAttend(root[0]).DeNePasEtreNull();
-		OnAttend(root[0].id).DEtreEgalA('root');
-		OnAttend(toto[0]).DeNePasEtreNull();
-		OnAttend(toto[0].id).DEtreEgalA('toto');
+		OnAttend(root).DeNePasEtreNull();
+		OnAttend(root.id).DEtreEgalA('root');
+		OnAttend(toto).DeNePasEtreNull();
+		OnAttend(toto.id).DEtreEgalA('toto');
 	});
 
 	Ca(	'teste que findInTemplate() peut trouver un élément dans un tableau',
 		function() {
-			var template = stringToDom('<div id="root"><div id="root2">');
+			var template = new MbaDomFromString('<div id="root"><div id="root2">');
 
-			var root = findInTemplate(template, '#root');
-			OnAttend(root[0].id).DEtreEgalA('root');
+			var root = template.selectOneMax('#root');
+			OnAttend(root.id).DEtreEgalA('root');
 
-			var root2 = findInTemplate(template, '#root2');
-			OnAttend(root2[0].id).DEtreEgalA('root2');
+			var root2 = template.selectOneMax('#root2');
+			OnAttend(root2.id).DEtreEgalA('root2');
 		});
 
 	Ca(	'teste que findInTemplate() peut trouver plusieurs élements',
 		function() {
-			var template = stringToDom('<div id="root">'
+			var template = new MbaDomFromString('<div id="root">'
 					+ '<div id="toto1"></div>' + '<div id="toto2"></div>'
 					+ '</div>');
-			var res = findInTemplate(template, '#toto1, #toto2');
+			var res = template.select('#toto1, #toto2');
 			OnAttend(isDomSet(res)).DEtreVrai();
 			OnAttend(res.length).DEtreEgalA(2);
 			OnAttend(res[0].id).DEtreEgalA('toto1');
@@ -166,11 +155,11 @@ var testMbaV2 =
 
 	Ca('teste que findInTemplate() peut retourner une sous-partie des '
 			+ 'éléments à la racine', function() {
-		var template = stringToDom('<div id="toto"></div>'
+		var template = new MbaDomFromString('<div id="toto"></div>'
 				+ '<div id="tata"></div>' + '<div id="titi"></div>'
 				+ '<div id="tutu"></div>');
 
-		var res = findInTemplate(template, '#toto, #tata, #titi');
+		var res = template.select('#toto, #tata, #titi');
 
 		OnAttend(isDomSet(res)).DEtreVrai();
 		OnAttend(res.length).DEtreEgalA(3);
@@ -181,9 +170,9 @@ var testMbaV2 =
         
     Ca('teste que findInTemplate ne modifie pas la position des éléments dans le dom', function(){
         var htmlString = '<div id="root"><div id="first"></div><div id="second"></div><div id="third"></div></div>';
-        var html = $(htmlString).get();
+        var html = stringToDom(htmlString);
         var second = html[0].childNodes[1];
-        var found = findInTemplate([second], '#second');
+        var found = new MbaDomSingle(second).select('#second');
         
         OnAttend(found.length).DEtreEgalA(1);
         OnAttend(found[0]).DEtreEgalA(second);
@@ -196,23 +185,21 @@ var testMbaV2 =
 			
 		var mbaDom = new MbaDomFromString(template);
 		mbaDom.addMbaId();
-		var dom = mbaDom.getElements();
 		
-		OnAttend(findInTemplate(dom, '#root')[0]._mbaId).DEtreEgalA(0);
-		OnAttend(findInTemplate(dom, '#toto')[0]._mbaId).DEtreEgalA(1);
-		OnAttend(findInTemplate(dom, '#tata')[0]._mbaId).DEtreEgalA(2);
-		OnAttend(findInTemplate(dom, '#tutu')[0]._mbaId).DEtreEgalA(3);
-		OnAttend(findInTemplate(dom, '#titi')[0]._mbaId).DEtreEgalA(4);
+		OnAttend(mbaDom.select('#root')[0]._mbaId).DEtreEgalA(0);
+		OnAttend(mbaDom.select('#toto')[0]._mbaId).DEtreEgalA(1);
+		OnAttend(mbaDom.select('#tata')[0]._mbaId).DEtreEgalA(2);
+		OnAttend(mbaDom.select('#tutu')[0]._mbaId).DEtreEgalA(3);
+		OnAttend(mbaDom.select('#titi')[0]._mbaId).DEtreEgalA(4);
 		
 	});
 	
-	Ca('test que MbaDom.getId() retourne un numéro unique pour un ou plusieurs éléments de dom', function(){
+	Ca('test que MbaAnchor.getId() retourne un numéro unique pour un ou plusieurs éléments de dom', function(){
 		var template = '<div id="root"><span id="toto"></span><div id="tata"></div><div id="tutu"><span id="titi"></span></div></div>';
 			
 		var mbaDom = new MbaDomFromString(template);
-		mbaDom.addMbaId();
-		var dom = mbaDom.getElements();
-
+		mbaDom.addMbaId()
+        
 		OnAttend(mbaDom.getId()).DEtreEgalA('0');
 		OnAttend(mbaDom.find('#root').getId()).DEtreEgalA('0');
 		OnAttend(mbaDom.find('#tata').getId()).DEtreEgalA('2');
@@ -837,9 +824,9 @@ var testMbaV2 =
         mbaTemplate.addTextNodeForBindingText();
         
         var htmlRoot = mbaTemplate.getTemplate();
-        var toto = mbaTemplate.findDom('#toto');
+        var toto = mbaTemplate.findOneMaxDom('#toto');
         var totoTextNode = toto.getChildren();
-        var tutu = mbaTemplate.findDom('#tutu');
+        var tutu = mbaTemplate.findOneMaxDom('#tutu');
         var tutuTextNode = tutu.getChildren();
         
         OnAttend(mbaTemplate.getTemplateDirective()).DEtreNull();
@@ -863,9 +850,9 @@ var testMbaV2 =
         mbaTemplate.constructTemplateDirective();
         
         var template = mbaTemplate.getTemplate();
-        var toto = mbaTemplate.findDom('#toto');
+        var toto = mbaTemplate.findOneMaxDom('#toto');
         var totoTextNode = toto.getChildren();
-        var tutu = mbaTemplate.findDom('#tutu');
+        var tutu = mbaTemplate.findOneMaxDom('#tutu');
         var tutuTextNode = tutu.getChildren();
         
         var testBefore = {rootAnchor: template,
@@ -898,13 +885,13 @@ var testMbaV2 =
         mbaTemplate.constructTemplateDirective();
         
         var template = mbaTemplate.getTemplate();
-        var toto = mbaTemplate.findDom('#toto');
+        var toto = mbaTemplate.findOneMaxDom('#toto');
         var totoTextNode = toto.getChildren();
-        var tutu = mbaTemplate.findDom('#tutu');
+        var tutu = mbaTemplate.findOneMaxDom('#tutu');
         var tutuTextNode = tutu.getChildren();
-        var titi = mbaTemplate.findDom('#titi');
+        var titi = mbaTemplate.findOneMaxDom('#titi');
         var titiTextNode = titi.getChildren();
-        var tata = mbaTemplate.findDom('#tata');
+        var tata = mbaTemplate.findOneMaxDom('#tata');
         var tataTextNode = tata.getChildren();
         
         var testBefore = {rootAnchor: template,
@@ -939,9 +926,9 @@ var testMbaV2 =
         mbaTemplate.constructTemplateDirective();
         
         var template = mbaTemplate.getTemplate();
-        var toto = mbaTemplate.findDom('#toto');
+        var toto = mbaTemplate.findOneMaxDom('#toto');
         var totoTextNode = toto.getChildren();
-        var tutu = mbaTemplate.findDom('#tutu');
+        var tutu = mbaTemplate.findOneMaxDom('#tutu');
         var tutuTextNode = tutu.getChildren();
         
         var testBefore = {rootAnchor: template,
@@ -971,8 +958,8 @@ var testMbaV2 =
         var mbaTemplate = new MbaTemplate(html, {});
         
         var root = mbaTemplate.getTemplate();
-        var toto = mbaTemplate.findDom('#toto');
-        var tutu = mbaTemplate.findDom('#tutu');
+        var toto = mbaTemplate.findOneMaxDom('#toto');
+        var tutu = mbaTemplate.findOneMaxDom('#tutu');
         
         mbaTemplate.constructRootNode();
         
@@ -1000,10 +987,10 @@ var testMbaV2 =
         mbaTemplate.constructRootNode();        
         
         var template = mbaTemplate.getTemplate();
-        var root = mbaTemplate.findDom('#root');
-        var toto = mbaTemplate.findDom('#toto');
+        var root = mbaTemplate.findOneMaxDom('#root');
+        var toto = mbaTemplate.findOneMaxDom('#toto');
         var totoTextNode = toto.getChildren();
-        var tutu = mbaTemplate.findDom('#tutu');
+        var tutu = mbaTemplate.findOneMaxDom('#tutu');
         var tutuTextNode = tutu.getChildren();
         
         var rootNode = mbaTemplate.getRootNode();    
@@ -1054,12 +1041,12 @@ var testMbaV2 =
         mbaTemplate.constructRootNode();        
         
         var template = mbaTemplate.getTemplate();
-        var root = mbaTemplate.findDom('#root');
-        var first = mbaTemplate.findDom('#first');
+        var root = mbaTemplate.findOneMaxDom('#root');
+        var first = mbaTemplate.findOneMaxDom('#first');
         var firstTextNode = first.getChildren();
-        var second = mbaTemplate.findDom('#second');
+        var second = mbaTemplate.findOneMaxDom('#second');
         var secondTextNode = second.getChildren();
-        var third = mbaTemplate.findDom('#third');
+        var third = mbaTemplate.findOneMaxDom('#third');
         var thirdTextNode = third.getChildren();
         
         var rootNode = mbaTemplate.getRootNode();    
@@ -1114,10 +1101,10 @@ var testMbaV2 =
         mbaTemplate.prepareForRender();
         
         var template = mbaTemplate.getTemplate();
-        var root = mbaTemplate.findDom('#root');
-        var toto = mbaTemplate.findDom('#toto');
+        var root = mbaTemplate.findOneMaxDom('#root');
+        var toto = mbaTemplate.findOneMaxDom('#toto');
         var totoTextNode = toto.getChildren();
-        var stuff = mbaTemplate.findDom('#stuff');
+        var stuff = mbaTemplate.findOneMaxDom('#stuff');
         
         var rootNode = mbaTemplate.getRootNode();    
         

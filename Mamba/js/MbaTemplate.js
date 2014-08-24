@@ -42,6 +42,11 @@ function MbaTemplate(template, directivesPrecursor){
         return this._template.find(selector);
     };
     
+    MbaTemplate.prototype.findOneMaxDom = function(selector){
+        checkType(selector, 'string');
+        return this._template.findOneMax(selector);
+    };
+    
     MbaTemplate.prototype.findInRenderedDom = function(selector){
         checkType(selector, 'string');
         return this._rootNode.getRenderedDom().find(selector);

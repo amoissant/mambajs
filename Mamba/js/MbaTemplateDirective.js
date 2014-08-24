@@ -34,10 +34,12 @@ function MbaTemplateDirective(template, directive){
     };
     
     MbaTemplateDirective.prototype.findRootAnchor = function(){
+        var anchorElements;
         if(this.hasRoot())
-            this._rootAnchor = this._template.find(this._rootSelector);
+            anchorElements = this._template.select(this._rootSelector);
         else
-            this._rootAnchor = this._template;
+            anchorElements = this._template.getElements();
+        this._rootAnchor = new MbaAnchor(anchorElements);
     };
  
     MbaTemplateDirective.prototype.getTemplateBindings = function(){
