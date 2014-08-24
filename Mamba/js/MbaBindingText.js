@@ -9,11 +9,6 @@ function MbaBindingText(cssSelector, anchorProvider, firstTransf){
 		var textNodeElement; 
 		if(this.anchorContainsOneAndOnlyOneTextNode(anchor))
 			textNodeElement = anchor.getElement(0).childNodes[0];
-		else if(this.anchorHasNoChildren(anchor)){
-			textNodeElement = document.createTextNode('');
-			var anchorElement = anchor.getElement(0);
-			anchorElement.appendChild(textNodeElement);
-		}
 		else	
 			this.throwAnError();
 		

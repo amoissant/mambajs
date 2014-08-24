@@ -56,6 +56,6 @@ AddActionBindingIntoNodesVisitor.prototype.findDomForActionBinding = function(ac
 AddActionBindingIntoNodesVisitor.prototype.visitActionBinding = function(actionBinding){
     checkType(actionBinding, MbaActionBinding);
     var domElement = this.findDomForActionBinding(actionBinding);
-    var node = domElement.mbaNode;
+    var node = domElement._mbaNode;
     node.addActionBinding(actionBinding);
 }; 

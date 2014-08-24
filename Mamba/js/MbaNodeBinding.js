@@ -34,7 +34,7 @@ function MbaNodeBinding(baseDom, binding) {
     };
     
     MbaNodeBinding.prototype.updateNodeReferenceIntoDomElement = function(){
-        this.referenceMeIntoDomElement(this.getBaseDom());
+        this.getBaseDom().setMbaNode(this);
     };
     
 	if (arguments.length > 0)

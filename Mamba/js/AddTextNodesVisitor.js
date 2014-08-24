@@ -28,17 +28,14 @@ function AddTextNodesVisitor(template){
         checkType(binding, MbaBinding);
         if(binding.getAnchorProvider() instanceof TextNodeAnchorProvider){
             var selector = binding.getSelector();
-            var anchor_ = this.getRelativeTemplate().find(selector);
-            var anchor = new MbaDom(anchor_.getElements());
+            var anchorElements = this.getRelativeTemplate().select(selector);
+            var anchor = new MbaAnchor(anchorElements);
             if(anchor.isEmpty())
                 throw new Error('Unable to find \''+binding.getSelector()
                                 +'\' into template : '+this.getRelativeTemplate().toString());
             if(!anchor.hasChildren()){
                 this.addTextNodeToAnchor(anchor);
             }
-            //commenté car on ne sais pas si on a déjà traité ces éléments de dom
-            //else throw new Error('You can\'t bind text into a dom element already having children : '+anchor.toString());
-            //TODO : ajouter ce contrôle pendant la phase de validation avant render 
         }        
     };
     

@@ -23,14 +23,6 @@ MbaDomSingle.prototype.getElement = function(){
     return this._domElement;
 };
 
-MbaDomSingle.prototype.getElements = function(){
-    return [this._domElement];
-};
-
-MbaDomSingle.prototype.hasParent = function(){
-    return this._domElement.parentElement != null;
-};
-
 MbaDomSingle.prototype.hasParent = function(){
     return this._domElement.parentElement != null;
 };
@@ -40,27 +32,24 @@ MbaDomSingle.prototype.getParent = function(){
 };
 
 MbaDomSingle.prototype.getMbaNode = function(){
-    return this._domElement.mbaNode;
+    return this._domElement._mbaNode;
 };
 
-MbaDomSingle.prototype.getLength = function(){//TODO peut etre que l'on peut éviter d'appeler cette méthode pour les MbaDOmSingle
-    return 1;
+MbaDomSingle.prototype.setMbaNode = function(node){
+    checkType(node, MbaNode);
+    return this._domElement._mbaNode = node;
 };
 
 MbaDomSingle.prototype.positionInParent = function(){
-    if(this.hasParent()){
-        var position = -1;
-        var siblings = this.getParent().childNodes;
-        for(var i=0 ; i<siblings.length ; i++){
-            if(siblings[i] == this._domElement){
-                position = i;
-                break;
-            }
-        }    
-        return position;
-    }
-    else
-        throw new Error('MbaDomSingle.getPositionInParent is only applicable if a parent element exists.');
+    var position = -1;
+    var siblings = this.getParent().childNodes;
+    for(var i=0 ; i<siblings.length ; i++){
+        if(siblings[i] == this._domElement){
+            position = i;
+            break;
+        }
+    }    
+    return position;
 };
 
 MbaDomSingle.prototype.removeFromParent = function(){
@@ -69,6 +58,7 @@ MbaDomSingle.prototype.removeFromParent = function(){
 
 MbaDomSingle.prototype.insertAtIndex = function(dom, index){
     checkType(dom, MbaDom);
+    checkType(index, 'number');
     if(dom instanceof MbaDomSingle){
         this.insertOneElementAtIndex(dom.getElement(), index);
     }
@@ -114,7 +104,7 @@ MbaDomSingle.prototype.cloneWithoutChildren = function(){
 };
 
 MbaDomSingle.prototype.referenceModel = function(model){
-    this._domElement._mbaModel = model;//TODO mbaNode et _mbaModel ? à uniformiser
+    this._domElement._mbaModel = model;
 };
 
 MbaDomSingle.prototype.referenceModelIntoParent = function(model){
@@ -122,25 +112,17 @@ MbaDomSingle.prototype.referenceModelIntoParent = function(model){
     parent._mbaModel = model;
 };
 
-//TODO factoriser code avec append et insertAtIndex ci-dessus
-/*
-MbaDomSingle.prototype.insertChildAtIndex2 = function(dom, index){
-    checkType(dom, MbaDom);
-    checkType(index, 'number');
-
-    this.insertAtIndex(dom, --index);
-};
-*/
-
 MbaDomSingle.prototype.getChildren = function(){
-    /*var childrenElements = [];
-    for(var i=0 ; i< this._dom.length ; i++){
-        var currElement = this._dom[i];
-        for(var j=0 ; j<currElement.childNodes.length ; j++){
-            childrenElements.push(currElement.childNodes[j]);
-        }
-    }*/
     return new MbaDom(this._domElement.childNodes);
+};
+
+MbaDomSingle.prototype.removeChild = function(dom){
+    checkType(dom, MbaDomSingle);
+    this._domElement.removeChild(dom.getElement());
+};
+
+MbaDomSingle.prototype.referenceModelIntoParent = function(model){
+    this.getParent()._mbaModel = model;
 };
 
 

@@ -238,17 +238,6 @@ var testMbaV2 =
  		OnAttend(anchor.getElement(0).textContent).DEtreEgalA('tutu');
  	});
  	
- 	Ca('teste que MbaBindingText.getAnchor() créé et insère un textNode dans l\'ancre s\'il n\'y en a pas', function(){
- 		var template = new MbaDomFromString('<div id="toto"></div>');
- 		var binding = new MbaBindingText('#toto', new DefaultAnchorProvider(), new MbaTransfMock());
- 		
- 		var anchor = binding.getAnchor(template);
- 		var createdTextNode = template.find('#toto').getElement(0).childNodes[0];
- 		
- 		OnAttend(isATextNode(createdTextNode)).DEtreVrai();
- 		OnAttend(anchor.getElement(0).textContent).DEtreEgalA('');
- 	});
- 	
  	Ca('teste que MbaBindingText.getAnchor() lève une exception si l\'ancre contient un enfant non textNode', function(){
  		var template = new MbaDomFromString('<div id="toto"><div id="child"></div></div>');
  		var binding = new MbaBindingText('#toto', new DefaultAnchorProvider(), new MbaTransfMock());

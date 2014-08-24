@@ -268,18 +268,7 @@ function MbaNode(parent, baseDom){
 	MbaNode.prototype.getSize = function(){
 		return this.getRenderedDom().getLength();
 	};
-    
-	//TODO bouger dans MbaDom
-	MbaNode.prototype.referenceMeIntoDomElement = function(mbaDom){
-		checkType(mbaDom, MbaDom);
-		
-		var dom = mbaDom.getElements();
-		for(var i=0 ; i<dom.length ; i++){
-			var currDom = dom[i];
-			currDom.mbaNode = this;
-		}
-	};
-            
+
     MbaNode.prototype.appendDomIntoParent = function(childDom, route){
         checkType(childDom, MbaDom);
         checkType(route, MbaRoute);
@@ -322,7 +311,7 @@ function MbaNode(parent, baseDom){
         checkType(dom, MbaDom);
 		checkType(route, MbaRoute);
         var currentRoute = this.getClosestRoute(route);
-		this.getRenderedDomForRoute(currentRoute).removeChild(dom);//TODO renommer en removeChildren;
+		this.getRenderedDomForRoute(currentRoute).removeChild(dom);
 	};
     
     MbaNode.prototype.deleteDom = function(route){

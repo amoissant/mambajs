@@ -14,3 +14,12 @@ MbaAnchor.prototype.init = function(dom){
 };
 
 //TODO séparer dans mbaDom les fonction de lecture et d\'insertion/suppression pour que MbaAnchor hérite seulement des fonctions de lecture
+
+
+MbaAnchor.prototype.hasChildren = function(){
+    for(var i=0 ; i<this._dom.length; i++){
+        if(this._dom[i].childNodes.length > 0)
+            return true;
+    }
+    return false;
+};

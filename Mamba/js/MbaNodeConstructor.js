@@ -31,7 +31,7 @@ function MbaNodeConstructor(){
 		var children = domElement.childNodes;
 		var childrenNodes = this.createMbaNodesForElements(node, children);
 		node.setChildren(childrenNodes);
-		node.referenceMeIntoDomElement(baseDom);
+        baseDom.setMbaNode(node);
 		return node;
 	};
     
