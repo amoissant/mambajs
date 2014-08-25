@@ -51,8 +51,6 @@ function MbaTemplateBinding(template, binding){
         checkType(dom, MbaDom);
         checkType(route, MbaRoute);
         checkType(parentDirectiveNode, MbaNode);
-        if(this._transformations.length > 1)
-            throw new Error('toto');
 		for(var i=0 ; i<this._transformations.length ; i++){
 			var currTransf = this._transformations[i];
             currTransf.update(dom, model, route, parentDirectiveNode);

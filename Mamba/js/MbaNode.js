@@ -243,20 +243,12 @@ function MbaNode(parent, baseDom){
         return this.hasNoRenderedDomForIndex(route.getIndexes());
     };       
     
-    //TODO pas joli, refacto ou simplifier les routes
     MbaNode.prototype.computeRenderRouteForRoute = function(route){
         checkType(route, MbaRoute);
         var routeCopy = route.clone();        
-        var longestRenderRoute = 0;
-        var renrerRoutes = [];
-        for(var index in this._indexedRenderedDom){
-            var renderRoute = new MbaRoute(index.split(','));
-            renrerRoutes.push(renderRoute);
-            if(renderRoute.length > longestRenderRoute)
-                longestRenderRoute = renderRoute.length;
-        }
+        var maxLengthRenderRoute = this.getMaxLengthRenderRoute();
         
-        while(routeCopy.length > longestRenderRoute){
+        while(routeCopy.length > maxLengthRenderRoute){
             routeCopy.removeLastIndex();
         }
         
@@ -267,6 +259,16 @@ function MbaNode(parent, baseDom){
                 return routeCopy;
         }
         return route;
+    };
+    
+    MbaNode.prototype.getMaxLengthRenderRoute = function(){
+        var maxLength = 0;
+        for(var index in this._indexedRenderedDom){
+            var renderRoute = new MbaRoute(index.split(','));
+            if(renderRoute.length > maxLength)
+                maxLength = renderRoute.length;
+        }
+        return maxLength;
     };
     
     MbaNode.prototype.createInitialDom = function(route){

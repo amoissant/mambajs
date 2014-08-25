@@ -115,7 +115,7 @@ function MbaTemplate(template, directivesPrecursor){
         for(var i=0 ; i<nodes.length ; i++){
             var currNode = nodes[i];
             var renderRoute = currNode.computeRenderRouteForRoute(route);
-            currNode.render(this._superModel, renderRoute);
+            nodes[i].render(this._superModel, renderRoute);
         }
     };
     

@@ -1,8 +1,5 @@
 Test(function() {   
 
-    //TODO Mamba api si on appelle refresh avant render alors message d'erreur
-    //TODO simplifier les routes en utilisant accessorChain.getLastRoute() dans node._indexRenderedDom et simplifier 
-    //MbaNode.computeRenderRouteForRoute ? -> cela implique que toutes les transformations sur un MbaNodeBinding utlisent le même modèle -> vrai contrainte ? est-ce bénéfique ?...
 
 
 //TODO demo todo list : 
@@ -56,6 +53,7 @@ avec binding par defaut :
         // - mamba.refresh(model); -> rafraichit le dom pour ce model. -> on peut passer un sous-modèle
         // - mamba.setOptions({mode: manual}) -> pas de binding par defaut
     
+    //TODO getter/setter accessor, propertyAccessor
     //TODO optimiser les render récursif en passant le modèle parent, si c'est aussi celui de l'enfant alors on le garde
     //TODO tester que les events sont ignorés si canReadValueFromDom renvoi false
     //TODO comment faire pour que les refFunction et les customFunction puissent lire le dom
@@ -69,6 +67,7 @@ avec binding par defaut :
     //-> retourne le dom pour model et en particulier sa propriété 'newItem'. Le second paramètre est optionnel.
     //TODO une fois le binding par défaut implémenté faire marcher ceci : 
     //  <span class="name"></span><input class="name" type="text"></input>, {name: 'toto'}, {"name": ".name"}
+    //TODO Mamba api si on appelle refresh avant render alors message d'erreur
    /*
     Cas à faire marcher (ou pas ya pas de r00t) : render et/ou binding           
           
