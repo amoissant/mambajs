@@ -19,7 +19,7 @@ function MbaNodeBinding(baseDom, binding) {
     };
        
     MbaNodeBinding.prototype.getTransformations = function(){
-      return this._templateBinding.getTransformations();  
+        return this._templateBinding.getTransformations();  
     };
     
     MbaNodeBinding.prototype.updateDom = function(model, route){

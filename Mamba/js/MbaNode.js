@@ -243,7 +243,7 @@ function MbaNode(parent, baseDom){
         return this.hasNoRenderedDomForIndex(route.getIndexes());
     };       
     
-    //TODO si on uniformise les routes et que la route constuite dans ModelFinder est la seule qui fait fois alors on pourrai simplifier pas mal de code ?
+    //TODO pas joli, refacto ou simplifier les routes
     MbaNode.prototype.computeRenderRouteForRoute = function(route){
         checkType(route, MbaRoute);
         var routeCopy = route.clone();        

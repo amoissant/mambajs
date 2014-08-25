@@ -1,3 +1,4 @@
+//TODO à suppr
 function MbaTransfAttribute(transf, accessorChain, attribute){
     
     this._attribute;

@@ -31,11 +31,11 @@ function DebugNodeVisitor(printIndexedRenderedDom){
         var nodeTypeName = this.getNodeTypeName(node);
         this.printNode(node, nodeTypeName);
 
-        if(nodeTypeName == MbaNodeDirective.prototype.constructor.name)
+        if(node instanceof MbaNodeDirective)
             this.printIndexedRoutes(node, nodeTypeName);
         
         if(this._printIndexedRenderedDom){
-                this.printIndexedRenderedDom(node, nodeTypeName);
+            this.printIndexedRenderedDom(node, nodeTypeName);
         }
 	};
     
@@ -69,7 +69,9 @@ function DebugNodeVisitor(printIndexedRenderedDom){
         var indexedRenderedDom = node.getIndexedRenderedDom();
         var indexedRenderedDomIndentation = this.getIndentation()+this.getNSpaces(nodeTypeName.length);
         for(var index in indexedRenderedDom){
-            console.log(indexedRenderedDomIndentation+'   - ', index, indexedRenderedDom[index].getElements());
+            console.log(indexedRenderedDomIndentation+'   - ',
+                        index,
+                        indexedRenderedDom[index].getElements());
         }  
     };
     

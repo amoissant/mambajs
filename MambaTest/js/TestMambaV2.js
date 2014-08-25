@@ -3532,7 +3532,7 @@ var testMbaV2 =
         OnAttend(model.normalizedText).DEtreEgalA('TOTO');
     }); 
         
-        Ca('teste que les evènements de binding et d\'action fonctionnent sur des nouveaux éléments', function(){
+     Ca('teste que les evènements de binding et d\'action fonctionnent sur des nouveaux éléments', function(){
         var model = 
             {items: [],
              newItem: "",
@@ -3616,14 +3616,182 @@ var testMbaV2 =
         OnAttend(dom[0].id).DEtreEgalA('toto');
         OnAttend(dom[1].id).DEtreEgalA('tutu');
     });
+        
+    Ca('teste l\'api mamba peut rafraichir un sous-modèle, config 01', function(){
+      var root = document.createElement('div');
+      root.id = 'root';
+      var template = '<div></div><span></span>';
+      var model = {name : 'toto', adress: [{number: 12}]};
+      var directive = {"name" : "div", "adress" : {"r00t" : "span", "number" : "span"}};
+      var mamba = new Mamba(model, template, directive, root);
+      
+      mamba.render();
+      OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
+      
+      mamba.debugNodes();
+      model.name = 'tutu';
+      model.adress[0].number = 27;
+      mamba.refresh(model.adress[0]);
+      
+      OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>27</span>');
+    });
+    
+    Ca('teste l\'api mamba peut rafraichir un sous-modèle, config 02', function(){
+      var root = document.createElement('div');
+      root.id = 'root';
+      var template = '<div></div><span></span>';
+      var model = {name : 'toto', adress: {number: 12}};
+      var directive = {"name" : "div", "adress" : {"number" : "span"}};
+      var mamba = new Mamba(model, template, directive, root);
+      
+      mamba.render();
+      OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
+      
+      mamba.debugNodes();
+      model.name = 'tutu';
+      model.adress.number = 27;
+      mamba.refresh(model.adress);
+      
+      OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>27</span>');
+    });
+        
+    Ca('teste l\'api mamba peut rafraichir un sous-modèle, config 03', function(){
+      var root = document.createElement('div');
+      root.id = 'root';
+      var template = '<div></div><span></span>';
+      var model = {name : 'toto', adress: {number: 12}};
+      var directive = {"name" : "div", "adress" : {"r00t" : "span", "number" : "span"}};
+      var mamba = new Mamba(model, template, directive, root);
+      
+      mamba.render();
+      OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
+      
+      mamba.debugNodes();
+      model.name = 'tutu';
+      model.adress.number = 27;
+      mamba.refresh(model.adress);
+      
+      OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>27</span>');
+    });
+
+    Ca('teste l\'api mamba avec template texte et sans ancre', function(){
+        var model = {name: 'toto'};
+        var template = '<span></span>';
+        var directive = {name: 'span'};
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+    });
+    
+    Ca('teste l\'api mamba avec template texte et ancre dom', function(){
+        var model = {name: 'toto'};
+        var template = '<span></span>';
+        var directive = {name: 'span'}
+        var anchor = document.createElement('div');
+        var mamba = new Mamba(model, template, directive, anchor);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+        OnAttend(domToString(anchor)).DEtreEgalA('<div><span>toto</span></div>');
+    });
+    
+    Ca('teste l\'api mamba avec template texte et ancre selecteur css', function(){
+        var model = {name: 'toto'};
+        var template = '<span></span>';
+        var directive = {name: 'span'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        document.body.appendChild(root);
+        var mamba = new Mamba(model, template, directive, '#root');
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><span>toto</span></div>');
+        document.body.removeChild(root);
+    });
+    
+    Ca('teste l\'api mamba avec template dom et sans ancre', function(){
+        var model = {name: 'toto'};
+        var template = '<span></span>';
+        var directive = {name: 'span'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = template;
+        document.body.appendChild(root);
+        template = document.querySelector('#root > span');
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><span>toto</span></div>');
+        document.body.removeChild(root);
+    });
+    
+    Ca('teste l\'api mamba avec template dom et root avec éléments existants à la racine', function(){
+        var model = {name: 'toto'};
+        var directive = {name: 'span'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = '<a></a><span></span><b></b>';
+        document.body.appendChild(root);
+        var template = document.querySelector('#root > span');
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><b></b></div>');
+        document.body.removeChild(root);
+    });  
+    
+    Ca('teste l\'api mamba avec template NodeList et root avec éléments existants à la racine', function(){
+        var model = {name: 'toto'};
+        var directive = {name: 'span, div'}
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = '<a></a><span></span><div></div><b></b>';
+        document.body.appendChild(root);
+        var template = document.querySelectorAll('#root > span, #root > div');
+        var mamba = new Mamba(model, template, directive);
+        var renderedDom = domToString(mamba.render());
+        
+        OnAttend(renderedDom).DEtreEgalA('<span>toto</span><div>toto</div>');
+        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><div>toto</div><b></b></div>');
+        document.body.removeChild(root);
+    });  
     
     Ca('teste l\'api mamba pour refaire un rendu complet avec un autre modèle', function(){
-        var stringDom = '<span id="toto"></span><div id="tutu"></div>';
-        var dom = stringToDom(stringDom);
-        
-        OnAttend(dom.length).DEtreEgalA(2);
-        OnAttend(dom[0].id).DEtreEgalA('toto');
-        OnAttend(dom[1].id).DEtreEgalA('tutu');
+      var root = document.createElement('div');
+      root.id = 'root';
+      var template = '<div></div>';
+      var model = {name : 'toto'};
+      var directive = {"name" : "div"};
+      var mamba = new Mamba(model, template, directive, root);
+      
+      mamba.render();
+      OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div>');
+      
+      model = {name: 'titi'};
+      mamba.render(model);
+      
+      OnAttend(root.innerHTML).DEtreEgalA('<div>titi</div>');
+    });
+
+    Ca('teste l\'api mamba peut tout rafraichir', function(){
+      var root = document.createElement('div');
+      root.id = 'root';
+      var template = '<div></div><span></span>';
+      var model = {name : 'toto', adress: {number: 12}};
+      var directive = {"name" : "div", "adress" : {"number" : "span"}};
+      var mamba = new Mamba(model, template, directive, root);
+      
+      mamba.render();
+      OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
+      
+      model.name = 'tutu';
+      mamba.refresh();
+      
+      OnAttend(root.innerHTML).DEtreEgalA('<div>tutu</div><span>12</span>');
     });
 };
 	
