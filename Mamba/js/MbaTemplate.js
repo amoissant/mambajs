@@ -94,24 +94,28 @@ function MbaTemplate(template, directivesPrecursor){
         this._rootDirective.visit(visitor);//TODO renommer cette méthode en accept
     };
     
+    MbaTemplate.prototype.updateDomForSuperModel = function(){
+        this.render(this._superModel);    
+    };
     
     MbaTemplate.prototype.updateDomForModel = function(model){
-        if(model == this._superModel){
-            this.render(model);
-            return;
-        }
+        if(model == this._superModel)
+            return this.updateDomForSuperModel();
+        
         var visitor = new GetNodesAndAccessorsVisitor(); 
         this._rootNode.accept(visitor); 
         visitor.constructAccessorNodes();
         var accessorTree = visitor.getRootAccessorNode();
-        var modelFinder = new ModelFinder(accessorTree, this._superModel, model);
+        var modelFinder = new ModelFinder(accessorTree, this._superModel, model);//TOOD peut etre que c'est le ModelFinder qui devrait construire le accessorTree ?
         modelFinder.searchForWantedModel();
         if(!modelFinder.hasFoundModel())
             throw new MbaError(42, 'Passed model is not a sub model of super model');
         var route = modelFinder.getTargetRoute();
         var nodes = modelFinder.getTargetMbaNodes();
         for(var i=0 ; i<nodes.length ; i++){
-            nodes[i].render(this._superModel, route);
+            var currNode = nodes[i];
+            var renderRoute = currNode.computeRenderRouteForRoute(route);
+            currNode.render(this._superModel, renderRoute);
         }
     };
     

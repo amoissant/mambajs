@@ -2984,18 +2984,17 @@ var testMbaV2 =
         var html = data.html;
         var directive = data.directive;
         var model = data.model;
-        var mamba = new MbaTemplate(html, directive);
-        mamba.render(model);
-        //mamba.getRootNode().debug(true);
+        var mamba = new Mamba(model, html, directive);
+        var renderedDom = mamba.render();
         
         model.video.animes.pop();
-        mamba.updateDomForModel(model.video);
-        //mamba.getRootNode().debug(true);
+        var renderedDom = mamba.refresh(model.video);
+        mamba.debugNodes();
+        //mamba.debugDirective();
         
-        var renderedDom = mamba.getRenderedDom();
         var expectedHtml = 
             '<div class="anime"><div class="name">SpongeBob SquarePants</div><div class="ep_number">01a</div><div class="ep_name">Help Wanted</div><div class="ep_number">01b</div><div class="ep_name">Reef Blower</div></div>';        
-        OnAttend(renderedDom.toString()).DEtreEgalA(expectedHtml);
+        OnAttend(new MbaDom(renderedDom).toString()).DEtreEgalA(expectedHtml);
     });
     
     Ca('test que la mise à jour du sous-modèle fonctionne avec un modèle incomplet', function(){
@@ -3592,92 +3591,6 @@ var testMbaV2 =
         OnAttend(model.items[0].name).DEtreEgalA('toto');
         OnAttend(model.items[1].name).DEtreEgalA('titi');
     });
-        
-            Ca('teste l\'api mamba avec template texte et sans ancre', function(){
-        var model = {name: 'toto'};
-        var template = '<span></span>';
-        var directive = {name: 'span'};
-        var mamba = new Mamba(model, template, directive);
-        var renderedDom = domToString(mamba.render());
-        
-        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
-    });
-    
-    Ca('teste l\'api mamba avec template texte et ancre dom', function(){
-        var model = {name: 'toto'};
-        var template = '<span></span>';
-        var directive = {name: 'span'}
-        var anchor = document.createElement('div');
-        var mamba = new Mamba(model, template, directive, anchor);
-        var renderedDom = domToString(mamba.render());
-        
-        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
-        OnAttend(domToString(anchor)).DEtreEgalA('<div><span>toto</span></div>');
-    });
-    
-    Ca('teste l\'api mamba avec template texte et ancre selecteur css', function(){
-        var model = {name: 'toto'};
-        var template = '<span></span>';
-        var directive = {name: 'span'}
-        var root = document.createElement('div');
-        root.id = 'root';
-        document.body.appendChild(root);
-        var mamba = new Mamba(model, template, directive, '#root');
-        var renderedDom = domToString(mamba.render());
-        
-        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
-        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><span>toto</span></div>');
-        document.body.removeChild(root);
-    });
-    
-    Ca('teste l\'api mamba avec template dom et sans ancre', function(){
-        var model = {name: 'toto'};
-        var template = '<span></span>';
-        var directive = {name: 'span'}
-        var root = document.createElement('div');
-        root.id = 'root';
-        root.innerHTML = template;
-        document.body.appendChild(root);
-        template = document.querySelector('#root > span');
-        var mamba = new Mamba(model, template, directive);
-        var renderedDom = domToString(mamba.render());
-        
-        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
-        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><span>toto</span></div>');
-        document.body.removeChild(root);
-    });
-    
-    Ca('teste l\'api mamba avec template dom et root avec éléments existants à la racine', function(){
-        var model = {name: 'toto'};
-        var directive = {name: 'span'}
-        var root = document.createElement('div');
-        root.id = 'root';
-        root.innerHTML = '<a></a><span></span><b></b>';
-        document.body.appendChild(root);
-        var template = document.querySelector('#root > span');
-        var mamba = new Mamba(model, template, directive);
-        var renderedDom = domToString(mamba.render());
-        
-        OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
-        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><b></b></div>');
-        document.body.removeChild(root);
-    });  
-    
-    Ca('teste l\'api mamba avec template NodeList et root avec éléments existants à la racine', function(){
-        var model = {name: 'toto'};
-        var directive = {name: 'span, div'}
-        var root = document.createElement('div');
-        root.id = 'root';
-        root.innerHTML = '<a></a><span></span><div></div><b></b>';
-        document.body.appendChild(root);
-        var template = document.querySelectorAll('#root > span, #root > div');
-        var mamba = new Mamba(model, template, directive);
-        var renderedDom = domToString(mamba.render());
-        
-        OnAttend(renderedDom).DEtreEgalA('<span>toto</span><div>toto</div>');
-        OnAttend(domToString(root)).DEtreEgalA('<div id="root"><a></a><span>toto</span><div>toto</div><b></b></div>');
-        document.body.removeChild(root);
-    });  
     
     Ca('teste que l\'on peut utiliser un selecteur css qui retourne plusieurs éléments du template pour le binding', function(){
         var model = {name: 'toto'};
@@ -3704,5 +3617,13 @@ var testMbaV2 =
         OnAttend(dom[1].id).DEtreEgalA('tutu');
     });
     
+    Ca('teste l\'api mamba pour refaire un rendu complet avec un autre modèle', function(){
+        var stringDom = '<span id="toto"></span><div id="tutu"></div>';
+        var dom = stringToDom(stringDom);
+        
+        OnAttend(dom.length).DEtreEgalA(2);
+        OnAttend(dom[0].id).DEtreEgalA('toto');
+        OnAttend(dom[1].id).DEtreEgalA('tutu');
+    });
 };
 	

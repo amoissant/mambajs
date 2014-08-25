@@ -9,6 +9,8 @@ MBA_CST.REF_FUNCTIONS = {};
 
 /* Fonctions de transformation du dom */
 
+//TODO enlever jquery d'ici
+
 var DOM_TRANSF = {};
 
 DOM_TRANSF.text = function(dom, newValue, oldValue){

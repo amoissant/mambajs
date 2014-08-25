@@ -243,6 +243,32 @@ function MbaNode(parent, baseDom){
         return this.hasNoRenderedDomForIndex(route.getIndexes());
     };       
     
+    //TODO si on uniformise les routes et que la route constuite dans ModelFinder est la seule qui fait fois alors on pourrai simplifier pas mal de code ?
+    MbaNode.prototype.computeRenderRouteForRoute = function(route){
+        checkType(route, MbaRoute);
+        var routeCopy = route.clone();        
+        var longestRenderRoute = 0;
+        var renrerRoutes = [];
+        for(var index in this._indexedRenderedDom){
+            var renderRoute = new MbaRoute(index.split(','));
+            renrerRoutes.push(renderRoute);
+            if(renderRoute.length > longestRenderRoute)
+                longestRenderRoute = renderRoute.length;
+        }
+        
+        while(routeCopy.length > longestRenderRoute){
+            routeCopy.removeLastIndex();
+        }
+        
+        for(var i=routeCopy.length-1 ; i>=0 ; i--){
+            if(this.hasNoRenderedDomForRoute(routeCopy) && routeCopy[i] == null)
+                routeCopy.setIndex(i, 0);
+            else
+                return routeCopy;
+        }
+        return route;
+    };
+    
     MbaNode.prototype.createInitialDom = function(route){
         checkType(route, MbaRoute);
         var initialDom = this.getInitialDom();

@@ -29,9 +29,16 @@ MbaRoute.prototype.newChildRoute = function(){
     return childRoute;
 };
 
-MbaRoute.prototype.setLastIndex = function(index){
+MbaRoute.prototype.setLastIndex = function(value){
+    checkType(value, 'number');
+    this[this.length-1] = value;
+    this._index = this.toString();
+};
+
+MbaRoute.prototype.setIndex = function(index, value){
     checkType(index, 'number');
-    this[this.length-1] = index;
+    checkTypeOrNull(value, 'number');
+    this[index] = value;
     this._index = this.toString();
 };
 
@@ -66,16 +73,4 @@ MbaRoute.prototype.isNullAtIndex = function(index){
     checkType(index, 'number');
     return this[index] == null;
 }
-
-/* marche sans et ralenti les perfs
-MbaRoute.prototype.toString = function(){
-    var stringRepresentation = '';
-    for(var i=0 ; i<this.length ; i++){
-        var currIndex = this[i];
-        stringRepresentation += (currIndex==null?'-':currIndex)+',';
-    }
-    if(stringRepresentation.length > 0)
-        stringRepresentation = stringRepresentation.substring(0, stringRepresentation.length-1);
-    return stringRepresentation;
-}*/
 
