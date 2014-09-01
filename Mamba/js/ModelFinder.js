@@ -37,7 +37,6 @@ ModelFinder.prototype.hasFoundModel = function(){
 
 
 ModelFinder.prototype.searchForWantedModel = function(){
-    //console.log(this._accessorTree);
     this._modelFound = false;
     this._stackModels.push(this._superModel);
     for(var childName in this._accessorTree.getChildren()){

@@ -18,17 +18,18 @@ GetNodesAndAccessorsVisitor.prototype.getRootAccessorNode = function(){
 
 GetNodesAndAccessorsVisitor.prototype.beforeVisitNode = function(node){
     checkType(node, MbaNode);
-     switch(node.constructor){
-        case MbaNodeDirective:
-            var accessorChain = node.getAccessorChain();
-            this.addAccesorChainAndNodes(accessorChain, node);
-        break;
-        case MbaNodeBinding:
-            var accessorChains = node.getAccessorChains();
-            for(var i=0 ; i<accessorChains.length ; i++){
-                this.addAccesorChainAndNodes(accessorChains[i], node);
-            }
-        break;
+    if(node.constructor == MbaRootNode){
+        this.addAccesorChainAndNodes(new MbaAccessorChain(), node);
+    }
+    else if(node.constructor == MbaNodeDirective){
+        var accessorChain = node.getAccessorChain();
+        this.addAccesorChainAndNodes(accessorChain, node);
+    }
+    else if(node.constructor == MbaNodeBinding){
+        var accessorChains = node.getAccessorChains();
+        for(var i=0 ; i<accessorChains.length ; i++){
+            this.addAccesorChainAndNodes(accessorChains[i], node);
+        }
     }
 };
 
@@ -45,6 +46,7 @@ GetNodesAndAccessorsVisitor.prototype.addAccesorChainAndNodes = function(accesso
 };
 
 GetNodesAndAccessorsVisitor.prototype.copyWithoutLastAccessor = function(accessorChain){
+    checkType(accessorChain, MbaAccessorChain);
     var accessorChainCopy = new MbaAccessorChain();
     var accessors = accessorChain.getAccessors();
     for(var i=0 ; i<accessors.length-1 ; i++){
@@ -59,16 +61,21 @@ GetNodesAndAccessorsVisitor.prototype.constructAccessorNodes = function(){
     for(var id in this._accessorChainsAndNodes){
         var currentAccessorNode = this._rootAccessorNode;
         var currAccessorChainAndNodes = this._accessorChainsAndNodes[id];
-        var accessors = currAccessorChainAndNodes.getAccessorChain().getAccessors();
-        for(var i=0 ; i<accessors.length ; i++){
-            var currAccessor = accessors[i];
-            var currAccessorId = currAccessor.toString();
-            if(!currentAccessorNode.hasChild(currAccessorId)){
-                currentAccessorNode.addChild(currAccessorId, currAccessor);
-            }
-            currentAccessorNode = currentAccessorNode.getChild(currAccessorId);
-        }
-        if(currentAccessorNode != this._rootAccessorNode)
-            currentAccessorNode.addMbaNodes(currAccessorChainAndNodes.getNodes());
+        this.constructOneAccessorNode(currentAccessorNode, currAccessorChainAndNodes);
     }
+};
+
+GetNodesAndAccessorsVisitor.prototype.constructOneAccessorNode = function(accessorNode, accessorChainAndNodes){
+    checkType(accessorNode, RootAccessorNode);
+    checkType(accessorChainAndNodes, AccessorChainAndMbaNodes);
+    var accessors = accessorChainAndNodes.getAccessorChain().getAccessors();
+    for(var i=0 ; i<accessors.length ; i++){
+        var currAccessor = accessors[i];
+        var currAccessorId = currAccessor.toString();
+        if(!accessorNode.hasChild(currAccessorId)){
+            accessorNode.addChild(currAccessorId, currAccessor);
+        }
+        accessorNode = accessorNode.getChild(currAccessorId);
+    }
+    accessorNode.addMbaNodes(accessorChainAndNodes.getNodes());
 };

@@ -106,12 +106,17 @@ function MbaTemplate(template, directivesPrecursor){
         this._rootNode.accept(visitor); 
         visitor.constructAccessorNodes();
         var accessorTree = visitor.getRootAccessorNode();
+        console.log(accessorTree);
         var modelFinder = new ModelFinder(accessorTree, this._superModel, model);//TOOD peut etre que c'est le ModelFinder qui devrait construire le accessorTree ?
         modelFinder.searchForWantedModel();
         if(!modelFinder.hasFoundModel())
             throw new MbaError(42, 'Passed model is not a sub model of super model');
-        var route = modelFinder.getTargetRoute();
-        var nodes = modelFinder.getTargetMbaNodes();
+        this.refreshNodesForRoute(modelFinder.getTargetMbaNodes(), modelFinder.getTargetRoute());
+    };
+    
+    MbaTemplate.prototype.refreshNodesForRoute = function(nodes, route){
+        checkType(nodes, 'array', MbaNode);
+        checkType(route, MbaRoute);
         for(var i=0 ; i<nodes.length ; i++){
             var currNode = nodes[i];
             var renderRoute = currNode.computeRenderRouteForRoute(route);
@@ -147,6 +152,11 @@ function MbaTemplate(template, directivesPrecursor){
             var visitor = new UpdateSuperModelReferenceVisitor(model);
             this._rootNode.accept(visitor);//TODO le premier set du superModel dans les actionBinding doit se faire ici
         }
+    };
+    
+    MbaTemplate.prototype.generateRefreshMethod = function(){
+        var methodeGenerator = new MbaRefreshMethodGenerator(this, this._superModel);
+        methodeGenerator.generateMethods();
     };
     
     if(arguments.length != 0){

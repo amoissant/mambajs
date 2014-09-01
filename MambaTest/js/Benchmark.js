@@ -1,41 +1,38 @@
-function Benchmark (modelSize){
+function Benchmark (modelSize, anchor){
     
     this.messages = [];
     this._benchModel;
     this._benchModelSize;
     this._benchHtml;
     this._benchDirective;
-    this._benchTemplate;
-    this.libUpdateBtn;
+    this._benchMamba;
+    this._benchDom;
+    this._anchor;
+    this.genRefresh;
     
-    this.init(modelSize);
+    this.init(modelSize, anchor);
 };
 
-Benchmark.prototype.init = function(modelSize){
+Benchmark.prototype.init = function(modelSize, anchor){
     this._benchModelSize = modelSize;
-    this.libUpdateBtn = "Update";
-    this.libSearchBtn  = "Search";
+    this._anchor = anchor;
+    this.genRefresh = false;
     this.createBenchModel();
     this.createBenchHtml();
     this.createBenchDirective();
-    this.timeRender();
 };
 
 Benchmark.prototype.createBenchModel = function(){
     var tabContent = [];
     for(var i=0 ; i<this._benchModelSize; i++){
-        tabContent.push({id : i, 
-                         name : "toto", 
-                         town : "merignac", 
-                         country : "france"});
+        tabContent.push({id : i, name : "toto", town : "merignac", country : "france"});
     }
-    this._benchModel = 
-        {toto: {tutu: {tata: {tete: tabContent}}}};    
+    this._benchModel = {toto: {tutu: {tata: {tete: tabContent}}}};    
 };
 
 Benchmark.prototype.createBenchHtml = function(){
     this._benchHtml = 
-        '<table><thead><tr><th>ID</th><th>NAME</th><th>TOWN</th><th>COUNTRY</th></tr></thead><tbody><tr id="person"><td id="id"></td><td id="name"></td><td id="town"></td><td id="country"></td></tr></tbody></table>';
+        '<table><thead><tr><th>ID</th><th>NAME;</th><th>TOWN</th><th>COUNTRY</th></tr></thead><tbody><tr id="person"><td id="id"></td><td id="name"></td><td id="town"></td><td id="country"></td></tr></tbody></table>';
 };
 
 Benchmark.prototype.createBenchDirective = function(){
@@ -49,12 +46,12 @@ Benchmark.prototype.createBenchDirective = function(){
 
 Benchmark.prototype.timeRender = function(){
     var begin = new Date();
-    this._benchTemplate = new MbaTemplate(this._benchHtml, this._benchDirective);
-    this._benchTemplate.render(this._benchModel);
+    this._benchMamba = new Mamba(this._benchModel, this._benchHtml, this._benchDirective, this._anchor);
+    this._benchMamba.setOptions({genRefresh: this.genRefresh});
+    this._benchDom = this._benchMamba.render();
     var end = new Date();
     var message = {text : 'time for render '+this._benchModelSize+' elements : '+this.getTimeInSeconds(begin, end)+'s.'};
-    this.messages.push(message);
-    
+    this.messages.push(message);    
 };
 
 Benchmark.prototype.getTimeInSeconds = function(begin, end){
@@ -71,7 +68,8 @@ Benchmark.prototype.updateBenchModel = function(){
 Benchmark.prototype.timeUpdate = function(){
     this.updateBenchModel();
     var begin = new Date();
-    this._benchTemplate.render(this._benchModel);
+    this._benchMamba.setOptions({genRefresh: this.genRefresh});
+    this._benchDom = this._benchMamba.render();
     var end = new Date();
     var message = {text : 'time for update '+this._benchModelSize+' elements : '+this.getTimeInSeconds(begin, end)+'s.'};
     this.messages.push(message);
@@ -81,14 +79,14 @@ Benchmark.prototype.timeSearchForModel = function(){
     var begin = new Date();
     var model = this._benchModel.toto.tutu.tata.tete[this._benchModelSize-1];
     model.id = 'i have been updated manually';
-    this._benchTemplate.updateDomForModel(model); 
+    this._benchMamba.refresh(model); 
     var end = new Date();
     var message = {text : 'worst time to find a model : '+this.getTimeInSeconds(begin, end)+'s.'};
     this.messages.push(message);
 };
 
 Benchmark.prototype.getRenderedDom = function(){
-    return this._benchTemplate.getRenderedDom().getElements();
+    return this._benchDom;
 };
 
 
@@ -96,31 +94,22 @@ Benchmark.prototype.getRenderedDom = function(){
  //disable checkType function called everywhere -> x20 perfs
  checkType = function(){};
  
- var bench = new Benchmark(1000);
+ var bench = new Benchmark(1000, document.getElementById('array'));
  var html = 
-     '<div class="message"></div><input id="update" type="button"></input><input id="search" type="button"></input><div id="array"></div>';
+     '<div class="message"></div>'
+        +'<input id="render" type="button" value="Render">'
+        +'<input id="update" type="button" value="Update">'
+        +'</input><input id="search" type="button" value="Search">'
+        +'</input><input id="gen_refresh" type="checkbox"></input>'
+    +'<div id="array"></div>';
+
  var directive = {"messages" : {"r00t" : ".message", "text": ".message"},
-                  "libUpdateBtn" : "#update@value",
-                  "libSearchBtn" : "#search@value",
+                  "genRefresh" : "#gen_refresh$checked->click",
+                  "/timeRender" : "#render->click",
                   "/timeUpdate" : "#update->click",
                   "/timeSearchForModel" : "#search->click"};
- var mbaTemplate = new MbaTemplate(html, directive);    
- mbaTemplate.render(bench);
- mbaTemplate.getRootNode().debug(true);
- 
- var benchDom = mbaTemplate.getRenderedDom().getElements();
- for(var i=0 ; i<benchDom.length ; i++){
-     document.body.appendChild(benchDom[i]);
- }
- 
- var renderedDom = bench.getRenderedDom();
- var arrayDiv = document.getElementById('array');
- for(var i=0 ; i<renderedDom.length ; i++){
-     arrayDiv.appendChild(renderedDom[i]);
- }  
- 
- var updateBtn = document.getElementById('update');
- updateBtn.addEventListener('click', function(){
-     mbaTemplate.getRootNode().debug(true);
- });
+ var mamba = new Mamba(bench, html, directive, document.body);
+ mamba.render();
+ mamba.debugNodes();
+
 

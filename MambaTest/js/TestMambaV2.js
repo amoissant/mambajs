@@ -1,7 +1,5 @@
 
-var testMbaV2 = 
-//Test(function() {
-    function() {
+var testMbaV2 = function() {
 
 
 	Ca('teste que toArray() encapsule un objet dans un tableau ', function() {
@@ -2989,7 +2987,7 @@ var testMbaV2 =
         
         model.video.animes.pop();
         var renderedDom = mamba.refresh(model.video);
-        mamba.debugNodes();
+        //mamba.debugNodes();
         //mamba.debugDirective();
         
         var expectedHtml = 
@@ -3628,7 +3626,7 @@ var testMbaV2 =
       mamba.render();
       OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
       
-      mamba.debugNodes();
+      //mamba.debugNodes();
       model.name = 'tutu';
       model.adress[0].number = 27;
       mamba.refresh(model.adress[0]);
@@ -3647,7 +3645,7 @@ var testMbaV2 =
       mamba.render();
       OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
       
-      mamba.debugNodes();
+      //mamba.debugNodes();
       model.name = 'tutu';
       model.adress.number = 27;
       mamba.refresh(model.adress);
@@ -3666,7 +3664,7 @@ var testMbaV2 =
       mamba.render();
       OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
       
-      mamba.debugNodes();
+      //mamba.debugNodes();
       model.name = 'tutu';
       model.adress.number = 27;
       mamba.refresh(model.adress);

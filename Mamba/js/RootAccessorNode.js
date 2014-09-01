@@ -1,11 +1,13 @@
 function RootAccessorNode(){
     this._children;
+    this._mbaNodes;
     
     this.init();
 }
 
 RootAccessorNode.prototype.init = function(){
     this._children = {};
+    this._mbaNodes = [];
 };
 
 RootAccessorNode.prototype.hasChild = function(childName){
@@ -27,4 +29,14 @@ RootAccessorNode.prototype.getChild = function(childName){
 RootAccessorNode.prototype.getChildren = function(){
     return this._children;
 };
+
+RootAccessorNode.prototype.addMbaNodes = function(mbaNodes){
+    checkTypeOrNull(mbaNodes, 'array', MbaNode);
+    pushAll(this._mbaNodes, mbaNodes);
+};
+
+RootAccessorNode.prototype.getMbaNodes = function(){
+    return this._mbaNodes;
+};
+
 
