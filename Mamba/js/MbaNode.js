@@ -380,16 +380,23 @@ function MbaNode(parent, baseDom){
         //we do nothing here but subtypes do
     };
 	
+    MbaNode.prototype.updateForModelAndRoute = function(model, route){
+        checkType(route, MbaRoute);
+        this.getRootNode().trySetParentDom();
+        var modelRoute = this.getModelRouteForUpdate(route);
+        this.render(model, modelRoute);
+        this.getRootNode().whenDomUpdated();
+    };
+    
+    MbaNode.prototype.getModelRouteForUpdate = function(route){
+        checkType(route, MbaRoute);
+        return route;
+    };
+    
     MbaNode.prototype.updateSuperModelReference = function(newSuperModel){
         for(var i=0 ; i<this._actionBindings.length ; i++){
             this._actionBindings[i].setSuperModel(newSuperModel);
         }
-    };
-    
-    MbaNode.prototype.updateFromClosestParentDirective = function(model, route){
-        checkType(route, MbaRoute);
-        var parentDirectiveNode = this.getParentDirectiveNode();
-        parentDirectiveNode.updateForModelAndRoute(model, route);
     };
     
     MbaNode.prototype.accept = function(visitor){

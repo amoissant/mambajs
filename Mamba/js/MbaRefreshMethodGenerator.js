@@ -27,6 +27,7 @@ MbaRefreshMethodGenerator.prototype.beforeVisitModel = function(model){
     var mbaTemplate = this._mbaTemplate;
     var route = this.getCurrentRoute();
     var nodes = this.getCurrentMbaNodes();
+    //TODO : si dans les nodes il y a le rootNode alors ne garder que celui-ci sinon plusieurs rafraichissements
     model.refresh = 
         function(){
             mbaTemplate.refreshNodesForRoute(nodes, route);

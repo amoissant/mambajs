@@ -116,7 +116,7 @@ MbaTransf.prototype.createBindingEventHandler = function(domElement, node, route
         var model = transformation.getSuperModel();
         transformation.setNewValue(model, bindingRoute, newValue);   
         var parentDirectiveNode = node.getParentDirectiveNode();
-        parentDirectiveNode.updateChildrenForModelAndRoute(model, bindingRoute);
+        parentDirectiveNode.updateForModelAndRoute(model, bindingRoute);
     };
     return eventHandler;
 };

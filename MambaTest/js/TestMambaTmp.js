@@ -1,5 +1,54 @@
 Test(function() {   
     
+    //TODO Ca('teste quand on appelle refresh sur un modèle qui n\'est plus un sous-modèle du super modèle', function(){
+    
+    Ca('teste que les éléments sont supprimés suite à un refresh manuel', function(){
+        var model = {list: [{name : 'toto'}, {name : 'tutu'}]};
+        var template = '<span></span>';
+        var directive = {list : {r00t : 'span', name : 'span'}};
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = template;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({genRefresh: true});
+        mamba.render();
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<span>toto</span><span>tutu</span>');
+        
+        var removedItem = model.list.pop();
+        model.refresh();
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<span>toto</span>');
+    });
+    
+    Ca('teste que les éléments sont ajoutés et leurs évènements branchés suite à un refresh manuel', function(){
+        function Name (name){this.name=name;  this.upper=function(){this.name = this.name.toUpperCase();}};
+        var model = {list: [new Name('toto'), new Name('tutu')]};
+        var template = '<span></span>';
+        var directive = {'list': {'r00t': 'span', 'name': 'span', '/upper': 'span->click'}};
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = template;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({genRefresh: true});
+        mamba.render();
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<span>toto</span><span>tutu</span>');
+        
+        var spanToto = root.childNodes[0];
+        spanToto.dispatchEvent(new Event('click'));
+        OnAttend(root.innerHTML).DEtreEgalA('<span>TOTO</span><span>tutu</span>');
+        
+        var removedItem = model.list.push(new Name('tata'));
+        model.refresh();
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<span>TOTO</span><span>tutu</span><span>tata</span>');
+        
+        var spanTata = root.childNodes[2];
+        spanTata.dispatchEvent(new Event('click'));
+        OnAttend(root.innerHTML).DEtreEgalA('<span>TOTO</span><span>tutu</span><span>TATA</span>');
+    });
+    
     function getHtmlDirectiveAndModelForManualDomUpdate(){
         var result = {};
         result.html = 
@@ -99,7 +148,6 @@ Test(function() {
         
         model.video.animes[0].episodes[0].number = '1A'; 
         model.video.animes[0].episodes[0].refresh();
-        //model.refresh();
          
         OnAttend(root.innerHTML).DEtreEgalA('<div class="anime"><div class="name">SpongeBob SquarePants</div><div class="ep_number">1A</div><div class="ep_name">Help Wanted</div><div class="ep_number">01b</div><div class="ep_name">Reef Blower</div></div><div class="anime"><div class="name">Dragon Ball</div><div class="ep_number">01</div><div class="ep_name">Bulma and Son Goku</div><div class="ep_number">02</div><div class="ep_name">What the...?! No Balls!</div></div>');
         
@@ -154,7 +202,7 @@ Test(function() {
         OnAttend(root.innerHTML).DEtreEgalA('<div class="anime"><div class="name">SpongeBob SquarePants</div><div class="ep_number">1A</div><div class="ep_name">Help Wanted</div><div class="ep_number">1B</div><div class="ep_name">Reef Blower</div></div><div class="anime"><div class="name">Dragon Ball</div><div class="ep_number">1</div><div class="ep_name">Bulma and Son Goku</div><div class="ep_number">2</div><div class="ep_name">What the...?! No Balls!</div></div>');
     });
     
-    //TODO que se passe-t-il si on appellela fonction refresh sur un modèle supprimé de son parent ?
+    //TODO que se passe-t-il si on appelle la fonction refresh sur un modèle supprimé de son parent ?
 
 //TODO demo todo list : 
 /*
@@ -217,6 +265,7 @@ avec binding par defaut :
     //TODO une fois le binding par défaut implémenté faire marcher ceci : 
     //  <span class="name"></span><input class="name" type="text"></input>, {name: 'toto'}, {"name": ".name"}
     //TODO Mamba api si on appelle refresh avant render alors message d'erreur
+    //TODO implementer polymorphisme (si propriété n'existe pas suppr element de dom)
     
    /*
     Cas à faire marcher (ou pas ya pas de r00t) : render et/ou binding           
