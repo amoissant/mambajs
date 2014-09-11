@@ -37,6 +37,10 @@ function MbaTemplate(template, directivesPrecursor){
         return this._rootNode;    
     };
     
+    MbaTemplate.prototype.getSuperModel = function(){
+        return this._superModel;    
+    };
+    
     MbaTemplate.prototype.findDom = function(selector){
         checkType(selector, 'string');
         return this._template.find(selector);
@@ -102,16 +106,16 @@ function MbaTemplate(template, directivesPrecursor){
         if(model == this._superModel)
             return this.updateDomForSuperModel();
         
-        var visitor = new GetNodesAndAccessorsVisitor(); 
-        this._rootNode.accept(visitor); 
-        visitor.constructAccessorNodes();
-        var accessorTree = visitor.getRootAccessorNode();
-        console.log(accessorTree);
-        var modelFinder = new ModelFinder(accessorTree, this._superModel, model);//TOOD peut etre que c'est le ModelFinder qui devrait construire le accessorTree ?
+        var modelFinder = new MbaModelFinder(this, model);
+        this.checkModelBelongsSuperModel(modelFinder);
+        this.refreshNodesForRoute(modelFinder.getCurrentMbaNodes(), modelFinder.getCurrentRoute());
+    };    
+    
+    MbaTemplate.prototype.checkModelBelongsSuperModel = function(modelFinder){
+        checkType(modelFinder, MbaModelFinder);
         modelFinder.searchForWantedModel();
         if(!modelFinder.hasFoundModel())
-            throw new MbaError(42, 'Passed model is not a sub model of super model');
-        this.refreshNodesForRoute(modelFinder.getTargetMbaNodes(), modelFinder.getTargetRoute());
+            throw new Error('Passed model is not a sub model of super model');
     };
     
     MbaTemplate.prototype.refreshNodesForRoute = function(nodes, route){
@@ -155,7 +159,7 @@ function MbaTemplate(template, directivesPrecursor){
     };
     
     MbaTemplate.prototype.generateRefreshMethod = function(){
-        var methodeGenerator = new MbaRefreshMethodGenerator(this, this._superModel);
+        var methodeGenerator = new MbaRefreshMethodGenerator(this/*, this._superModel*/);
         methodeGenerator.generateMethods();
     };
     

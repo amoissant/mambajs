@@ -1,4 +1,6 @@
-function MbaModelExplorer(accessorTree, superModel){//TODO factoriser le code avec ModelFinder
+function MbaModelExplorer(mbaTemplate){
+    
+    this.STOP = 'stop';
     
     this._accessorTree;
     this._superModel;
@@ -7,16 +9,25 @@ function MbaModelExplorer(accessorTree, superModel){//TODO factoriser le code av
     this._currentMbaNodes;
     
     if(arguments.length > 0)
-        this.init(accessorTree, superModel, wantedModel);
+        this.init(mbaTemplate);
 }
 
-MbaModelExplorer.prototype.init = function(accessorTree, superModel){
-    checkType(accessorTree, RootAccessorNode);
-    this._accessorTree = accessorTree;
-    this._superModel = superModel;
+MbaModelExplorer.prototype.init = function(mbaTemplate){
+    checkType(mbaTemplate, MbaTemplate);
+    this._accessorTree = this.constructAccessorTree(mbaTemplate.getRootNode());
+    this._superModel = mbaTemplate.getSuperModel();
     this._stackModels = [];
     this._currentRoute = new MbaRoute([null]);
 };
+
+MbaModelExplorer.prototype.constructAccessorTree = function(rootNode){
+    checkType(rootNode, MbaRootNode);
+    var visitor = new GetNodesAndAccessorsVisitor(); 
+    rootNode.accept(visitor); 
+    visitor.constructAccessorNodes();
+    return visitor.getRootAccessorNode();
+};
+
 
 MbaModelExplorer.prototype.getSuperModel = function(){
     return this._superModel;
@@ -45,29 +56,35 @@ MbaModelExplorer.prototype.visitModel = function(accessorNode){
     if(model instanceof Array){
         for(var i=0 ; i<model.length ; i++){
             this._currentRoute.setLastIndex(i);
-            this.visitOneModel(model[i], accessorNode);
+            if(this.STOP == this.visitOneModel(model[i], accessorNode))
+                return this.STOP;
         }
     }
     else
-        this.visitOneModel(model, accessorNode);
+        if(this.STOP == this.visitOneModel(model, accessorNode))
+            return this.STOP;
     this._currentRoute.removeLastIndex();
 };
 
 MbaModelExplorer.prototype.visitOneModel = function(model, accessorNode){
     checkType(accessorNode, RootAccessorNode);
     this._currentMbaNodes = accessorNode.getMbaNodes();
-    this.beforeVisitModel(model);
+    if(this.STOP == this.beforeVisitModel(model))
+        return this.STOP;
     this._stackModels.push(model);
-    this.visitSubModels(accessorNode);
+    if(this.STOP == this.visitSubModels(accessorNode))
+        return this.STOP;
     this._stackModels.pop();  
-    this.afterVisitModel(model);
+    if(this.STOP == this.afterVisitModel(model))
+        return this.STOP;
 };
 
 MbaModelExplorer.prototype.visitSubModels = function(accessorNode){
     checkType(accessorNode, RootAccessorNode);
     var accessorChildren = accessorNode.getChildren();
     for(var childName in accessorChildren){
-        this.visitModel(accessorNode.getChild(childName))
+        if(this.STOP == this.visitModel(accessorNode.getChild(childName)))
+            return this.STOP;
     }
 };
 

@@ -3022,36 +3022,12 @@ var testMbaV2 = function() {
             mamba.updateDomForModel({});
         }
         catch(e){
-            OnAttend(e.code).DEtreEgalA(42);
+            OnAttend(e.message).DEtreEgalA('Passed model is not a sub model of super model');
             return;
         }
         OnAttend(false).DEtreVrai();
     });
     
-    Ca('test la mise à jour manuelle du dom pour un modèle', function(){
-        var data = getHtmlDirectiveAndModelForManualDomUpdate();
-        var html = data.html;
-        var directive = data.directive;   
-        var model = data.model;
-        var mamba = new MbaTemplate(html, directive);
-        mamba.render(model);
-        //mamba.getRootNode().debug(true);
-        var renderedDom = mamba.getRenderedDom();
-        var expectedHtml = 
-            '<div class="anime"><div class="name">SpongeBob SquarePants</div><div class="ep_number">01a</div><div class="ep_name">Help Wanted</div><div class="ep_number">01b</div><div class="ep_name">Reef Blower</div></div><div class="anime"><div class="name">Dragon Ball</div><div class="ep_number">01</div><div class="ep_name">Bulma and Son Goku</div><div class="ep_number">02</div><div class="ep_name">What the...?! No Balls!</div></div>';        
-        OnAttend(renderedDom.toString()).DEtreEgalA(expectedHtml);
-        
-        var wantedModel = model.video.animes[1].episodes[0];
-        wantedModel.name  = 'toto';
-        model.video.animes[1].episodes[1].name = 'won\'t be rendered';
-        mamba.updateDomForModel(wantedModel);
-        //mamba.getRootNode().debug(true);
-        
-        renderedDom = mamba.getRenderedDom();
-        expectedHtml = 
-            '<div class="anime"><div class="name">SpongeBob SquarePants</div><div class="ep_number">01a</div><div class="ep_name">Help Wanted</div><div class="ep_number">01b</div><div class="ep_name">Reef Blower</div></div><div class="anime"><div class="name">Dragon Ball</div><div class="ep_number">01</div><div class="ep_name">toto</div><div class="ep_number">02</div><div class="ep_name">What the...?! No Balls!</div></div>';  
-        OnAttend(renderedDom.toString()).DEtreEgalA(expectedHtml);
-    });
 
     Ca('teste la récupération du dernier modèle pour une route vide par un MbaAccessorChain sans accesseurs', function(){
         var accessorChain = new MbaAccessorChain();

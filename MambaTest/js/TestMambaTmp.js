@@ -1,6 +1,26 @@
 Test(function() {   
-    
-    //TODO Ca('teste quand on appelle refresh sur un modèle qui n\'est plus un sous-modèle du super modèle', function(){
+       
+    Ca('teste quand on appelle refresh sur un modèle qui n\'est plus un sous-modèle du super modèle', function(){
+        var model = {list: [{name : 'toto'}, {name : 'tutu'}]};
+        var template = '<span></span>';
+        var directive = {list : {r00t : 'span', name : 'span'}};
+        var root = document.createElement('div');
+        root.id = 'root';
+        root.innerHTML = template;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({genRefresh: true});
+        mamba.render();
+        
+        var removedItem = model.list.pop();
+        try{
+            removedItem.refresh();
+        }
+        catch(e){
+            OnAttend(e.message).DEtreEgalA('Passed model is not a sub model of super model');
+            return;
+        }
+        OnAttend(false).DEtreVrai();
+    });
     
     Ca('teste que les éléments sont supprimés suite à un refresh manuel', function(){
         var model = {list: [{name : 'toto'}, {name : 'tutu'}]};
@@ -15,7 +35,7 @@ Test(function() {
         
         OnAttend(root.innerHTML).DEtreEgalA('<span>toto</span><span>tutu</span>');
         
-        var removedItem = model.list.pop();
+        model.list.pop();
         model.refresh();
         
         OnAttend(root.innerHTML).DEtreEgalA('<span>toto</span>');

@@ -100,7 +100,7 @@ Benchmark.prototype.getRenderedDom = function(){
         +'<input id="render" type="button" value="Render">'
         +'<input id="update" type="button" value="Update">'
         +'</input><input id="search" type="button" value="Search">'
-        +'</input><input id="gen_refresh" type="checkbox"></input>'
+        +'</input><input id="gen_refresh" type="checkbox"></input>generate refresh method'
     +'<div id="array"></div>';
 
  var directive = {"messages" : {"r00t" : ".message", "text": ".message"},

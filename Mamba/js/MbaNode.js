@@ -72,15 +72,6 @@ function MbaNode(parent, baseDom){
 		this._children.push(child);
 	};
     
-	MbaNode.prototype.getChild = function(index){
-		checkType(index, 'number');
-		
-		if(index < this._children.length)
-			return this._children[index];
-		else
-			return null;//TODO throw error plutot
-	};
-    
     MbaNode.prototype.setChildAtIndex = function(child, index){
         checkType(child, MbaNode);
 		checkType(index, 'number');
@@ -103,16 +94,10 @@ function MbaNode(parent, baseDom){
         this._children = newChildren;
     };
 
-    //TODO à suppr, fait doublon avec celle dessous
     MbaNode.prototype.getChildPosition = function(child){
 		checkType(child, MbaNode);
 		return this._children.indexOf(child);
 	};
-    
-    MbaNode.prototype.getChildIndex = function(child){
-        checkType(child, MbaNode);
-        return this._children.indexOf(child);
-    };
     
     MbaNode.prototype.getPositionInParent = function(){
       return this._parent.getChildPosition(this);  
