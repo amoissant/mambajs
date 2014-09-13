@@ -1,4 +1,4 @@
-mambajs
+<img src="mamba-logo-64.png"></img>mambajs
 =======
 
 A javascript library for templating and binding.
