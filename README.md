@@ -1,4 +1,4 @@
-<img style="vertical-align: sub" src="mamba-logo-64.png"></img><span>Mamba-js</span>
+<img src="mamba-logo-64.png"></img><span>Mamba-js</span>
 =======
 
 A javascript library for templating and binding.
