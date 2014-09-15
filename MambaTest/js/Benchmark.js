@@ -32,7 +32,7 @@ Benchmark.prototype.createBenchModel = function(){
 
 Benchmark.prototype.createBenchHtml = function(){
     this._benchHtml = 
-        '<table><thead><tr><th>ID</th><th>NAME;</th><th>TOWN</th><th>COUNTRY</th></tr></thead><tbody><tr id="person"><td id="id"></td><td id="name"></td><td id="town"></td><td id="country"></td></tr></tbody></table>';
+        '<table><thead><tr><th>ID</th><th>NAME</th><th>TOWN</th><th>COUNTRY</th></tr></thead><tbody><tr id="person"><td id="id"></td><td id="name"></td><td id="town"></td><td id="country"></td></tr></tbody></table>';
 };
 
 Benchmark.prototype.createBenchDirective = function(){
@@ -45,6 +45,7 @@ Benchmark.prototype.createBenchDirective = function(){
 };
 
 Benchmark.prototype.timeRender = function(){
+    document.querySelector(this._anchor).innerHTML = '';
     var begin = new Date();
     this._benchMamba = new Mamba(this._benchModel, this._benchHtml, this._benchDirective, this._anchor);
     this._benchMamba.setOptions({genRefresh: this.genRefresh});
@@ -68,8 +69,8 @@ Benchmark.prototype.updateBenchModel = function(){
 Benchmark.prototype.timeUpdate = function(){
     this.updateBenchModel();
     var begin = new Date();
-    this._benchMamba.setOptions({genRefresh: this.genRefresh});
-    this._benchDom = this._benchMamba.render();
+    this._benchMamba.setOptions({genRefresh: this.genRefresh});    
+    this._benchDom = this._benchMamba.refresh();
     var end = new Date();
     var message = {text : 'time for update '+this._benchModelSize+' elements : '+this.getTimeInSeconds(begin, end)+'s.'};
     this.messages.push(message);
@@ -85,6 +86,7 @@ Benchmark.prototype.timeSearchForModel = function(){
     this.messages.push(message);
 };
 
+
 Benchmark.prototype.getRenderedDom = function(){
     return this._benchDom;
 };
@@ -94,7 +96,7 @@ Benchmark.prototype.getRenderedDom = function(){
  //disable checkType function called everywhere -> x20 perfs
  checkType = function(){};
  
- var bench = new Benchmark(1000, document.getElementById('array'));
+ var bench = new Benchmark(1000, '#array');
  var html = 
      '<div class="message"></div>'
         +'<input id="render" type="button" value="Render">'

@@ -4,6 +4,7 @@ function MbaAccessorChain(){
     this._lastRoute;
     this._lastModel;
     this._completeRoutes;
+    this._cachedModelValues = {};
     
     MbaAccessorChain.prototype.init = function(){
         this._accessors = [];

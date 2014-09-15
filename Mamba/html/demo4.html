@@ -2,8 +2,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<script type="text/javascript" src="../js/jquery-1.10.1.js"></script>
- 
-    <script type="text/javascript" src="../js/MbaError.js"></script>
+ <script type="text/javascript" src="../js/MbaError.js"></script>
 	<script type="text/javascript" src="../js/Mamba.js"></script>
 	<script type="text/javascript" src="../js/MbaUtil.js"></script>
 	<script type="text/javascript" src="../js/MbaDom.js"></script>
@@ -96,55 +95,63 @@
 </body>
 <script type="text/javascript">
     
-    function Message(text, parent){
-        this.text = text;
-    }
-    
-    function MessageCollection(){
-        this.messages = [];
-        this.newMessage = '';
-        this.add = function(){
-            this.messages.push(new Message(this.newMessage, this));
-            this.newMessage = '';
-        };
-        this.remove = function(message){
-            var index = this.messages.indexOf(message);
-            this.messages.splice(index, 1);
-        };
-        this.empty = function(){
-            this.messages = [];
-        };
-    }
-    
-    function appendInBody (renderedDom){
-        var dom = renderedDom.getElements();
-        var content = document.querySelector('#content');
-        for(var i=0 ; i<dom.length ; i++){
-            content.appendChild(dom[i]);
-        }  
-    }
+    function TodoModel(){
+        this.newItem = '';
+        this.items = [];
+        this.add = 
+            function(){
+                this.items.push({name: this.newItem, selected: false});
+                this.newItem = '';
+            };
+        
+        this.del = 
+            function(item){
+                this.items.splice(this.items.indexOf(item), 1);
+            };
+        
+        this.setSelectedForAll = 
+            function(selected){
+                for(var i=0;i<this.items.length;i++){
+                    this.items[i].selected=selected;
+                }
+            };
+        
+        this.selectAll = 
+            function(){
+                this.setSelectedForAll(true);
+            };
+        
+        this.selectAny = 
+            function(){
+                this.setSelectedForAll(false);
+            };
+    };
     
     var html = 
-        '<div class="messages"></div>'+
-        '<input id="message" type="text" placeholder="taper un message ici"></input>'+
-        '<input id="addBtn" type="button" value="Ajouter"></input>'+
-        '<input id="emptyBtn" type="button" value="Vider"></input>';
+        '<input id="newItem" type="text"></input>'+
+        '<button id="add">ajouter</button>'+
+        '<button id="selAll">tous</button>'+
+        '<button id="selAny">aucun</button>'+
+        '<div class="itemCont">'+
+            '<input class="item" type="text"></input>'+
+            '<input class="check" type="checkbox"></input>'+
+            '<button class="del">suppr</button>'+
+        '</div> ';
     
-    var model = new MessageCollection();
+    var model = new TodoModel();
 
     var directive = 
-        {"messages": 
-            {"r00t": ".messages", 
-             "text": ".messages"},
-         "newMessage": "#message$value->blur",
-         "/add": "#addBtn->click", 
-         "/empty": "#emptyBtn->click", 
-         "/remove": ".messages->click"};
+        {"newItem": "#newItem$value->blur",
+         "items": {"r00t": ".itemCont",
+                   "name": ".item$value->keyup",
+                   "selected": ".check$checked->click"},
+         "/add": "#add->click",
+         "/del": ".del->click",
+         "/selectAll": "#selAll->click",
+         "/selectAny": "#selAny->click"};
     
-    var mamba = new MbaTemplate(html, directive);
-    mamba.render(model);
-    mamba.getRootNode().debug(true);
-    var renderedDom = mamba.getRenderedDom();
-    appendInBody(renderedDom);
+    var mamba = new Mamba(model, html, directive, '#content');
+    mamba.render();
+    mamba.debugNodes();
 </script>
 </html>

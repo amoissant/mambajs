@@ -1,4 +1,4 @@
-AddSuperModelAccessorVisitor = function(property){
+function AddSuperModelAccessorVisitor(property){
     
     this._property;
     

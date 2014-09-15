@@ -51,10 +51,10 @@ function MbaTemplateBinding(template, binding){
         checkType(dom, MbaDom);
         checkType(route, MbaRoute);
         checkType(parentDirectiveNode, MbaNode);
-		for(var i=0 ; i<this._transformations.length ; i++){
-			var currTransf = this._transformations[i];
+        for(var i=0 ; i<this._transformations.length ; i++){
+            var currTransf = this._transformations[i];
             currTransf.update(dom, model, route, parentDirectiveNode);
-		}
+		}  
 	};
     
     MbaTemplateBinding.prototype.prepareBindingEvents = function(dom, node, route){
