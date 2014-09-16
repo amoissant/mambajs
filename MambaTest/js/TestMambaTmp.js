@@ -222,52 +222,6 @@ Test(function() {
         OnAttend(root.innerHTML).DEtreEgalA('<div class="anime"><div class="name">SpongeBob SquarePants</div><div class="ep_number">1A</div><div class="ep_name">Help Wanted</div><div class="ep_number">1B</div><div class="ep_name">Reef Blower</div></div><div class="anime"><div class="name">Dragon Ball</div><div class="ep_number">1</div><div class="ep_name">Bulma and Son Goku</div><div class="ep_number">2</div><div class="ep_name">What the...?! No Balls!</div></div>');
     });
     
-    //TODO que se passe-t-il si on appelle la fonction refresh sur un modèle supprimé de son parent ?
-
-//TODO demo todo list : 
-/*
-<input id="newItem" type="text"></input><button id="add">ajouter</button><button id="selAll">tous</button>
-<div class="itemCont"><input class="item" type="text"></input><input class="check" type="checkbox"></input><button class="del">suppr</button></div> 
-    
-{items: [],
- newItem: "",
- add: function(){this.items.push({name: this.newItem, selected: false}); this.newItem = '';},
- del: function(item){this.items.splice(this.items.indexOf(item), 1);},
- selectAll: function(){for(var i=0;i<this.items.length;i++){this.items[i].selected=true;}}}
-
-{"newItem": "#newItem$value->blur",
- "items": {"r00t": ".itemCont",
-           "name": ".item$value->keyup",
-           "selected": ".check$checked->click"},
- "/add": "#add->click",
- "/del": ".del->click",
- "/selectAll": "#selAll->click"}
-  
-avec binding par defaut : 
- {"newItem": "#newItem",
- "items": {"r00t": ".itemCont",
-           "name": ".item",
-           "selected": ".check"},
- "/add": "#add",
- "/del": ".del",
- "/selectAll": "#selAll"}
-*/
-    
-    //TODO faire API mamba : 
-        // - var mamba = new Mamba(model, template, directive, anchor);
-        // - var mamba = new Mamba({model: model, template: template, directive: directive, anchor: anchor});
-        //     -> on peut passer tous les arguments ou pas
-        //     -> si template n'est pas du texte mais du dom présent dans la page alors le gérer.
-        // - mamba.setModel(model); -> setter
-        // - mamba.setTemplate(template); -> setter
-        // - mamba.setDirective(directive); -> setter
-        // - mamba.setAnchor(anchor); -> setter pour l'endroit ou on va insérerle dom rendu, 
-        //     -> peut être un sélecteur css, un élément de dom
-        // - var dom = mamba.render();
-        // - var dom = mamba.render(model); -> raccourcis pour setModel puis render()
-        // - mamba.refresh(model); -> rafraichit le dom pour ce model. -> on peut passer un sous-modèle
-        // - mamba.setOptions({mode: manual}) -> pas de binding par defaut
-    
     //TODO getter/setter accessor, propertyAccessor
     //TODO valider les model, template binding et anchor et lever une erreur si le type ne correspond pas
     //TODO options de debug pour afficher les structure de données, afficher quand le model est set, quand on fait un refresh...

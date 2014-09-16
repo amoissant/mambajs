@@ -48,7 +48,7 @@ function MbaTemplateBinding(template, binding){
     };
     
     MbaTemplateBinding.prototype.render = function (dom, model, route, parentDirectiveNode){
-        checkType(dom, MbaDom);
+        checkType(dom, MbaDomSingle);
         checkType(route, MbaRoute);
         checkType(parentDirectiveNode, MbaNode);
         for(var i=0 ; i<this._transformations.length ; i++){

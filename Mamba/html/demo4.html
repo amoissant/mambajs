@@ -129,6 +129,7 @@
     
     var html = 
         '<input id="newItem" type="text"></input>'+
+        '<span></span>'+
         '<button id="add">ajouter</button>'+
         '<button id="selAll">tous</button>'+
         '<button id="selAny">aucun</button>'+
@@ -141,7 +142,7 @@
     var model = new TodoModel();
 
     var directive = 
-        {"newItem": "#newItem$value->blur",
+        {"newItem": "#newItem$value->input, span",
          "items": {"r00t": ".itemCont",
                    "name": ".item$value->keyup",
                    "selected": ".check$checked->click"},
