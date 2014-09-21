@@ -20,7 +20,7 @@ MbaRefreshMethodGenerator.prototype.beforeVisitModel = function(model){
     var nodes = this.getCurrentMbaNodes();
     //TODO : si dans les nodes il y a le rootNode alors ne garder que celui-ci sinon plusieurs rafraichissements
     // de manière générale ne garder que le noeud parent
-    model.refresh = 
+    model[MBA_CST.REFRESH] = 
         function(){
             var modelFinder = new MbaModelFinder(mbaTemplate, model);
             mbaTemplate.checkModelBelongsSuperModel(modelFinder);

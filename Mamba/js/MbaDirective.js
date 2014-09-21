@@ -159,7 +159,8 @@ function MbaDirective(precursor, parentPropertyName){
     
     MbaDirective.prototype.createAccessor = function(prop){
         //TODO : à enrichir pour tous les type d'accesseurs...
-        return new MbaFieldAccessor(prop);
+        //return new MbaFieldAccessor(prop);
+        return new MbaAccessor(prop);
     };
        
     MbaDirective.prototype.createActionBinding = function(prop){

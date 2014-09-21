@@ -1,5 +1,5 @@
 function MbaFieldAccessor(precursor){
-    
+    //TODO plus utilisé
     this._field;
     
     MbaFieldAccessor.prototype.init = function(precursor){

@@ -1,11 +1,8 @@
 
 var MBA_CST = {};
 MBA_CST.ROOT = 'r00t';
-MBA_CST.POPULATE = 'populate';
-MBA_CST.VISITED ="V151730";
-MBA_CST.DIRECTIVE ="01R3C71V3";
-MBA_CST.MAMBA ="mamba";
 MBA_CST.REF_FUNCTIONS = {};
+MBA_CST.REFRESH = 'refresh';
 
 /* Fonctions de transformation du dom */
 
