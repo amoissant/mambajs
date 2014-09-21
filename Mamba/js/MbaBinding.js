@@ -3,8 +3,6 @@ function MbaBinding(cssSelector, anchorProvider, firstTransf){
 	this._selector;
 	this._transformations;
 	this._anchor;
-	this._renderedDoms;
-	this._oldModelSize;
     this._anchorProvider;
 	
 	MbaBinding.prototype.init = function(cssSelector, anchorProvider, firstTransf){
@@ -14,7 +12,6 @@ function MbaBinding(cssSelector, anchorProvider, firstTransf){
 		
 		this._selector = cssSelector;
 		this._transformations = [];
-		this._renderedDoms = {};
         this._anchorProvider = anchorProvider;
         this.addTransformation(firstTransf);
 	};	

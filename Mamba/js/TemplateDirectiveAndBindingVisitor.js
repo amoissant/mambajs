@@ -19,13 +19,12 @@ function TemplateDirectiveAndBindingVisitor(template, rootDirective){
     
     TemplateDirectiveAndBindingVisitor.prototype.beforeVisitDirective = function(directive){
         checkType(directive, MbaDirective);
-        //TODO extract method
-        if(directive.hasRoot()){
-            var subTemplate = this.getRelativeTemplate().find(directive.getRootSelector());
-            this._subTemplates.push(subTemplate);
-        }
+        var subTemplate;
+        if(directive.hasRoot())
+            subTemplate = this.getRelativeTemplate().find(directive.getRootSelector());
         else
-            this._subTemplates.push(this.getRelativeTemplate());
+            subTemplate = this.getRelativeTemplate();
+        this._subTemplates.push(subTemplate);
         
         var templateDirective = new MbaTemplateDirective(this.getRelativeTemplate(), directive);
         this._templateDirectives.push(templateDirective);
@@ -45,10 +44,7 @@ function TemplateDirectiveAndBindingVisitor(template, rootDirective){
     };
     
     TemplateDirectiveAndBindingVisitor.prototype.beforeVisitBinding = function(binding){
-        checkType(binding, MbaBinding);
-        if(binding instanceof MbaBindingText)
-            console.log("MbaBindingText");
-        
+        checkType(binding, MbaBinding);    
         var templateBinding = new MbaTemplateBinding(this.getRelativeTemplate(), binding);
         this.getCurrentTemplateDirective().addTemplateBinding(templateBinding);
     };        
