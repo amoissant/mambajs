@@ -51,10 +51,13 @@ function MbaTemplateBinding(template, binding){
         checkType(dom, MbaDomSingle);
         checkType(route, MbaRoute);
         checkType(parentDirectiveNode, MbaNode);
+        var allModelValuesAreUndefined = true;
         for(var i=0 ; i<this._transformations.length ; i++){
             var currTransf = this._transformations[i];
-            currTransf.update(dom, model, route, parentDirectiveNode);
-		}  
+            var modelValue = currTransf.update(dom, model, route, parentDirectiveNode);
+            allModelValuesAreUndefined = allModelValuesAreUndefined && modelValue==undefined;
+		}
+        return allModelValuesAreUndefined;
 	};
     
     MbaTemplateBinding.prototype.prepareBindingEvents = function(dom, node, route){

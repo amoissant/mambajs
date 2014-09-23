@@ -88,6 +88,7 @@ MbaTransf.prototype.update = function(dom, model, route, parentDirectiveNode){
     this.setOldValue(newValue, route);
     this.setSuperModel(model);//TODO on peut optimiser les perfs ici avec un évènement pour modifier la référence du supermodel
     this.referenceModelIntoDom(dom);
+    return newValue;
 };
 
 MbaTransf.prototype.canReadValueFromDom = function(){

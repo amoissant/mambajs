@@ -77,6 +77,7 @@ Mamba.prototype._init = function(model, template, directive, anchor){
     }   
     this._directive = directive;
     this._initDefaultOptions();
+    this._renderedDom = null;
 };
 
 Mamba.prototype._initAnchor = function(anchor){

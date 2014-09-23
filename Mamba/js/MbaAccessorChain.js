@@ -84,9 +84,9 @@ function MbaAccessorChain(){
         if(this.hasAccessors())
             resultModel = this.getModelValueFromNonEmptyRoute(model, route, this.getAccessorCount());
 
-        if(route.length > this.getAccessorCount()){
+        if(route.length > this.getAccessorCount())
             resultModel = this.getModelForRouteAtIndex(resultModel, route, route.length-1);
-        }
+
         return resultModel;
     };
     

@@ -229,7 +229,11 @@ MbaDom.prototype.remove = function(dom){
 
 MbaDom.prototype.removeFromParent = function(){
     var parent = this.getParent();
+    var domCopy = [];
     for(var i=0 ; i<this._dom.length ; i++){
-        parent.removeChild(this._dom[i]);
+        domCopy[i] = this._dom[i];
+    }
+    for(var i=0 ; i<domCopy.length ; i++){
+        parent.removeChild(domCopy[i]);
     }
 };

@@ -1367,7 +1367,7 @@ var testMbaV2 = function() {
         //rootNode.debug(true);
         
         var htmlRendered = 
-            '<div id="root"><div id="toto"></div></div><div id="stuff"></div>';
+            '<div id="root"></div><div id="stuff"></div>';
         OnAttend(mbaTemplate.getRenderedDom().toString()).DEtreEgalA(htmlRendered);
         OnAttend(rootNode.indexedRenderedDomIsValid()).DEtreVrai();
     });

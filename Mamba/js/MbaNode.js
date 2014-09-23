@@ -1,3 +1,4 @@
+
 function MbaNode(parent, baseDom){
 	
     this._baseDom;
@@ -184,10 +185,10 @@ function MbaNode(parent, baseDom){
     
     MbaNode.prototype.getRenderedDomForIndex = function(index){
         checkType(index, 'string');
-        //TODO : faire des assert qu'on pourra désactiver contenant ce genre de code lourd
-        if(this.hasNoRenderedDomForIndex(index))
-            throw new MbaError(0, 'There is no renderedDom for index : \''+index+'\'');
-        return this._indexedRenderedDom[index];
+        var renderedDomForIndex = this._indexedRenderedDom[index];
+        if(renderedDomForIndex == null)//only happens for polymorphic models
+            renderedDomForIndex = new MbaDomEmpty();
+        return renderedDomForIndex;
 	};
     
     MbaNode.prototype.getRenderedDomForRoute = function(route){
