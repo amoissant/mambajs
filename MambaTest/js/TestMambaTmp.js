@@ -48,6 +48,7 @@ Test(function() {
          var root = document.createElement('div');
          root.innerHTML = template;
          var mamba = new Mamba(model, root.childNodes, directive);
+         mamba.setOptions({debug: false});
          mamba.render();
          
          var select = root.childNodes[0];
@@ -72,30 +73,140 @@ Test(function() {
          var root = document.createElement('div');
          root.innerHTML = template;
          var mamba = new Mamba(model, root.childNodes, directive);
+         mamba.setOptions({debug: false});
          mamba.render();
-         mamba.debugNodes();
+         //mamba.debugNodes();
          
          OnAttend(root.innerHTML).DEtreEgalA('<table><tbody><tr><td></td><td><input class="name" type="text"></td></tr><tr><td><input class="check" type="checkbox"></td><td><input class="name" type="text"></td></tr><tr><td><input class="check" type="checkbox"></td><td></td></tr></tbody></table>');
     });
     
     Ca('teste le polymorphisme avec des transformations de type texte', function(){
-         var model = 
-             [{first : 'toto'},
-              {first : 'tutu', second : 'titi'},
-              {second : 'tata'}];
-         var template = '<span class="poly"></span><div class="poly"></div>';
-         var directive =
-             {"r00t" : ".poly",
-              "first" : "span",
-              "second" : "div"};
-         var root = document.createElement('div');
-         root.innerHTML = template;
-         var mamba = new Mamba(model, root.childNodes, directive);
-         mamba.render();
-         //mamba.debugNodes();
-         
-         OnAttend(root.innerHTML).DEtreEgalA('<span class="poly">toto</span><span class="poly">tutu</span><div class="poly">titi</div><div class="poly">tata</div>');
+        var model = 
+            [{first : 'toto'},
+             {first : 'tutu', second : 'titi'},
+             {second : 'tata'}];
+        var template = '<span class="poly"></span><div class="poly"></div>';
+        var directive =
+            {"r00t" : ".poly",
+             "first" : "span",
+             "second" : "div"};
+        var root = document.createElement('div');
+        root.innerHTML = template;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({debug: false});
+        mamba.render();
+        //mamba.debugNodes();
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<span class="poly">toto</span><span class="poly">tutu</span><div class="poly">titi</div><div class="poly">tata</div>');
     });
+    
+    Ca('teste un scénario avec polymorphisme', function(){
+        var model = 
+            {elements: [
+                {text : 'toto', 
+                 value: function(){return arguments.length==0 ? this.text : this.text=arguments[0];}},
+                {choice: 1, 
+                 value: function(){return arguments.length==0 ? this.choice : this.choice=arguments[0];},
+                 options : [1, 2, 3, 4]},
+                {selected : true, value: function(){return arguments.length==0 ? this.selected : this.selected=arguments[0];}}
+            ]};
+
+        var template = '<div class="form_element"><span>value : </span><span class="val"></span><br/><input type="text"></input><select><option></option></select><input type="checkbox"></input></div>';
+
+        var directive =
+            {"elements" : {"r00t" : ".form_element",
+               "text" : "input[type='text']$value->input",
+               "options" : {"r00t" : "option", "toString" : "option"},
+               "choice" : "select$value->(keyup, click)",
+               "selected" : "input[type='checkbox']$checked->(click, keyup)",
+               "value" : ".val"}};
+ 
+        var root = document.createElement('div');
+        root.innerHTML = template;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({debug: false});
+        mamba.render();
+        
+        var input = root.childNodes[0].childNodes[3];
+        var select = root.childNodes[1].childNodes[3];;
+        var checkbox = root.childNodes[2].childNodes[3];;
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="form_element"><span>value : </span><span class="val">toto</span><br><input type="text"></div><div class="form_element"><span>value : </span><span class="val">1</span><br><select><option>1</option><option>2</option><option>3</option><option>4</option></select></div><div class="form_element"><span>value : </span><span class="val">true</span><br><input type="checkbox"></div>');
+        
+        OnAttend(input.value).DEtreEgalA('toto');
+        OnAttend(select.value).DEtreEgalA('1');
+        OnAttend(checkbox.checked).DEtreVrai();
+        
+        input.value='tutu';
+        input.dispatchEvent(new Event('input'));
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="form_element"><span>value : </span><span class="val">tutu</span><br><input type="text"></div><div class="form_element"><span>value : </span><span class="val">1</span><br><select><option>1</option><option>2</option><option>3</option><option>4</option></select></div><div class="form_element"><span>value : </span><span class="val">true</span><br><input type="checkbox"></div>');
+        
+        select.value='3';
+        select.dispatchEvent(new Event('keyup'));
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="form_element"><span>value : </span><span class="val">tutu</span><br><input type="text"></div><div class="form_element"><span>value : </span><span class="val">3</span><br><select><option>1</option><option>2</option><option>3</option><option>4</option></select></div><div class="form_element"><span>value : </span><span class="val">true</span><br><input type="checkbox"></div>');
+        
+        checkbox.checked = false;
+        checkbox.dispatchEvent(new Event('keyup'));
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="form_element"><span>value : </span><span class="val">tutu</span><br><input type="text"></div><div class="form_element"><span>value : </span><span class="val">3</span><br><select><option>1</option><option>2</option><option>3</option><option>4</option></select></div><div class="form_element"><span>value : </span><span class="val">false</span><br><input type="checkbox"></div>');
+    });
+    
+    Ca('teste que l\'on trace les selecteur, binding et event en mode debug (par défaut)', function(){
+        var consoleContent = [];
+        var consoleLog = console.log;
+        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
+        var mamba = new Mamba({name: 'toto'}, '<div></div>', {name: 'div@name->(click, blur)'});
+        mamba.render();
+        var consleContentJoinded = consoleContent.join('');
+        OnAttend(consleContentJoinded.contains('selector="div"')).DEtreVrai();
+        OnAttend(consleContentJoinded.contains('binding="@name"')).DEtreVrai();
+        OnAttend(consleContentJoinded.contains('events=[click,blur]')).DEtreVrai();
+    });
+    
+    Ca('teste que l\'on ne trace pas les selecteur, binding et event si on n\'est pas en mode debug', function(){
+        var consoleContent = [];
+        var consoleLog = console.log;
+        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
+        var mamba = new Mamba({name: 'toto'}, '<div></div>', {name: 'div@name->(click, blur)'});
+        mamba.setOptions({debug: false});
+        mamba.render();
+        var consleContentJoinded = consoleContent.join('');
+        OnAttend(consleContentJoinded.contains('selector="div"')).DEtreFaux();
+        OnAttend(consleContentJoinded.contains('binding="@name"')).DEtreFaux();
+        OnAttend(consleContentJoinded.contains('events=[click,blur]')).DEtreFaux();
+    });
+    
+    Ca('teste que l\'on trace les selecteur, binding, events. Cas malformé 01', function(){
+        var consoleContent = [];
+        var consoleLog = console.log;
+        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
+        try{
+            var mamba = new Mamba(null, '', {"selected" : "input[type='checkbox']$checked->(click, keyup"});
+            mamba.render();
+        }
+        catch(e){
+            var consleContentJoinded = consoleContent.join('');
+            OnAttend(consleContentJoinded.contains('selector="input[type=\'checkbox\']"')).DEtreVrai();
+            OnAttend(consleContentJoinded.contains('binding="$checked"')).DEtreVrai();
+            return;
+        }
+        OnAttend(true).DEtreFaux();        
+    });
+    
+    Ca('teste que l\'on trace les selecteur, binding, events. Cas malformé 02', function(){
+        var consoleContent = [];
+        var consoleLog = console.log;
+        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
+        var mamba = new Mamba(null, '', {"text" : "input[type='text']$value->change'"});
+        mamba.render();
+        var consleContentJoinded = consoleContent.join('');
+        OnAttend(consleContentJoinded.contains('selector="input[type=\'text\']"')).DEtreVrai();
+        OnAttend(consleContentJoinded.contains('binding="$value"')).DEtreVrai();
+        OnAttend(consleContentJoinded.contains('events=[change\']')).DEtreVrai();
+    });
+    
     
     //TODO valider les model, template binding et anchor et lever une erreur si le type ne correspond pas
     //TODO options de debug pour afficher les structure de données, afficher quand le model est set, quand on fait un refresh...
@@ -112,6 +223,5 @@ Test(function() {
     //TODO une fois le binding par défaut implémenté faire marcher ceci : 
     //  <span class="name"></span><input class="name" type="text"></input>, {name: 'toto'}, {"name": ".name"}
     //TODO Mamba api si on appelle refresh avant render alors message d'erreur
-    //TODO implementer polymorphisme (si propriété n'existe pas suppr element de dom)
 });
 	

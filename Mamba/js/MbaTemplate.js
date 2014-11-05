@@ -1,5 +1,6 @@
 function MbaTemplate(template, directivesPrecursor){
     
+    this._directivesPrecursor
     this._rootDirective;
     this._html;
     this._template;
@@ -12,7 +13,8 @@ function MbaTemplate(template, directivesPrecursor){
         checkType(template, 'string');
         checkType(directivesPrecursor, 'object');
         
-        this._rootDirective = new MbaRootDirective(directivesPrecursor);
+        this._directivesPrecursor = directivesPrecursor;
+        this._rootDirective = null;
         this._html = template;
         this.removeWhiteSpacesFromHtml();
         this._template = new MbaDomFromString(this._html);
@@ -64,6 +66,10 @@ function MbaTemplate(template, directivesPrecursor){
     MbaTemplate.prototype.removeWhiteSpacesFromHtml = function(){
 		this._html = this._html.replace(/>\s*</g, "><");
 	};
+    
+    MbaTemplate.prototype.constructDirectivesTree = function(){
+        this._rootDirective = new MbaRootDirective(this._directivesPrecursor);
+    };
     
     MbaTemplate.prototype.addTextNodeForBindingText =function(){
         var visitor = new AddTextNodesVisitor(this._template);
@@ -129,6 +135,7 @@ function MbaTemplate(template, directivesPrecursor){
     };
     
     MbaTemplate.prototype.prepareForRender = function(){
+        this.constructDirectivesTree();
         this.addTextNodeForBindingText();
         this.constructTemplateDirective();
         this.mergeTemplateDirectives();
@@ -159,7 +166,7 @@ function MbaTemplate(template, directivesPrecursor){
     };
     
     MbaTemplate.prototype.generateRefreshMethod = function(){
-        var methodeGenerator = new MbaRefreshMethodGenerator(this/*, this._superModel*/);
+        var methodeGenerator = new MbaRefreshMethodGenerator(this);
         methodeGenerator.generateMethods();
     };
     

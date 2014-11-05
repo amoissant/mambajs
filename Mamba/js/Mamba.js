@@ -25,6 +25,7 @@ Mamba.prototype.setOptions = function(options){
 };
 
 Mamba.prototype.render = function(model){
+    MBA_DI.bind(DirectiveParser).to(this._options['debug'] ? DirectiveParserDebug : DirectiveParser);
     if(model != null)
         this._model = model;
     if(this._mbaTemplate == null)
@@ -90,6 +91,7 @@ Mamba.prototype._initAnchor = function(anchor){
 Mamba.prototype._initDefaultOptions = function(){
     this._options = {};
     this._options.genRefresh = false;
+    this._options.debug = true;
 };
 
 Mamba.prototype._insertRenderedDomIntoAnchor = function(renderedDom){

@@ -4,6 +4,15 @@ MBA_CST.ROOT = 'r00t';
 MBA_CST.REF_FUNCTIONS = {};
 MBA_CST.REFRESH = 'refresh';
 
+var MBA_DI = {};
+MBA_DI.get = function(type){
+    return new this[type]();
+};
+MBA_DI.bind = function(type){
+    var that = this;
+    return {to: function(impl){that[type] = impl;}}
+};
+
 /* Fonctions de transformation du dom */
 
 //TODO enlever jquery d'ici
@@ -163,7 +172,6 @@ function isATextNode(node){
 }
 
 function pushAll(context, anotherArray){
-    checkType(anotherArray, Array);
     for(var i=0 ; i<anotherArray.length ; i++){
         context.push(anotherArray[i]);
     }
@@ -174,4 +182,6 @@ function stringToDom(string){
     root.innerHTML = string;
     return root.childNodes;
 }
+
+
 

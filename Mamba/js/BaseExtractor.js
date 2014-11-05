@@ -34,8 +34,7 @@ function BaseExtractor(){
     };
     
     BaseExtractor.prototype.extractBinding = function(){
-        var directive = this.getDirective();
-        return directive.substring(this._bindingIndex, this._eventIndex);
+        return this.getDirective().substring(this._bindingIndex, this._eventIndex);
     };
     
     BaseExtractor.prototype.extractEvents = function(){

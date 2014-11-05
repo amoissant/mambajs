@@ -8,7 +8,6 @@ function MbaDirective(precursor, parentPropertyName){
     this._actionBindings;
     
     MbaDirective.prototype.init = function(precursor, parentPropertyName){
-        //checkType(precursor, 'object');//TODO checkTypeOrArrayOfType
         checkTypeOrNull(parentPropertyName, 'string');
         
         this._precursor = precursor;
@@ -67,6 +66,7 @@ function MbaDirective(precursor, parentPropertyName){
                 this.createBindings(prop);
 			}
 		}   
+        
     };
     
     MbaDirective.prototype.createSubDirective = function(precursor, parentPropertyName){
@@ -143,7 +143,7 @@ function MbaDirective(precursor, parentPropertyName){
         checkType(prop, 'string');
         checkType(directive, 'string');
         
-        var parser = new DirectiveParser();
+        var parser = MBA_DI.get(DirectiveParser);
         var transformation = parser.createTransformation(directive);
         var selector = parser.extractSelector();
         transformation.setAccessorChain(this.createAccessorChain(prop));
@@ -167,7 +167,7 @@ function MbaDirective(precursor, parentPropertyName){
         checkType(prop, 'string');
         var action = prop.substring(1, prop.length);
         var directive = this._precursor[prop];
-        var parser = new DirectiveParser();
+        var parser = MBA_DI.get(DirectiveParser);
         parser.setDirective(directive);
         parser.computeIndexes();
         var selector = parser.extractSelector();

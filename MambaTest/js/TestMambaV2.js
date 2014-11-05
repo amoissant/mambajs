@@ -1,7 +1,8 @@
 
 var testMbaV2 = function() {
 
-
+    MBA_DI.bind(DirectiveParser).to(DirectiveParser);
+    
 	Ca('teste que toArray() encapsule un objet dans un tableau ', function() {
 		var obj = 'toto';
 		var res = toArray(obj);
@@ -262,7 +263,7 @@ var testMbaV2 = function() {
     var minimalPrecursorWithRoot = {r00t: '#root', name: '#toto'};
     
     Ca('teste hasRoot() sur un precurseur avec root', function(){
-        var directive = new MbaRootDirective(minimalPrecursorWithRoot);
+        var directive = new MbaRootDirective(minimalPrecursorWithRoot, false);
         OnAttend(directive.hasRoot()).DEtreVrai();
     });
     
@@ -276,7 +277,7 @@ var testMbaV2 = function() {
     
 	Ca('teste la création d\'une MbaDirective minimale avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(minimalPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(minimalPrecursorWithRoot, false);
            OnAttend(mbaDirective.getRootSelector()).DEtreEgalA('#root');
            
            var bindings = mbaDirective.getBindings();
@@ -287,7 +288,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs de la MbaDirective minimale avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(minimalPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(minimalPrecursorWithRoot, false);
            
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -300,7 +301,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une MbaDirective avec deux directives avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoDirectivesPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(twoDirectivesPrecursorWithRoot, false);
            OnAttend(mbaDirective.getRootSelector()).DEtreEgalA('#root');
            
            var bindings = mbaDirective.getBindings();
@@ -312,7 +313,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs de la MbaDirective avec deux directives avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoDirectivesPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(twoDirectivesPrecursorWithRoot, false);
            
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -328,7 +329,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une MbaDirective avec deux selecteurs avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoSelectorsPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(twoSelectorsPrecursorWithRoot, false);
            OnAttend(mbaDirective.getRootSelector()).DEtreEgalA('#root');
            
            var bindings = mbaDirective.getBindings();
@@ -340,7 +341,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs de la MbaDirective avec deux selecteurs avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoSelectorsPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(twoSelectorsPrecursorWithRoot, false);
            
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -356,7 +357,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une MbaDirective sur deux niveaux avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorWithRoot, false);
            OnAttend(mbaDirective.getRootSelector()).DEtreEgalA('#root');
            
            var bindings = mbaDirective.getBindings();
@@ -377,7 +378,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs de la MbaDirective sur deux niveaux avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorWithRoot, false);
        
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -400,7 +401,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une MbaDirective sur deux niveaux avec un tableau de sous-directives avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoLevelsAndSubDirectivesPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(twoLevelsAndSubDirectivesPrecursorWithRoot, false);
            OnAttend(mbaDirective.getRootSelector()).DEtreEgalA('#root');
            
            var bindings = mbaDirective.getBindings();
@@ -426,7 +427,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs de le MbaDirective sur deux niveaux avec un tableau de sous-directives avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoLevelsAndSubDirectivesPrecursorWithRoot);
+           var mbaDirective = new MbaRootDirective(twoLevelsAndSubDirectivesPrecursorWithRoot, false);
            
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -453,12 +454,12 @@ var testMbaV2 = function() {
     
     Ca('teste hasRoot() sur un precurseur sans root', function(){
         var precursor = {name: '#toto'};
-        var directive = new MbaRootDirective(precursor);
+        var directive = new MbaRootDirective(precursor, false);
         OnAttend(directive.hasRoot()).DEtreFaux();
     });
     
     Ca('teste la création d\'une MbaDirective minimale sans root', function(){
-        var mbaDirective = new MbaRootDirective(minimalPrecursorNoRoot);
+        var mbaDirective = new MbaRootDirective(minimalPrecursorNoRoot, false);
         OnAttend(mbaDirective.hasRoot()).DEtreFaux();
            
         var bindings = mbaDirective.getBindings();
@@ -468,7 +469,7 @@ var testMbaV2 = function() {
     });
     
     Ca('teste les accesseurs de la MbaDirective minimale sans root', function(){
-        var mbaDirective = new MbaRootDirective(minimalPrecursorNoRoot);
+        var mbaDirective = new MbaRootDirective(minimalPrecursorNoRoot, false);
         
         var directiveAccessorChain = mbaDirective.getAccessorChain();
         OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -480,7 +481,7 @@ var testMbaV2 = function() {
     var twoDirectivesPrecursorNoRoot = {name: '#toto', age: '#tutu'};
     
     Ca('teste la création d\'une MbaDirective avec deux directives sans root', function(){
-        var mbaDirective = new MbaRootDirective(twoDirectivesPrecursorNoRoot);
+        var mbaDirective = new MbaRootDirective(twoDirectivesPrecursorNoRoot, false);
         OnAttend(mbaDirective.hasRoot()).DEtreFaux();
            
         var bindings = mbaDirective.getBindings();
@@ -491,7 +492,7 @@ var testMbaV2 = function() {
     });
     
     Ca('teste les accesseurs de la MbaDirective avec deux directives sans root', function(){
-        var mbaDirective = new MbaRootDirective(twoDirectivesPrecursorNoRoot);
+        var mbaDirective = new MbaRootDirective(twoDirectivesPrecursorNoRoot, false);
        
         var directiveAccessorChain = mbaDirective.getAccessorChain();
         OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -507,7 +508,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une MbaDirective sur deux niveaux, parent sans root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorParentNoRoot);
+           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorParentNoRoot, false);
            OnAttend(mbaDirective.hasRoot()).DEtreFaux();
            
            var bindings = mbaDirective.getBindings();
@@ -527,7 +528,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs de la MbaDirective sur deux niveaux, parent sans root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorParentNoRoot);
+           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorParentNoRoot, false);
            
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -547,7 +548,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une MbaDirective sur deux niveaux, enfant sans root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorChildNoRoot);
+           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorChildNoRoot, false);
            OnAttend(mbaDirective.getRootSelector()).DEtreEgalA('#root');
            
            var bindings = mbaDirective.getBindings();
@@ -561,7 +562,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs de la MbaDirective sur deux niveaux, enfant sans root', 
        function(){
-           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorChildNoRoot);
+           var mbaDirective = new MbaRootDirective(twoLevelsPrecursorChildNoRoot, false);
            
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -577,7 +578,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une MbaDirective sur trois niveaux, enfant sans root', 
        function(){
-           var mbaDirective = new MbaRootDirective(threeLevelsPrecursorChildNoRoot);
+           var mbaDirective = new MbaRootDirective(threeLevelsPrecursorChildNoRoot, false);
            OnAttend(mbaDirective.getRootSelector()).DEtreEgalA('#root');
            
            var bindings = mbaDirective.getBindings();
@@ -592,7 +593,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs de la MbaDirective sur trois niveaux, enfant sans root', 
        function(){
-           var mbaDirective = new MbaRootDirective(threeLevelsPrecursorChildNoRoot);
+           var mbaDirective = new MbaRootDirective(threeLevelsPrecursorChildNoRoot, false);
            
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -611,7 +612,7 @@ var testMbaV2 = function() {
     var twoLevelsSubDirectivesPrecursorNoRoot = {name: '#toto', sub : {age: '#tutu', job: '#tata'}};
     
     function testCreationForTwoLevelsSubDirectivesPrecursorNoRoot(twoLevelsSubDirectivesPrecursorNoRoot){
-        var mbaDirective = new MbaRootDirective(twoLevelsSubDirectivesPrecursorNoRoot);
+        var mbaDirective = new MbaRootDirective(twoLevelsSubDirectivesPrecursorNoRoot, false);
            OnAttend(mbaDirective.hasRoot()).DEtreFaux();
            
            var bindings = mbaDirective.getBindings();
@@ -625,7 +626,7 @@ var testMbaV2 = function() {
     }
     
     function testAccessorsForTwoLevelsSubDirectivesPrecursorNoRoot(twoLevelsSubDirectivesPrecursorNoRoot){
-        var mbaDirective = new MbaRootDirective(twoLevelsSubDirectivesPrecursorNoRoot);
+        var mbaDirective = new MbaRootDirective(twoLevelsSubDirectivesPrecursorNoRoot, false);
            
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -664,7 +665,7 @@ var testMbaV2 = function() {
     var fourLevelsPrecursorParentsNoRootChildWithRoot = {me: {adress: {tel : {r00t: '#tel', number : '#number'}}}};
     
     function testCreationForSeveralLevelsParentNoRootChildWithRoot(severalLevelsParentNoRootChildWithRoot){
-        var mbaDirective = new MbaRootDirective(severalLevelsParentNoRootChildWithRoot);
+        var mbaDirective = new MbaRootDirective(severalLevelsParentNoRootChildWithRoot, false);
         OnAttend(mbaDirective.hasRoot()).DEtreFaux();
         
         var bindings = mbaDirective.getBindings();
@@ -687,7 +688,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs d\'une MbaDirective sur trois niveaux, parents sans root, enfant avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(threeLevelsPrecursorParentsNoRootChildWithRoot);
+           var mbaDirective = new MbaRootDirective(threeLevelsPrecursorParentsNoRootChildWithRoot, false);
            
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -708,7 +709,7 @@ var testMbaV2 = function() {
     
     Ca('teste les accesseurs d\'une MbaDirective sur quatre niveaux, parents sans root, enfant avec root', 
        function(){
-           var mbaDirective = new MbaRootDirective(fourLevelsPrecursorParentsNoRootChildWithRoot);
+           var mbaDirective = new MbaRootDirective(fourLevelsPrecursorParentsNoRootChildWithRoot, false);
           
            var directiveAccessorChain = mbaDirective.getAccessorChain();
            OnAttend(directiveAccessorChain.match([])).DEtreVrai();
@@ -725,7 +726,7 @@ var testMbaV2 = function() {
     //TODO : avec MbaDirectives2 je ne suis pas sûr que les tableaux de directives aient un interet...
     Ca('teste hasRoot() sur un tableau de precurseurs', function(){
         var precursor = [{name: '#toto'}, {job: '#tutu'}];
-        var directive = new MbaRootDirective(precursor);
+        var directive = new MbaRootDirective(precursor, false);
         OnAttend(directive.hasRoot()).DEtreFaux();
         var bindings = directive.getBindings();
         OnAttend(bindings.length).DEtreEgalA(2);
@@ -741,7 +742,8 @@ var testMbaV2 = function() {
         var template = templateTwoLevels;
         var directive = directiveTwoLevelsWithRoot;
         var mbaTemplate = new MbaTemplate(template, directive);    
-    
+        mbaTemplate.constructDirectivesTree();
+        
         var toto = mbaTemplate.findDom('#toto').getElement(0);
         var tutu = mbaTemplate.findDom('#tutu').getElement(0);
         var tata = mbaTemplate.findDom('#tata').getElement(0);
@@ -763,6 +765,7 @@ var testMbaV2 = function() {
         var templateHtml = '<html><body><div id="root"></body></html>';
         var directivePrecursor = {r00t: '#root'};
         var mbaTemplate = new MbaTemplate(templateHtml, directivePrecursor); 
+        mbaTemplate.constructDirectivesTree();
         var template = mbaTemplate.getTemplate();
         var rootDirective = mbaTemplate.getRootDirective();
         var templateDirective = new MbaTemplateDirective(template, rootDirective);
@@ -776,6 +779,7 @@ var testMbaV2 = function() {
         var templateHtml = '<html><body><div id="root"></body></html>';
         var directivePrecursor = {};
         var mbaTemplate = new MbaTemplate(templateHtml, directivePrecursor); 
+        mbaTemplate.constructDirectivesTree();
         var template = mbaTemplate.getTemplate();
         var rootDirective = mbaTemplate.getRootDirective();
         var templateDirective = new MbaTemplateDirective(template, rootDirective);
@@ -799,6 +803,7 @@ var testMbaV2 = function() {
         //TODO : étudier cas particulier var html = '<html><body><div id="toto"></div><div id="tutu"></div></body></html>'; -> les balise body et html ne sont pas prises en compte...
         var directivePrecursor = {name: '#toto', sub: {r00t: '#tutu', job: '#tutu'}};
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
+        mbaTemplate.constructDirectivesTree();
         mbaTemplate.addTextNodeForBindingText();
         
         var htmlRoot = mbaTemplate.getTemplate();
@@ -824,6 +829,7 @@ var testMbaV2 = function() {
         var html = '<div id="toto"></div><div id="tutu"></div>';
         var directivePrecursor = {name: '#toto', gender:'#toto', sub: {r00t: '#tutu', name: '#tutu', gender: '#tutu'}};
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
+        mbaTemplate.constructDirectivesTree();
         mbaTemplate.addTextNodeForBindingText();
         mbaTemplate.constructTemplateDirective();
         
@@ -859,6 +865,7 @@ var testMbaV2 = function() {
         var html = '<div id="toto"></div><div id="tutu"><div id="tata"></div><div id="titi"></div></div>';
         var directivePrecursor = {name: '#toto', sub: [{r00t: '#tutu', name: '#tata'}, {r00t: '#tutu', gender: '#titi'}]};
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
+        mbaTemplate.constructDirectivesTree();
         mbaTemplate.addTextNodeForBindingText();
         mbaTemplate.constructTemplateDirective();
         
@@ -900,6 +907,7 @@ var testMbaV2 = function() {
         var html = '<div id="toto"></div><div id="tutu"></div>';
         var directivePrecursor = {name: '#toto', sub: [{r00t: '#tutu', name: '#tutu'}, {r00t: '#tutu', gender: '#tutu'}]};
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
+        mbaTemplate.constructDirectivesTree();
         mbaTemplate.addTextNodeForBindingText();
         mbaTemplate.constructTemplateDirective();
         
@@ -958,7 +966,7 @@ var testMbaV2 = function() {
         var html = '<div id="root"><div id="toto"></div><div id="tutu"></div></div>';
         var directivePrecursor = {r00t: '#root', name: '#toto', age: '#tutu'};
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
-        
+        mbaTemplate.constructDirectivesTree();
         mbaTemplate.addTextNodeForBindingText();
         mbaTemplate.constructTemplateDirective();
         mbaTemplate.mergeTemplateDirectives();
@@ -1012,7 +1020,7 @@ var testMbaV2 = function() {
                                   tutus: {r00t: '#second', name: '#second'},
                                   titi: '#third'};
         var mbaTemplate = new MbaTemplate(html, directivePrecursor);
-        
+        mbaTemplate.constructDirectivesTree();
         mbaTemplate.addTextNodeForBindingText();
         mbaTemplate.constructTemplateDirective();
         mbaTemplate.mergeTemplateDirectives();
@@ -2983,6 +2991,7 @@ var testMbaV2 = function() {
         var directive = data.directive;
         var model = data.model;
         var mamba = new Mamba(model, html, directive);
+        mamba.setOptions({debug: false});
         var renderedDom = mamba.render();
         
         model.video.animes.pop();
@@ -3575,6 +3584,7 @@ var testMbaV2 = function() {
         document.body.appendChild(root);
         var template = document.querySelectorAll('#root > span');
         var mamba = new Mamba(model, template, directive);
+        mamba.setOptions({debug: false});
         var renderedDom = domToString(mamba.render());
         
         OnAttend(renderedDom).DEtreEgalA('<span>toto</span><span>toto</span>');
@@ -3598,6 +3608,8 @@ var testMbaV2 = function() {
       var model = {name : 'toto', adress: [{number: 12}]};
       var directive = {"name" : "div", "adress" : {"r00t" : "span", "number" : "span"}};
       var mamba = new Mamba(model, template, directive, root);
+        mamba.setOptions({debug: false});
+      mamba.setOptions({debug: false});
       
       mamba.render();
       OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
@@ -3617,7 +3629,8 @@ var testMbaV2 = function() {
       var model = {name : 'toto', adress: {number: 12}};
       var directive = {"name" : "div", "adress" : {"number" : "span"}};
       var mamba = new Mamba(model, template, directive, root);
-      
+      mamba.setOptions({debug: false});
+        
       mamba.render();
       OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
       
@@ -3636,7 +3649,8 @@ var testMbaV2 = function() {
       var model = {name : 'toto', adress: {number: 12}};
       var directive = {"name" : "div", "adress" : {"r00t" : "span", "number" : "span"}};
       var mamba = new Mamba(model, template, directive, root);
-      
+      mamba.setOptions({debug: false});
+        
       mamba.render();
       OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
       
@@ -3653,6 +3667,7 @@ var testMbaV2 = function() {
         var template = '<span></span>';
         var directive = {name: 'span'};
         var mamba = new Mamba(model, template, directive);
+        mamba.setOptions({debug: false});
         var renderedDom = domToString(mamba.render());
         
         OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
@@ -3664,6 +3679,7 @@ var testMbaV2 = function() {
         var directive = {name: 'span'}
         var anchor = document.createElement('div');
         var mamba = new Mamba(model, template, directive, anchor);
+        mamba.setOptions({debug: false});
         var renderedDom = domToString(mamba.render());
         
         OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
@@ -3678,6 +3694,7 @@ var testMbaV2 = function() {
         root.id = 'root';
         document.body.appendChild(root);
         var mamba = new Mamba(model, template, directive, '#root');
+        mamba.setOptions({debug: false});
         var renderedDom = domToString(mamba.render());
         
         OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
@@ -3695,6 +3712,7 @@ var testMbaV2 = function() {
         document.body.appendChild(root);
         template = document.querySelector('#root > span');
         var mamba = new Mamba(model, template, directive);
+        mamba.setOptions({debug: false});
         var renderedDom = domToString(mamba.render());
         
         OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
@@ -3711,6 +3729,7 @@ var testMbaV2 = function() {
         document.body.appendChild(root);
         var template = document.querySelector('#root > span');
         var mamba = new Mamba(model, template, directive);
+        mamba.setOptions({debug: false});
         var renderedDom = domToString(mamba.render());
         
         OnAttend(renderedDom).DEtreEgalA('<span>toto</span>');
@@ -3727,6 +3746,7 @@ var testMbaV2 = function() {
         document.body.appendChild(root);
         var template = document.querySelectorAll('#root > span, #root > div');
         var mamba = new Mamba(model, template, directive);
+        mamba.setOptions({debug: false});
         var renderedDom = domToString(mamba.render());
         
         OnAttend(renderedDom).DEtreEgalA('<span>toto</span><div>toto</div>');
@@ -3741,7 +3761,8 @@ var testMbaV2 = function() {
       var model = {name : 'toto'};
       var directive = {"name" : "div"};
       var mamba = new Mamba(model, template, directive, root);
-      
+      mamba.setOptions({debug: false});
+        
       mamba.render();
       OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div>');
       
@@ -3758,7 +3779,8 @@ var testMbaV2 = function() {
       var model = {name : 'toto', adress: {number: 12}};
       var directive = {"name" : "div", "adress" : {"number" : "span"}};
       var mamba = new Mamba(model, template, directive, root);
-      
+      mamba.setOptions({debug: false});
+        
       mamba.render();
       OnAttend(root.innerHTML).DEtreEgalA('<div>toto</div><span>12</span>');
       
@@ -3776,7 +3798,7 @@ var testMbaV2 = function() {
         root.id = 'root';
         root.innerHTML = template;
         var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({genRefresh: true});
+        mamba.setOptions({genRefresh: true, debug: false});
         mamba.render();
         
         var removedItem = model.list.pop();
@@ -3798,7 +3820,7 @@ var testMbaV2 = function() {
         root.id = 'root';
         root.innerHTML = template;
         var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({genRefresh: true});
+        mamba.setOptions({genRefresh: true, debug: false});
         mamba.render();
         
         OnAttend(root.innerHTML).DEtreEgalA('<span>toto</span><span>tutu</span>');
@@ -3818,7 +3840,7 @@ var testMbaV2 = function() {
         root.id = 'root';
         root.innerHTML = template;
         var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({genRefresh: true});
+        mamba.setOptions({genRefresh: true, debug: false});
         mamba.render();
         
         OnAttend(root.innerHTML).DEtreEgalA('<span>toto</span><span>tutu</span>');
@@ -3841,7 +3863,7 @@ var testMbaV2 = function() {
         var model = {name: 'toto'};
         var template = '<div></div>';
         var directive = {'name' : 'div'};
-        var options = {genRefresh: false};
+        var options = {genRefresh: false, debug: false};
         var mamba = new Mamba(model, template, directive);
         mamba.setOptions(options);
         
@@ -3870,7 +3892,7 @@ var testMbaV2 = function() {
         var template = data.html;
         var directive = data.directive;
         var mamba = new Mamba(model, template, directive);
-        mamba.setOptions({genRefresh: false});
+        mamba.setOptions({genRefresh: false, debug: false});
         mamba.render();
         
         OnAttend(model.hasOwnProperty('refresh')).DEtreFaux();
@@ -3904,7 +3926,7 @@ var testMbaV2 = function() {
         root.id = 'root';
         root.innerHTML = template;
         var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({genRefresh: true});
+        mamba.setOptions({genRefresh: true, debug: false});
         mamba.render();
          
         OnAttend(root.innerHTML).DEtreEgalA('<div class="anime"><div class="name">SpongeBob SquarePants</div><div class="ep_number">01a</div><div class="ep_name">Help Wanted</div><div class="ep_number">01b</div><div class="ep_name">Reef Blower</div></div><div class="anime"><div class="name">Dragon Ball</div><div class="ep_number">01</div><div class="ep_name">Bulma and Son Goku</div><div class="ep_number">02</div><div class="ep_name">What the...?! No Balls!</div></div>');
@@ -3939,7 +3961,7 @@ var testMbaV2 = function() {
         root.id = 'root';
         root.innerHTML = template;
         var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({genRefresh: true});
+        mamba.setOptions({genRefresh: true, debug: false});
         mamba.render();
          
         OnAttend(root.innerHTML).DEtreEgalA('<div class="anime"><div class="name">SpongeBob SquarePants</div><div class="ep_number">01a</div><div class="ep_name">Help Wanted</div><div class="ep_number">01b</div><div class="ep_name">Reef Blower</div></div><div class="anime"><div class="name">Dragon Ball</div><div class="ep_number">01</div><div class="ep_name">Bulma and Son Goku</div><div class="ep_number">02</div><div class="ep_name">What the...?! No Balls!</div></div>');
