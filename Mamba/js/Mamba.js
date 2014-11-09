@@ -25,11 +25,13 @@ Mamba.prototype.setOptions = function(options){
 };
 
 Mamba.prototype.render = function(model){
-    MBA_DI.bind(DirectiveParser).to(this._options['debug'] ? DirectiveParserDebug : DirectiveParser);
+    MBA_DI.bind(DirectiveParser).to(this._debugIsActive() ? DirectiveParserDebug : DirectiveParser);
+    MBA_DI.bind(MbaTemplate).to(this._debugIsActive() ? MbaTemplateDebug : MbaTemplate);
     if(model != null)
         this._model = model;
     if(this._mbaTemplate == null)
-        this._mbaTemplate = new MbaTemplate(this._template, this._directive);
+        this._mbaTemplate = MBA_DI.get(MbaTemplate);
+    this._mbaTemplate.init(this._template, this._directive);
     this._mbaTemplate.render(this._model);
     if(this._options['genRefresh'])
         this._mbaTemplate.generateRefreshMethod();
@@ -39,11 +41,13 @@ Mamba.prototype.render = function(model){
 };
 
 Mamba.prototype.refresh = function(subModel){
-    if(subModel != null)
+    return this._mbaTemplate.refresh(subModel);
+    /*if(subModel != null){
         this._mbaTemplate.updateDomForModel(subModel);
+    }
     else
         this._mbaTemplate.updateDomForSuperModel();
-    return this._mbaTemplate.getRenderedDom().getElements();//TODO tester ceci
+    return this._mbaTemplate.getRenderedDom().getElements();*/
 };
 
 Mamba.prototype.debugNodes = function(){
@@ -111,6 +115,6 @@ Mamba.prototype._insertRenderedDomIntoAnchor = function(renderedDom){
     this._renderedDom = renderedDom;
 };
 
-Mamba.prototype._addRefreshMethodOntoModel = function(){
-    //TODO parcour récursif suivant les directives du model et ajout de  la fonction refresh.
+Mamba.prototype._debugIsActive = function(){
+    return this._options['debug'];
 };

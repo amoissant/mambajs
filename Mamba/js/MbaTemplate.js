@@ -117,6 +117,15 @@ function MbaTemplate(template, directivesPrecursor){
         this.refreshNodesForRoute(modelFinder.getCurrentMbaNodes(), modelFinder.getCurrentRoute());
     };    
     
+    MbaTemplate.prototype.refresh = function(subModel){
+        if(subModel != null){
+            this.updateDomForModel(subModel);
+        }
+        else
+            this.updateDomForSuperModel();
+        return this.getRenderedDom().getElements();
+    };
+    
     MbaTemplate.prototype.checkModelBelongsSuperModel = function(modelFinder){
         checkType(modelFinder, MbaModelFinder);
         modelFinder.searchForWantedModel();
