@@ -24,15 +24,11 @@ function MbaNodeBinding(baseDom, binding) {
     
     MbaNodeBinding.prototype.updateDom = function(model, route){
         checkType(route, MbaRoute);
-        //console.log('updateDom', this.getParent().getBaseDom().getElement(), route.getIndexes());
         var parentDirectiveNode = this.getParentDirectiveNode();
         var renderedDomForRoute = this.getRenderedDomForRoute(route);
         var allModelValueAreUndefined = 
             this._templateBinding.render(renderedDomForRoute, model, route, parentDirectiveNode);
         if(allModelValueAreUndefined){
-            //console.log('remove dom ', renderedDomForRoute.getElement(), route.getIndexes());
-            //this.deleteDom(route);
-            //TODO si parent de type binding textNode alors
             if(renderedDomForRoute instanceof MbaDomSingle && isATextNode(renderedDomForRoute.getElement()))
                 this.getParent().deleteDom(route);
             else

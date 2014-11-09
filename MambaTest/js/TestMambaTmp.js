@@ -1,5 +1,6 @@
 Test(function() {   
-
+ 
+    MBA_DI.bind(DirectiveParser).to(DirectiveParser);
     
     Ca('teste les lecture et écriture d\'un champ par l\'accesseur', function(){
         var accessor = new MbaAccessor('prop');
@@ -60,7 +61,7 @@ Test(function() {
          OnAttend(model.selected).DEtreEgalA(3);
     });
     
-       Ca('teste le polymorphisme avec des transformations non sur les propriétés des éléments de dom', function(){
+    Ca('teste le polymorphisme avec des transformations sur les propriétés des éléments de dom', function(){
          var model = 
              [{name: 'titi'}, 
               {name: 'toto', selected: false},
@@ -207,6 +208,49 @@ Test(function() {
         OnAttend(consleContentJoinded.contains('events=[change\']')).DEtreVrai();
     });
     
+  Ca('teste le polymorphisme avec valeur null', function(){
+        var model = {options : ['toto', 'titi'], selected: null};
+        var html = '<select><option></option></select>';
+        var directive = {options : {'r00t' : 'option', 'toString' : 'option'},
+                         selected : 'select$value'};
+        var root = document.createElement('div');
+        root.innerHTML = html;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({debug: false});
+        mamba.render();
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<select><option>toto</option><option>titi</option></select>');        
+    });
+    
+    Ca('teste le polymorphisme avec valeur undefined', function(){
+        var model = {options : ['toto', 'titi'], selected: undefined};
+        var html = '<select><option></option></select>';
+        var directive = {options : {'r00t' : 'option', 'toString' : 'option'},
+                         selected : 'select$value'};
+        var root = document.createElement('div');
+        root.innerHTML = html;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({debug: false});
+        mamba.render();
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<select><option>toto</option><option>titi</option></select>');        
+    });
+
+    Ca('teste le polymorphisme avec valeur null dans une collection', function(){
+        var model = {options : ['toto', null, 'titi'], selected: undefined};
+        var html = '<select><option></option></select>';
+        var directive = {options : {'r00t' : 'option', 'toString' : 'option'},
+                         selected : 'select$value'};
+        var root = document.createElement('div');
+        root.innerHTML = html;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({debug: false});
+        mamba.render();
+        
+        OnAttend(root.innerHTML).DEtreEgalA('<select><option>toto</option><option>titi</option></select>');        
+    });
+      
+    //TODO : implementer une liste avec un choix ayant pour valeur 'null'
     
     //TODO valider les model, template binding et anchor et lever une erreur si le type ne correspond pas
     //TODO options de debug pour afficher les structure de données, afficher quand le model est set, quand on fait un refresh...

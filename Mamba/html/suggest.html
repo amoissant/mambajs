@@ -1,9 +1,9 @@
 <html>	
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="../js/jquery-1.10.1.js"></script>
- 
- <script type="text/javascript" src="../js/MbaError.js"></script>
+    <script type="text/javascript" src="../js/jquery-1.10.1.js"></script>
+    
+    <script type="text/javascript" src="../js/MbaError.js"></script>
 	<script type="text/javascript" src="../js/Mamba.js"></script>
 	<script type="text/javascript" src="../js/MbaUtil.js"></script>
 	<script type="text/javascript" src="../js/MbaDom.js"></script>
@@ -76,81 +76,49 @@
     <script type="text/javascript" src="../js/MbaModelExplorer.js"></script> 
     <script type="text/javascript" src="../js/MbaModelFinder.js"></script> 
     <script type="text/javascript" src="../js/MbaRefreshMethodGenerator.js"></script>
-   
+  
     <style type="text/css">
 		body
         {
             height :100%; 
             text-align: center;
         }
-        #content
-        {
-            height : 100%;
-            display: inline-block;
-            margin-top: 50px;
-        }
 	</style>
 </head>
 
 <body>
-    <div id='content'></div>
 </body>
 <script type="text/javascript">
+        
+    var html = '<select><option></option></select>';    
+    var model = function() {
+        this.données  = ['pouet', 'poulou']
+        this.choix = null;
+    };
+    var directive = {
+        "données": {
+            "r00t": "option",
+            "toString": "option" 
+        },
+        "choix": "select$value->change"
+    };
     
-    function Message(text, parent){
-        this.text = text;
-        this._parent = parent;
-        this.remove = function(){
-            this._parent.remove(this);
-        }
-    }
-    
-    function MessageCollection(){
-        this.messages = [];
-        this.newMessage = '';
-        this.add = function(){
-            this.messages.push(new Message(this.newMessage, this));
-            this.newMessage = '';
-        };
-        this.remove = function(message){
-            var index = this.messages.indexOf(message);
-            this.messages.splice(index, 1);
-            this.populate();
-        };
-        this.empty = function(){
-            this.messages = [];
-        };
-        this.populate = function(){
-            var event = new CustomEvent('populate');
-            event.model = this;
-            document.dispatchEvent(event);
-        };
-    }
-
-    var html = 
-        '<div class="messages"></div>'+
-        '<input id="message" type="text" placeholder="taper un message ici"></input>'+
-        '<input id="addBtn" type="button" value="Ajouter"></input>'+
-        '<input id="emptyBtn" type="button" value="Vider"></input>';
-    
-    var model = new MessageCollection();
-
-    var directive = 
-        {"messages": 
-            {"r00t": ".messages", 
-             "text": ".messages", 
-             "/remove" : ".messages->click"},
-         "newMessage": "#message$value->blur",
-         "/add": "#addBtn->click", 
-         "/empty": "#emptyBtn->click"};
-    
-    var mamba = new Mamba(model, html, directive, '#content');
-    mamba.render();
-    
-    document.addEventListener('populate', function(e){
-        console.log(e);
-        mamba.refresh(e.model);
-    });
-    
+    var mamba = new Mamba(new model(), html, directive, 'body');
+    mamba.render(model);
+    /*var html = '<select><option></option></select>';    
+    var modelClass = function() {
+        this.données  = ['pouet', '', 'poulou'];
+        this.choix = '';
+    };
+    var directive = {
+        "données": {
+            "r00t": "option",
+            "toString": "option" 
+        },
+        "choix": "select$value->change"
+    };
+    var model = new modelClass();
+    var mamba = new Mamba(model, html, directive, 'body');
+    mamba.render();*/
 </script>
 </html>

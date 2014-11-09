@@ -54,8 +54,8 @@ function MbaTemplateBinding(template, binding){
         var allModelValuesAreUndefined = true;
         for(var i=0 ; i<this._transformations.length ; i++){
             var currTransf = this._transformations[i];
-            var modelValue = currTransf.update(dom, model, route, parentDirectiveNode);
-            allModelValuesAreUndefined = allModelValuesAreUndefined && modelValue==undefined;
+            var modelHasNotMemberForTransf = currTransf.update(dom, model, route, parentDirectiveNode);
+            allModelValuesAreUndefined &= modelHasNotMemberForTransf;
 		}
         return allModelValuesAreUndefined;
 	};

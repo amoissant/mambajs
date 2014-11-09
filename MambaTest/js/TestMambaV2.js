@@ -1877,7 +1877,7 @@ var testMbaV2 = function() {
         var modelValue = accessorChain.getModelValueFromRoute(model, new MbaRoute(inputRoute));
         var outputRoute = accessorChain.getLastRoute();
         OnAttend(modelValue).DEtreNull();
-        OnAttend(routesAreEquals(outputRoute, [])).DEtreVrai();
+        OnAttend(routesAreEquals(outputRoute, [0])).DEtreVrai();
     });
         
     Ca('teste l\'application d\'une route sur un sous-modèle null par le MbaAccessorChain', function(){

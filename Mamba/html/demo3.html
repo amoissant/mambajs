@@ -117,14 +117,6 @@
         };
     }
     
-    function appendInBody (renderedDom){
-        var dom = renderedDom.getElements();
-        var content = document.querySelector('#content');
-        for(var i=0 ; i<dom.length ; i++){
-            content.appendChild(dom[i]);
-        }  
-    }
-    
     var html = 
         '<div class="messages"></div>'+
         '<input id="message" type="text" placeholder="taper un message ici"></input>'+
@@ -142,10 +134,7 @@
          "/empty": "#emptyBtn->click", 
          "/remove": ".messages->click"};
     
-    var mamba = new MbaTemplate(html, directive);
-    mamba.render(model);
-    mamba.getRootNode().debug(true);
-    var renderedDom = mamba.getRenderedDom();
-    appendInBody(renderedDom);
+    var mamba = new Mamba(model, html, directive, '#content');
+    mamba.render();
 </script>
 </html>

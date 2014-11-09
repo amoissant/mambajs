@@ -5,6 +5,8 @@ function MbaAccessorChain(){
     this._lastModel;
     this._completeRoutes;
     this._cachedModelValues = {};
+    this._modelHasNotMember;
+    this._modelValue; 
     
     MbaAccessorChain.prototype.init = function(){
         this._accessors = [];
@@ -43,6 +45,10 @@ function MbaAccessorChain(){
         this._lastModel = model;
     };
     
+    MbaAccessorChain.prototype.modelHasNotMember = function(){
+        return this._modelHasNotMember;
+    };
+    
     MbaAccessorChain.prototype.prependAccessor = function(accessor){
         checkType(accessor, MbaAccessor);
         this._accessors.splice(0, 0, accessor);
@@ -79,15 +85,15 @@ function MbaAccessorChain(){
     //TODO tester cette méthode et factoriser du code avec writefromroute
     MbaAccessorChain.prototype.getModelFromRoute = function(model, route){
         checkType(route, MbaRoute);
-        var resultModel = model;
         this._lastRoute = new MbaRoute();
+        this._lastModel = model;
         if(this.hasAccessors())
-            resultModel = this.getModelValueFromNonEmptyRoute(model, route, this.getAccessorCount());
+            this._lastModel = this.getModelValueFromNonEmptyRoute(route, this.getAccessorCount());
 
         if(route.length > this.getAccessorCount())
-            resultModel = this.getModelForRouteAtIndex(resultModel, route, route.length-1);
+            this.getModelForRouteAtIndex(route, route.length-1);
 
-        return resultModel;
+        return this._lastModel;
     };
     
     MbaAccessorChain.prototype.getModelValueFromRoute = function(model, route){
@@ -95,79 +101,86 @@ function MbaAccessorChain(){
         this._lastRoute = new MbaRoute();
         this._lastModel = model;
         if(this.hasAccessors())
-            return this.getModelValueFromNonEmptyRoute(model, route, this.getAccessorCount());
+            return this.getModelValueFromNonEmptyRoute(route, this.getAccessorCount());
         else
             return model;
     }
     
-    MbaAccessorChain.prototype.getModelValueFromNonEmptyRoute = function(model, route, nbAccessorThrought){
+    MbaAccessorChain.prototype.getModelValueFromNonEmptyRoute = function(route, nbAccessorThrought){
         checkType(route, MbaRoute);
         checkType(nbAccessorThrought , 'number');
-        var modelValue = model;
+        this._modelValue = this._lastModel;
         var accessorCount = this.getAccessorCount();
         for(var i=0 ; i<nbAccessorThrought ; i++){
-            if(modelValue == null)
+            this.getModelValueForAccessorAtIndex(route, i);
+            if(this._modelValue == null)
                 break;
-            modelValue = this.getModelValueForAccessorAtIndex(modelValue, route, i);            
         }
-        return modelValue;
+        return this._modelValue;
     };
     
-    MbaAccessorChain.prototype.getModelValueForAccessorAtIndex = function(model, route, index){
+    MbaAccessorChain.prototype.getModelValueForAccessorAtIndex = function(route, index){
         checkType(route, MbaRoute);
         checkType(index, 'number');
-        var modelValue;
+        this._lastModel = this._modelValue;
         if(route.isNullAtIndex(index)){
-            this._lastModel = model;
-            modelValue = this.readWithAccessorForModel(model, route, index);
+            this.readWithAccessorForModel(route, index);
         }
         else{
-            model = this.getModelForRouteAtIndex(model, route, index);
-            this._lastModel = model;
-            modelValue = this.readWithAccessor(model, index);
+            this.getModelForRouteAtIndex(route, index);
+            this.readWithAccessor(index);
         }
         this._lastRoute.appendIndex(route[index]);
-        return modelValue;
     };
     
-    MbaAccessorChain.prototype.getModelForRouteAtIndex = function(model, route, index){
+    MbaAccessorChain.prototype.getModelForRouteAtIndex = function(route, index){
         checkType(route, MbaRoute);
         checkType(index, 'number');
         var routeIndex = route[index];
-        if(model instanceof Array){
-            if(routeIndex >= model.length)
+        if(this._lastModel instanceof Array){
+            if(routeIndex >= this._lastModel.length)
                 throw new MbaError(34, 'Route index is greater than model array size.');
-            return model[routeIndex];
+            this._lastModel = this._lastModel[routeIndex];
         }
-        else{
-            if(routeIndex > 0)//TODO voir si on peut pas remplacer les 0 par null si c'est pas des tableaux dans le modèle 
-                throw new MbaError(35, 'Route index is greater than 0 and model is not an array.');
-            return model;
-        }
+        else if(routeIndex > 0)//TODO voir si on peut pas remplacer les 0 par null si c'est pas des tableaux dans le modèle 
+            throw new MbaError(35, 'Route index is greater than 0 and model is not an array.');
     };
     
-    MbaAccessorChain.prototype.readWithAccessor = function(model, accessorIndex){
+    MbaAccessorChain.prototype.readWithAccessor = function(accessorIndex){
         checkType(accessorIndex, 'number');
-        return this.getAccessor(accessorIndex).getModelValue(model);
-    };   
-    
-    MbaAccessorChain.prototype.readWithAccessorForModel = function(model, route, accessorIndex){
-        checkType(route, MbaRoute);
-        checkType(accessorIndex, 'number');
-        var modelValue = [];
-        if(model instanceof Array){
-            //TODO traquer les array.concat pour améliorer les perfs...
-            for(var i=0 ; i<model.length ; i++){
-                var currModelValue = this.readWithAccessor(model[i], accessorIndex);
-                if(currModelValue instanceof Array)
-                    pushAll(modelValue, currModelValue);
-                else
-                    modelValue.push(currModelValue);
-            }
-            return modelValue;
+        var accessor = this.getAccessor(accessorIndex);
+        if(this._lastModel == null){
+            this._modelHasNotMember = true;
+            this._modelValue = null;
         }
         else{
-            return this.readWithAccessor(model, accessorIndex);
+            this._modelValue = accessor.getModelValue(this._lastModel);
+            if(this._modelValue == null)
+                this._modelHasNotMember = accessor.modelHasNotMember(this._lastModel);
+        }
+    };   
+    
+    MbaAccessorChain.prototype.readWithAccessorForModel = function(route, accessorIndex){
+        checkType(route, MbaRoute);
+        checkType(accessorIndex, 'number');
+        
+        if(this._lastModel instanceof Array){
+            //TODO traquer les array.concat pour améliorer les perfs...
+            var nextModelValue = [];
+            var modelArray = this._lastModel;
+            for(var i=0 ; i<modelArray.length ; i++){
+                this._lastModel = modelArray[i];
+                this.readWithAccessor(accessorIndex);
+                if(this._modelValue instanceof Array)
+                    pushAll(nextModelValue, this._modelValue);
+                else
+                    nextModelValue.push(this._modelValue);
+            }
+            this._modelValue = nextModelValue;
+            this._lastModel = modelArray;
+        }
+        else{
+            this.readWithAccessor(accessorIndex);
         }        
     };   
         
@@ -175,7 +188,8 @@ function MbaAccessorChain(){
         checkType(route, MbaRoute);
         var accessorCount = this.getAccessorCount();
         this._lastRoute = new MbaRoute();
-        model = this.getModelValueFromNonEmptyRoute(model, route, accessorCount-1);
+        this._lastModel = model;
+        model = this.getModelValueFromNonEmptyRoute(route, accessorCount-1);
         model = toArray(model);
         var routeIndex = route[accessorCount-1];
         var accessorIndex = accessorCount-1;

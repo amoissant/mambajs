@@ -6,11 +6,17 @@ MBA_CST.REFRESH = 'refresh';
 
 var MBA_DI = {};
 MBA_DI.get = function(type){
+    var impl = this[type];
+    if(impl == null)
+        throw new Error('Dependency injection error : '+type.prototype.constructor.name+' is not bound.');
     return new this[type]();
 };
 MBA_DI.bind = function(type){
     var that = this;
-    return {to: function(impl){that[type] = impl;}}
+    return {to: function(impl){
+                    that[type] = impl;
+                }
+           };
 };
 
 /* Fonctions de transformation du dom */

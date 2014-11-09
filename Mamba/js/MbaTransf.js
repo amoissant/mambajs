@@ -40,6 +40,10 @@ MbaTransf.prototype.getNewValue = function(model, route){
     return this._accessorChain.getModelValueFromRoute(model, route);
 };
 
+MbaTransf.prototype.modelHasNotMemberForNewValue = function(){
+    return this._accessorChain.modelHasNotMember();
+};
+
 MbaTransf.prototype.getLastModel = function(){
     return this._accessorChain.getLastModel();
 };
@@ -86,9 +90,13 @@ MbaTransf.prototype.update = function(dom, model, route, parentDirectiveNode){
     var domElement = dom.getElement();
     this.updateDomWithModel(domElement, newValue, oldValue);
     this.setOldValue(newValue, route);
-    this.setSuperModel(model);//TODO on peut optimiser les perfs ici avec un évènement pour modifier la référence du supermodel
+    this.setSuperModel(model);//TODO on peut optimiser les perfs iueci avec un évènement pour modifier la référence du supermodel
     this.referenceModelIntoDom(dom);
-    return newValue;
+    
+    if(newValue != null)
+        return false;
+    else
+        return this.modelHasNotMemberForNewValue();
 };
 
 MbaTransf.prototype.canReadValueFromDom = function(){

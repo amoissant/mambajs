@@ -27,6 +27,10 @@ function MbaAccessor(precursor){
             model[this._member] = value;
     };
     
+    MbaAccessor.prototype.modelHasNotMember = function(model){
+        return !model.hasOwnProperty(this._member);
+    };
+    
     MbaAccessor.prototype.toString = function(){
       return this._member;  
     };
