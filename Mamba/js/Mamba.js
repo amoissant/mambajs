@@ -25,29 +25,18 @@ Mamba.prototype.setOptions = function(options){
 };
 
 Mamba.prototype.render = function(model){
-    MBA_DI.bind(DirectiveParser).to(this._debugIsActive() ? DirectiveParserDebug : DirectiveParser);
-    MBA_DI.bind(MbaTemplate).to(this._debugIsActive() ? MbaTemplateDebug : MbaTemplate);
-    if(model != null)
-        this._model = model;
-    if(this._mbaTemplate == null)
-        this._mbaTemplate = MBA_DI.get(MbaTemplate);
-    this._mbaTemplate.init(this._template, this._directive);
-    this._mbaTemplate.render(this._model);
-    if(this._options['genRefresh'])
-        this._mbaTemplate.generateRefreshMethod();
-    var renderedDom = this._mbaTemplate.getRenderedDom();
-    this._insertRenderedDomIntoAnchor(renderedDom);
+    if(this._debugIsActive())
+        console.log('Running Mamba in debug mode (default), use .setOptions({debug : false}) to turn off.');
+    this._configureTraces();
+    this._setModel(model);
+    this._render();
+    this._postRender();
+    this._insertRenderedDomIntoAnchor();
     return this._renderedDom.getElements();
 };
 
 Mamba.prototype.refresh = function(subModel){
     return this._mbaTemplate.refresh(subModel);
-    /*if(subModel != null){
-        this._mbaTemplate.updateDomForModel(subModel);
-    }
-    else
-        this._mbaTemplate.updateDomForSuperModel();
-    return this._mbaTemplate.getRenderedDom().getElements();*/
 };
 
 Mamba.prototype.debugNodes = function(){
@@ -100,6 +89,7 @@ Mamba.prototype._initDefaultOptions = function(){
 
 Mamba.prototype._insertRenderedDomIntoAnchor = function(renderedDom){
     checkType(renderedDom, MbaDom);
+    var renderedDom = this._mbaTemplate.getRenderedDom();
     if(this._anchor != null){
         if(this._renderedDom != null)
             this._renderedDom.removeFromParent();
@@ -117,4 +107,30 @@ Mamba.prototype._insertRenderedDomIntoAnchor = function(renderedDom){
 
 Mamba.prototype._debugIsActive = function(){
     return this._options['debug'];
+};
+
+Mamba.prototype._configureTraces = function(){
+    MBA_DI.bind(DirectiveParser).to(this._debugIsActive() ? DirectiveParserDebug : DirectiveParser);
+    MBA_DI.bind(MbaTemplate).to(this._debugIsActive() ? MbaTemplateDebug : MbaTemplate);
+};
+
+Mamba.prototype._setModel = function(model){
+    if(model != null)
+        this._model = model;
+};
+
+Mamba.prototype._initMbaTemplate = function(){
+    if(this._mbaTemplate == null)
+        this._mbaTemplate = MBA_DI.get(MbaTemplate);
+    this._mbaTemplate.init(this._template, this._directive);
+};
+
+Mamba.prototype._render = function(){
+  this._initMbaTemplate();  
+  this._mbaTemplate.render(this._model);
+};
+
+Mamba.prototype._postRender = function(){
+    if(this._options['genRefresh'])
+        this._mbaTemplate.generateRefreshMethod();
 };

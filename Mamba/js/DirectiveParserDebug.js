@@ -14,7 +14,7 @@ DirectiveParser.prototype.printDebugInfos = function(){
     var selector = this.extractSelector();
     var events = this.computeEvents();
     
-    console.log('parse directive "'+this._directive+'" : ',
+    console.log('Parse directive "'+this._directive+'" : ',
                 'selector="'+selector+'",',
                 'binding="'+binding+'",',
                 'events=['+events.join(',')+']');

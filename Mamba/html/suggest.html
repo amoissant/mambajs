@@ -36,6 +36,7 @@
     <script type="text/javascript" src="../js/MbaNodeDirective.js"></script>
     <script type="text/javascript" src="../js/MbaRootNode.js"></script>
     <script type="text/javascript" src="../js/MbaTemplate.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplateDebug.js"></script>
     <script type="text/javascript" src="../js/MbaNodeHtmlElement.js"></script>
     <script type="text/javascript" src="../js/MbaNodeBinding.js"></script>
     <script type="text/javascript" src="../js/MbaNodeConstructor.js"></script>
@@ -105,20 +106,5 @@
     
     var mamba = new Mamba(new model(), html, directive, 'body');
     mamba.render(model);
-    /*var html = '<select><option></option></select>';    
-    var modelClass = function() {
-        this.données  = ['pouet', '', 'poulou'];
-        this.choix = '';
-    };
-    var directive = {
-        "données": {
-            "r00t": "option",
-            "toString": "option" 
-        },
-        "choix": "select$value->change"
-    };
-    var model = new modelClass();
-    var mamba = new Mamba(model, html, directive, 'body');
-    mamba.render();*/
 </script>
 </html>

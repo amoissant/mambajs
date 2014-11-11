@@ -155,57 +155,43 @@ Test(function() {
     });
     
     Ca('teste que l\'on trace les selecteur, binding et event en mode debug (par défaut)', function(){
-        var consoleContent = [];
-        var consoleLog = console.log;
-        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
-        var mamba = new Mamba({name: 'toto'}, '<div></div>', {name: 'div@name->(click, blur)'});
-        mamba.render();
-        var consoleContentJoined = consoleContent.join('');
-        OnAttend(consoleContentJoined.contains('selector="div"')).DEtreVrai();
-        OnAttend(consoleContentJoined.contains('binding="@name"')).DEtreVrai();
-        OnAttend(consoleContentJoined.contains('events=[click,blur]')).DEtreVrai();
+        var consoleContent = runWithSpyingConsole(function(){
+            var mamba = new Mamba({name: 'toto'}, '<div></div>', {name: 'div@name->(click, blur)'});
+            mamba.render();
+        });
+        OnAttend(consoleContent.contains('selector="div"')).DEtreVrai();
+        OnAttend(consoleContent.contains('binding="@name"')).DEtreVrai();
+        OnAttend(consoleContent.contains('events=[click,blur]')).DEtreVrai();
     });
     
     Ca('teste que l\'on ne trace pas les selecteur, binding et event si on n\'est pas en mode debug', function(){
-        var consoleContent = [];
-        var consoleLog = console.log;
-        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
-        var mamba = new Mamba({name: 'toto'}, '<div></div>', {name: 'div@name->(click, blur)'});
-        mamba.setOptions({debug: false});
-        mamba.render();
-        var consoleContentJoined = consoleContent.join('');
-        OnAttend(consoleContentJoined.contains('selector="div"')).DEtreFaux();
-        OnAttend(consoleContentJoined.contains('binding="@name"')).DEtreFaux();
-        OnAttend(consoleContentJoined.contains('events=[click,blur]')).DEtreFaux();
+        var consoleContent = runWithSpyingConsole(function(){
+            var mamba = new Mamba({name: 'toto'}, '<div></div>', {name: 'div@name->(click, blur)'});
+            mamba.setOptions({debug: false});
+            mamba.render();
+        });
+        OnAttend(consoleContent.contains('selector="div"')).DEtreFaux();
+        OnAttend(consoleContent.contains('binding="@name"')).DEtreFaux();
+        OnAttend(consoleContent.contains('events=[click,blur]')).DEtreFaux();
     });
     
     Ca('teste que l\'on trace les selecteur, binding, events. Cas malformé 01', function(){
-        var consoleContent = [];
-        var consoleLog = console.log;
-        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
-        try{
+        var consoleContent = runWithSpyingConsole(function(){
             var mamba = new Mamba(null, '', {"selected" : "input[type='checkbox']$checked->(click, keyup"});
             mamba.render();
-        }
-        catch(e){
-            var consoleContentJoined = consoleContent.join('');
-            OnAttend(consoleContentJoined.contains('selector="input[type=\'checkbox\']"')).DEtreVrai();
-            OnAttend(consoleContentJoined.contains('binding="$checked"')).DEtreVrai();
-            return;
-        }
-        OnAttend(true).DEtreFaux();        
+        });
+        OnAttend(consoleContent.contains('selector="input[type=\'checkbox\']"')).DEtreVrai();
+        OnAttend(consoleContent.contains('binding="$checked"')).DEtreVrai();
     });
     
     Ca('teste que l\'on trace les selecteur, binding, events. Cas malformé 02', function(){
-        var consoleContent = [];
-        var consoleLog = console.log;
-        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
-        var mamba = new Mamba(null, '', {"text" : "input[type='text']$value->change'"});
-        mamba.render();
-        var consoleContentJoined = consoleContent.join('');
-        OnAttend(consoleContentJoined.contains('selector="input[type=\'text\']"')).DEtreVrai();
-        OnAttend(consoleContentJoined.contains('binding="$value"')).DEtreVrai();
-        OnAttend(consoleContentJoined.contains('events=[change\']')).DEtreVrai();
+       var consoleContent = runWithSpyingConsole(function(){
+            var mamba = new Mamba(null, '', {"text" : "input[type='text']$value->change'"});
+            mamba.render();
+       });
+        OnAttend(consoleContent.contains('selector="input[type=\'text\']"')).DEtreVrai();
+        OnAttend(consoleContent.contains('binding="$value"')).DEtreVrai();
+        OnAttend(consoleContent.contains('events=[change\']')).DEtreVrai();
     });
     
   Ca('teste le polymorphisme avec valeur null', function(){
@@ -251,42 +237,80 @@ Test(function() {
     });
       
     Ca('teste que l\'on trace le model utilisé pour le render', function(){
-        var consoleContent = [];
-        var consoleLog = console.log;
-        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
-        var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div"});
-        mamba.render();
-        var consoleContentJoinded = consoleContent.join('');
-        console.log(consoleContentJoinded);
-        OnAttend(consoleContentJoinded.contains('Render dom for model : ')).DEtreVrai();
+        var consoleContent = runWithSpyingConsole(function(){
+            var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div"});
+            mamba.render();
+        });
+        OnAttend(consoleContent.contains('Render dom for model : ')).DEtreVrai();
     });
     
     Ca('teste que l\'on trace le sous-modèle utilisé pour le refresh', function(){
-        var consoleContent = [];
-        var consoleLog = console.log;
-        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
-        var model = {sub : {name: 'toto'}};
-        var mamba = new Mamba(model, '<div><span></span></div>', {"sub" : {"name" : "span"}});
-        mamba.render();
-        mamba.refresh(model.sub);
-        var consoleContentJoined = consoleContent.join('');
-        OnAttend(consoleContentJoined.contains('Refresh dom for model : ')).DEtreVrai();
+        var consoleContent = runWithSpyingConsole(function(){
+            var model = {sub : {name: 'toto'}};
+            var mamba = new Mamba(model, '<div><span></span></div>', {"sub" : {"name" : "span"}});
+            mamba.render();
+            mamba.refresh(model.sub);
+        });
+        OnAttend(consoleContent.contains('Refresh dom for model : ')).DEtreVrai();
     });
     
     Ca('teste que l\'on trace le super modèle utilisé pour le refresh', function(){
-       var consoleContent = [];
-        var consoleLog = console.log;
-        console.log = function(){pushAll(consoleContent, arguments); consoleLog.apply(this, arguments);};
-        var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div"});
-        mamba.render();
-        mamba.refresh();
-        var consoleContentJoinded = consoleContent.join('');
-        console.log(consoleContentJoinded);
-        OnAttend(consoleContentJoinded.contains('Refresh dom for model : ')).DEtreVrai();
+        var consoleContent = runWithSpyingConsole(function(){
+            var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div"});
+            mamba.render();
+            mamba.refresh();
+        });
+        OnAttend(consoleContent.contains('Refresh dom for model : ')).DEtreVrai();
+    });    
+    
+    Ca('teste que l\'on trace un message d\'avertissement si le dom rendu est vide', function(){    
+        var consoleContent = runWithSpyingConsole(function(){
+            var model = function(){this.text = 'toto';};
+            var mamba = new Mamba(new model(), '<div></div>', {"text" : "div"});
+            mamba.render(model);//here is the mistake
+        });
+        OnAttend(consoleContent.contains('The rendered dom is empty, are you missing something ?')).DEtreVrai();
     });
     
+     Ca('teste que l\'on trace un message pour desactiver le mode debug ', function(){    
+        var consoleContent = runWithSpyingConsole(function(){
+            var model = function(){this.text = 'toto';};
+            var mamba = new Mamba(new model(), '<div></div>', {"text" : "div"});
+            mamba.render(model);//here is the mistake
+        });
+        OnAttend(consoleContent.contains('The rendered dom is empty, are you missing something ?')).DEtreVrai();
+    });
+    
+    function runWithSpyingConsole(somethingToRun){
+        var consoleContent = [];
+        var consoleLog = console.log;
+        var restoreConsoleLog = function(){
+            console.log = consoleLog;
+        };
+        var spyConsoleLog = function(){
+            pushAll(consoleContent, arguments);
+            consoleLog.apply(this, arguments);
+        };
+        console.log = spyConsoleLog;
+        try{
+            somethingToRun();
+        }
+        catch(e){}
+        restoreConsoleLog();
+        return consoleContent.join('');
+    };   
+    
+    Ca('teste que l\'on trace le dom rendu', function(){
+        var consoleContent = runWithSpyingConsole(function(){
+            var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div"});
+            mamba.render();    
+        });
+        OnAttend(consoleContent.contains('Rendered dom is :')).DEtreVrai();
+    });
+    
+    
     //TODO : implementer une liste avec un choix ayant pour valeur 'null'
-    //TODO : var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div'"}); -> détecter que l'erreur veins de la directive :)
+    //TODO : var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div'"}); -> détecter que l'erreur viens de la directive :)
     
     //TODO valider les model, template binding et anchor et lever une erreur si le type ne correspond pas
     //TODO options de debug pour afficher les structure de données, afficher quand le model est set, quand on fait un refresh...
@@ -303,5 +327,6 @@ Test(function() {
     //TODO une fois le binding par défaut implémenté faire marcher ceci : 
     //  <span class="name"></span><input class="name" type="text"></input>, {name: 'toto'}, {"name": ".name"}
     //TODO Mamba api si on appelle refresh avant render alors message d'erreur
+    //TODO : tracer que mamba est en mode debug, indiquer d'utiliser l'option debug false
 });
 	
