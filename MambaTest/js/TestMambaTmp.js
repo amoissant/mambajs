@@ -308,8 +308,18 @@ Test(function() {
         OnAttend(consoleContent.contains('Rendered dom is :')).DEtreVrai();
     });
     
+    Ca('teste le message d\'erreur si on veut binder dans un element de dom non vide', function(){
+        try{
+            var mamba = new Mamba({text : 'toto'}, '<div><br/></div>', {"text" : "div"});
+            mamba.render();    
+        }catch(e){
+            OnAttend(e.message.contains("The elements found with 'div' css selector are not empty.")).DEtreVrai();
+            return;
+        }
+        OnAttend(false).DEtreVrai();
+    });
     
-    //TODO : implementer une liste avec un choix ayant pour valeur 'null'
+    
     //TODO : var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div'"}); -> détecter que l'erreur viens de la directive :)
     
     //TODO valider les model, template binding et anchor et lever une erreur si le type ne correspond pas
@@ -327,6 +337,6 @@ Test(function() {
     //TODO une fois le binding par défaut implémenté faire marcher ceci : 
     //  <span class="name"></span><input class="name" type="text"></input>, {name: 'toto'}, {"name": ".name"}
     //TODO Mamba api si on appelle refresh avant render alors message d'erreur
-    //TODO : tracer que mamba est en mode debug, indiquer d'utiliser l'option debug false
+    //TODO : une fois le rendu fait, déclencher tous les setter pour mettre à jour le modèle avec le dom (notament un select qui se positionne sur le premier élément si la valeur que l'on lui set n'existe pas)
 });
 	

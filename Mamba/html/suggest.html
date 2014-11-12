@@ -93,18 +93,21 @@
         
     var html = '<select><option></option></select>';    
     var model = function() {
-        this.données  = ['pouet', 'poulou']
+        this.données  = [{code: 1, lib: 'pouet'},
+                         {code: null, lib: 'veuillez choisir'},
+                         {code: 2, lib: 'poulou'}];
         this.choix = null;
     };
     var directive = {
         "données": {
             "r00t": "option",
-            "toString": "option" 
+            "code": "option$value",
+            "lib": "option"
         },
         "choix": "select$value->change"
     };
     
     var mamba = new Mamba(new model(), html, directive, 'body');
-    mamba.render(model);
+    mamba.render();
 </script>
 </html>
