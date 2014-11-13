@@ -209,7 +209,7 @@ function MbaNode(parent, baseDom){
     };
     
     MbaNode.prototype.setRenderedDomForRoute = function(dom, route){
-        checkType(dom, MbaDom);
+        checkType(dom, MbaDomSingle);
         checkType(route, MbaRoute);
         this._indexedRenderedDom[route.getIndexes()] = dom;
     };
@@ -286,7 +286,7 @@ function MbaNode(parent, baseDom){
     MbaNode.prototype.appendDomIntoParent = function(childDom, route){
         checkType(childDom, MbaDom);
         checkType(route, MbaRoute);
-        this._parent.appendDom(this, childDom, route, route);
+        this._parent.appendDom(this, childDom, route);
     };
     
     MbaNode.prototype.appendDom = function(child, childDom, route){

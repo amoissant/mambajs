@@ -36,6 +36,7 @@
     <script type="text/javascript" src="../js/MbaNodeDirective.js"></script>
     <script type="text/javascript" src="../js/MbaRootNode.js"></script>
     <script type="text/javascript" src="../js/MbaTemplate.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplateDebug.js"></script>
     <script type="text/javascript" src="../js/MbaNodeHtmlElement.js"></script>
     <script type="text/javascript" src="../js/MbaNodeBinding.js"></script>
     <script type="text/javascript" src="../js/MbaNodeConstructor.js"></script>
@@ -133,11 +134,14 @@
                     html = $('#html').val();
 				}catch(error){
 				 	$('#html_errors').text(error);
-					return;
+					return;$
 				}		
 				
                 //html = html.replace(/>\s+</g, '><');
                 
+                var mamba = new Mamba(model, html, directive, '#result');
+                mamba.render();
+                /*
                 mbaTemplate = new MbaTemplate(html, directive);
                 mbaTemplate.render(model);
                 rootNode = mbaTemplate.getRootNode();
@@ -145,7 +149,7 @@
                 var dom = mbaTemplate.getRenderedDom().getElements();
 				
 				$('#result').empty();
-				$('#result').append(dom);
+				$('#result').append(dom);*/
 
 			});
 			

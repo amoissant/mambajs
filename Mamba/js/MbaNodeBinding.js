@@ -29,7 +29,7 @@ function MbaNodeBinding(baseDom, binding) {
         var allModelValueAreUndefined = 
             this._templateBinding.render(renderedDomForRoute, model, route, parentDirectiveNode);
         if(allModelValueAreUndefined){
-            if(renderedDomForRoute instanceof MbaDomSingle && isATextNode(renderedDomForRoute.getElement()))
+            if(isATextNode(renderedDomForRoute.getElement()) && (this._parent instanceof MbaNodeHtmlElement))
                 this.getParent().deleteDom(route);
             else
                 this.deleteDom(route);

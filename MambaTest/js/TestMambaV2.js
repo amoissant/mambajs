@@ -3,6 +3,34 @@ var testMbaV2 = function() {
 
     MBA_DI.bind(DirectiveParser).to(DirectiveParser);
     
+    function renderIntoRoot(model, html, directive){
+        var root = document.createElement('div');
+        root.innerHTML = html;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({debug: false});
+        mamba.render(); 
+        return root;
+    }
+    
+    function runWithSpyingConsole(somethingToRun){
+        var consoleContent = [];
+        var consoleLog = console.log;
+        var restoreConsoleLog = function(){
+            console.log = consoleLog;
+        };
+        var spyConsoleLog = function(){
+            pushAll(consoleContent, arguments);
+            consoleLog.apply(this, arguments);
+        };
+        console.log = spyConsoleLog;
+        try{
+            somethingToRun();
+        }
+        catch(e){}
+        restoreConsoleLog();
+        return consoleContent.join('');
+    }; 
+    
 	Ca('teste que toArray() encapsule un objet dans un tableau ', function() {
 		var obj = 'toto';
 		var res = toArray(obj);
@@ -1507,33 +1535,21 @@ var testMbaV2 = function() {
         OnAttend(rootNode.indexedRenderedDomIsValid()).DEtreVrai();
     });
     
-    Ca('teste que les éléments à la racine sont insérés dans le dom existant au bon endroit même '
+   Ca('teste que les éléments à la racine sont insérés dans le dom existant au bon endroit même '
        +'si la racine contenait d\'autres éléments', function(){
         var html = '<div class="message"></div><div id="stuff"></div>';
         var directive = {"r00t" : ".message", "text": ".message"};
         var model = [{text: 'tutu'}];
-        
-        var mbaTemplate = new MbaTemplate(html, directive);
-        mbaTemplate.render(model);
-        var rootNode = mbaTemplate.getRootNode();   
-        //rootNode.debug(true);
-        var messages = mbaTemplate.getRenderedDom();
+                
         var root = document.createElement('div');
-        root.id = 'root';
-        
-        root.appendChild(document.createElement('span'));
-        for(var i=0 ; i<messages.getLength() ; i++){
-            root.appendChild(messages.getElement(i));
-        }
-        
-        var mbaRoot = new MbaDomSingle(root);
-        OnAttend(mbaRoot.toString()).DEtreEgalA('<div id="root"><span></span><div class="message">tutu</div><div id="stuff"></div></div>');
-         
+        var mamba = new Mamba(model, html, directive, root);
+        mamba.setOptions({debug: false});
+        mamba.render();
+
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="message">tutu</div><div id="stuff"></div>');
         model.push({text: 'toto'});
-        mbaTemplate.render(model);
-        //rootNode.debug(true);
-    
-        OnAttend(mbaRoot.toString()).DEtreEgalA('<div id="root"><span></span><div class="message">tutu</div><div class="message">toto</div><div id="stuff"></div></div>');
+        mamba.render(model);
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="message">tutu</div><div class="message">toto</div><div id="stuff"></div>');
     });
     
      Ca('teste que les éléments à la racine sont insérés dans le dom existant au bon endroit', function(){
@@ -1543,7 +1559,6 @@ var testMbaV2 = function() {
         
         var mbaTemplate = new MbaTemplate(html, directive);
         mbaTemplate.render(model);
-        //mbaTemplate.getRootNode().debug(true);
         var messages = mbaTemplate.getRenderedDom();
         var root = document.createElement('div');
         root.id = 'root';
@@ -1557,7 +1572,6 @@ var testMbaV2 = function() {
          
         model.push({text: 'toto'});
         mbaTemplate.render(model);
-        //mbaTemplate.getRootNode().debug(true);
         OnAttend(mbaRoot.toString()).DEtreEgalA('<div id="root"><div class="message">tutu</div><div class="message">toto</div><div id="stuff"></div></div>');
     });
     
@@ -1566,24 +1580,15 @@ var testMbaV2 = function() {
         var directive = {"r00t" : ".message", "text": ".message"};
         var model = [{text: 'tutu'}];
         
-        var mbaTemplate = new MbaTemplate(html, directive);
-        mbaTemplate.render(model);
-        //mbaTemplate.getRootNode().debug(true);
-        var messages = mbaTemplate.getRenderedDom();
         var root = document.createElement('div');
-        root.id = 'root';
+        var mamba = new Mamba(model, html, directive, root);
+        mamba.setOptions({debug: false});
+        mamba.render();
         
-        for(var i=0 ; i<messages.getLength() ; i++){
-            root.appendChild(messages.getElement(i));
-        }
-        
-        var mbaRoot = new MbaDomSingle(root);
-        OnAttend(mbaRoot.toString()).DEtreEgalA('<div id="root"><div class="message">tutu</div></div>');
-         
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="message">tutu</div>');
         model.push({text: 'toto'});
-        mbaTemplate.render(model);
-        //mbaTemplate.getRootNode().debug(true);
-        OnAttend(mbaRoot.toString()).DEtreEgalA('<div id="root"><div class="message">tutu</div><div class="message">toto</div></div>');
+        mamba.render(model);
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="message">tutu</div><div class="message">toto</div>');
     });
     
     Ca('teste l\'appel d\'une méthode sur un évènement, ancre utilisée pour un binding', function(){
@@ -2920,17 +2925,17 @@ var testMbaV2 = function() {
         OnAttend(select.value).DEtreEgalA('tata');
     });
     
+    
   Ca('teste que l\'on supprime un élément à la racine de son parent si son modèle est supprimé', function(){
         var html = '<div class="test"></div>';
         var model = [{text: 'toto'}, {text: 'tutu'}];
         var directive = {r00t: '.test', text: '.test'};
-        var mamba = new MbaTemplate(html, directive);
-        mamba.render(model);
+        
         var root = document.createElement('div');
-        var renderedDom = mamba.getRenderedDom().getElements();
-        for(var i=0 ; i<renderedDom.length ; i++){
-            root.appendChild(renderedDom[i]);
-        }
+        var mamba = new Mamba(model, html, directive, root);
+        mamba.setOptions({debug: false});
+        mamba.render(); 
+      
         OnAttend(root.innerHTML).DEtreEgalA('<div class="test">toto</div><div class="test">tutu</div>');
         
         model.pop();
@@ -2947,15 +2952,9 @@ var testMbaV2 = function() {
         var model = 
             {messages: [],
              addMessage: function(){this.messages.push({text: 'toto'});}};
-        var mbaTemplate = new MbaTemplate(html, directive);    
-        mbaTemplate.render(model);    
-        var dom = mbaTemplate.getRenderedDom();
-        OnAttend(dom.toString()).DEtreEgalA('<input id="button" type="button">');
         
-        var root = document.createElement('div');
-        root.appendChild(dom.getElement(0));
-        
-        var button = mbaTemplate.selectInRenderedDom('#button')[0];
+        var root = renderIntoRoot(model, html, directive);
+        var button = root.childNodes[0];
         button.dispatchEvent(new Event('click'));
         OnAttend(root.innerHTML).DEtreEgalA('<div class="message">toto</div><input id="button" type="button">');
     });
@@ -3244,14 +3243,7 @@ var testMbaV2 = function() {
         dom = mamba.getRenderedDom();
         OnAttend(dom.toString()).DEtreEgalA(expectedHtml);  
     });
-    
-    //TODO remplacer par la fonction d'api qui insert le renderedDom dans un selecteur ou un élément de dom
-    function appendInRoot (root, renderedDom){
-            var dom = renderedDom.getElements();
-            for(var i=0 ; i<dom.length ; i++){
-                root.appendChild(dom[i]);
-            }  
-        }
+   
     
     Ca('teste le scénario de la demo 02', function(){
         function Message(text, parent){
@@ -3301,20 +3293,11 @@ var testMbaV2 = function() {
              "/add": "#addBtn->click", 
              "/empty": "#emptyBtn->click"};
         
-        var mamba = new MbaTemplate(html, directive);
-        mamba.render(model);
-        //mamba.getRootNode().debug(true);
-        var renderedDom = mamba.getRenderedDom();
-        var input = mamba.selectInRenderedDom('#message')[0];
-        var add = mamba.selectInRenderedDom('#addBtn')[0];
-        var empty = mamba.selectInRenderedDom('#emptyBtn')[0];//TODO faire une fonction qui retourne un élément de dom
-        var root = document.createElement('div');
-        appendInRoot(root, renderedDom);
-        
-        document.addEventListener('populate', function(e){
-            mamba.updateDomForModel(e.model);
-        });
-        
+        var root = renderIntoRoot(model, html, directive);
+        var input = root.childNodes[0];
+        var add = root.childNodes[1];
+        var empty = root.childNodes[2];
+            
         var expectedHtml = 
             '<input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
         OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
@@ -3398,19 +3381,10 @@ var testMbaV2 = function() {
              "/empty": "#emptyBtn->click", 
              "/remove": ".messages->click"};
         
-        var mamba = new MbaTemplate(html, directive);
-        mamba.render(model);
-        //mamba.getRootNode().debug(true);
-        var renderedDom = mamba.getRenderedDom();
-        var input = mamba.selectInRenderedDom('#message')[0];
-        var add = mamba.selectInRenderedDom('#addBtn')[0];
-        var empty = mamba.selectInRenderedDom('#emptyBtn')[0];//TODO faire une fonction qui retourne un élément de dom
-        var root = document.createElement('div');
-        appendInRoot(root, renderedDom);
-        
-        document.addEventListener('populate', function(e){
-            mamba.updateDomForModel(e.model);
-        });
+        var root = renderIntoRoot(model, html, directive);
+        var input = root.childNodes[0];
+        var add = root.childNodes[1];
+        var empty = root.childNodes[2];
         
         var expectedHtml = 
             '<input id="message" placeholder="taper un message ici" type="text"><input id="addBtn" value="Ajouter" type="button"><input id="emptyBtn" value="Vider" type="button">';
@@ -3495,16 +3469,11 @@ var testMbaV2 = function() {
              "normalizedText" : "div",
              "/toUpper" : "input->keyup"};
         
-        var mamba = new MbaTemplate(html, directive);
-        mamba.render(model);
-        //mamba.getRootNode().debug(true);
-        var renderedDom = mamba.getRenderedDom();
-        var input = mamba.selectInRenderedDom('input')[0];
-        var span = mamba.selectInRenderedDom('span')[0];
-        var div = mamba.selectInRenderedDom('div')[0];
-        var root = document.createElement('div');
-        appendInRoot(root, renderedDom);
-        
+        var root = renderIntoRoot(model, html, directive);
+        var input = root.childNodes[0];
+        var span = root.childNodes[1];
+        var div = root.childNodes[2];
+      
         var expectedHtml = 
             '<input type="text"><span></span><div></div>';
         OnAttend(root.innerHTML).DEtreEgalA(expectedHtml);
@@ -3533,16 +3502,9 @@ var testMbaV2 = function() {
              "/add": "#add->click",
              "/del": ".del->click"};
         
-        var mamba = new MbaTemplate(html, directive);
-        mamba.render(model);
-      
-        //mamba.getRootNode().debug(true);
-        var renderedDom = mamba.getRenderedDom();
-        var newItemInput = mamba.selectInRenderedDom('#newItem')[0];
-        var addBtn = mamba.selectInRenderedDom('#add')[0];
-
-        var root = document.createElement('div');
-        appendInRoot(root, renderedDom);
+        var root = renderIntoRoot(model, html, directive);
+        var newItemInput = root.childNodes[0];
+        var addBtn = root.childNodes[1];
         
         var expectedHtml = 
             '<input id="newItem" type="text"><button id="add">ajouter</button>';
@@ -3563,12 +3525,12 @@ var testMbaV2 = function() {
         OnAttend(model.items[1].name).DEtreEgalA('tutu');
         OnAttend(model.items[2].name).DEtreEgalA('titi');
       
-        var secondItemInput = mamba.selectInRenderedDom('.item')[1];
+        var secondItemInput = root.childNodes[3].childNodes[0];
         secondItemInput.value = 'tata';
         secondItemInput.dispatchEvent(new Event('keyup'));
         OnAttend(model.items[1].name).DEtreEgalA('tata');
       
-        var secondItemBtn = mamba.selectInRenderedDom('.del')[1];
+        var secondItemBtn = root.childNodes[3].childNodes[1];
         secondItemBtn.dispatchEvent(new Event('click'));
         OnAttend(model.items.length).DEtreEgalA(2);
         OnAttend(model.items[0].name).DEtreEgalA('toto');

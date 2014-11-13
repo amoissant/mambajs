@@ -2,6 +2,36 @@ Test(function() {
  
     MBA_DI.bind(DirectiveParser).to(DirectiveParser);
     
+    function renderIntoRoot(model, html, directive){
+        var root = document.createElement('div');
+        root.innerHTML = html;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({debug: false});
+        mamba.render(); 
+        return root;
+    }
+    
+    function runWithSpyingConsole(somethingToRun){
+        var consoleContent = [];
+        var consoleLog = console.log;
+        var restoreConsoleLog = function(){
+            console.log = consoleLog;
+        };
+        var spyConsoleLog = function(){
+            pushAll(consoleContent, arguments);
+            consoleLog.apply(this, arguments);
+        };
+        console.log = spyConsoleLog;
+        try{
+            somethingToRun();
+        }
+        catch(e){}
+        restoreConsoleLog();
+        return consoleContent.join('');
+    }; 
+    
+    
+    
     Ca('teste les lecture et écriture d\'un champ par l\'accesseur', function(){
         var accessor = new MbaAccessor('prop');
         var model = {prop: 'toto'};
@@ -46,12 +76,8 @@ Test(function() {
          var template = '<select><option></option></select>';
          var directive = {options: {r00t: 'option', toString: 'option'},
                           selected: 'select$value->change'};
-         var root = document.createElement('div');
-         root.innerHTML = template;
-         var mamba = new Mamba(model, root.childNodes, directive);
-         mamba.setOptions({debug: false});
-         mamba.render();
-         
+         var root = renderIntoRoot(model, template, directive);         
+        
          var select = root.childNodes[0];
          OnAttend(root.innerHTML).DEtreEgalA('<select><option>1</option><option>2</option><option>3</option></select>');
          OnAttend(select.value).DEtreEgalA(2);
@@ -71,13 +97,7 @@ Test(function() {
              {"r00t" : "tr",
               "name" : ".name$value",
               "selected" : ".check$checked"};
-         var root = document.createElement('div');
-         root.innerHTML = template;
-         var mamba = new Mamba(model, root.childNodes, directive);
-         mamba.setOptions({debug: false});
-         mamba.render();
-         //mamba.debugNodes();
-         
+         var root = renderIntoRoot(model, template, directive);                  
          OnAttend(root.innerHTML).DEtreEgalA('<table><tbody><tr><td></td><td><input class="name" type="text"></td></tr><tr><td><input class="check" type="checkbox"></td><td><input class="name" type="text"></td></tr><tr><td><input class="check" type="checkbox"></td><td></td></tr></tbody></table>');
     });
     
@@ -91,13 +111,7 @@ Test(function() {
             {"r00t" : ".poly",
              "first" : "span",
              "second" : "div"};
-        var root = document.createElement('div');
-        root.innerHTML = template;
-        var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({debug: false});
-        mamba.render();
-        //mamba.debugNodes();
-        
+         var root = renderIntoRoot(model, template, directive);         
         OnAttend(root.innerHTML).DEtreEgalA('<span class="poly">toto</span><span class="poly">tutu</span><div class="poly">titi</div><div class="poly">tata</div>');
     });
     
@@ -122,11 +136,7 @@ Test(function() {
                "selected" : "input[type='checkbox']$checked->(click, keyup)",
                "value" : ".val"}};
  
-        var root = document.createElement('div');
-        root.innerHTML = template;
-        var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({debug: false});
-        mamba.render();
+        var root = renderIntoRoot(model, template, directive);         
         
         var input = root.childNodes[0].childNodes[3];
         var select = root.childNodes[1].childNodes[3];;
@@ -199,12 +209,7 @@ Test(function() {
         var html = '<select><option></option></select>';
         var directive = {options : {'r00t' : 'option', 'toString' : 'option'},
                          selected : 'select$value'};
-        var root = document.createElement('div');
-        root.innerHTML = html;
-        var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({debug: false});
-        mamba.render();
-        
+         var root = renderIntoRoot(model, html, directive);                 
         OnAttend(root.innerHTML).DEtreEgalA('<select><option>toto</option><option>titi</option></select>');        
     });
     
@@ -213,12 +218,7 @@ Test(function() {
         var html = '<select><option></option></select>';
         var directive = {options : {'r00t' : 'option', 'toString' : 'option'},
                          selected : 'select$value'};
-        var root = document.createElement('div');
-        root.innerHTML = html;
-        var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({debug: false});
-        mamba.render();
-        
+        var root = renderIntoRoot(model, html, directive);         
         OnAttend(root.innerHTML).DEtreEgalA('<select><option>toto</option><option>titi</option></select>');        
     });
 
@@ -227,12 +227,7 @@ Test(function() {
         var html = '<select><option></option></select>';
         var directive = {options : {'r00t' : 'option', 'toString' : 'option'},
                          selected : 'select$value'};
-        var root = document.createElement('div');
-        root.innerHTML = html;
-        var mamba = new Mamba(model, root.childNodes, directive);
-        mamba.setOptions({debug: false});
-        mamba.render();
-        
+        var root = renderIntoRoot(model, html, directive);         
         OnAttend(root.innerHTML).DEtreEgalA('<select><option>toto</option><option>titi</option></select>');        
     });
       
@@ -281,24 +276,7 @@ Test(function() {
         OnAttend(consoleContent.contains('The rendered dom is empty, are you missing something ?')).DEtreVrai();
     });
     
-    function runWithSpyingConsole(somethingToRun){
-        var consoleContent = [];
-        var consoleLog = console.log;
-        var restoreConsoleLog = function(){
-            console.log = consoleLog;
-        };
-        var spyConsoleLog = function(){
-            pushAll(consoleContent, arguments);
-            consoleLog.apply(this, arguments);
-        };
-        console.log = spyConsoleLog;
-        try{
-            somethingToRun();
-        }
-        catch(e){}
-        restoreConsoleLog();
-        return consoleContent.join('');
-    };   
+      
     
     Ca('teste que l\'on trace le dom rendu', function(){
         var consoleContent = runWithSpyingConsole(function(){
@@ -319,7 +297,37 @@ Test(function() {
         OnAttend(false).DEtreVrai();
     });
     
+    function renderIntoRoot(model, html, directive){
+        var root = document.createElement('div');
+        root.innerHTML = html;
+        var mamba = new Mamba(model, root.childNodes, directive);
+        mamba.setOptions({debug: false});
+        mamba.render(); 
+        return root;
+    }
     
+    Ca('teste que le polymorphisme pour un textNode ne supprime pas l\'élément parent ci ce dernier a un binding', function(){
+        var model = {role : 'admin', name: 'toto'};
+        var html = '<div></div>';
+        var directive = {'role' : 'div@class', 'namezz' : 'div'};
+        
+        var root = renderIntoRoot(model, html, directive);
+        OnAttend(root.innerHTML).DEtreEgalA('<div class="admin"></div>');
+    });
+    /*<button>v</button>
+<div class="option"></div>
+
+{options : [{code: 1, lib: 'toto'}, {code: 2, lib: 'tutu'}, {code:3, lib: 'titi'}],
+ visible : false,
+ toggle: function(){this.visible = !this.visible;}
+}
+    
+    {"visible" : ".option@class(visible)",
+ "options" : {"r00t" : ".option", 
+              "code" : ".option@value", 
+              "libellé" : ".option"},
+ "/toggle": "button->click"}
+    */
     //TODO : var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div'"}); -> détecter que l'erreur viens de la directive :)
     
     //TODO valider les model, template binding et anchor et lever une erreur si le type ne correspond pas
@@ -338,5 +346,6 @@ Test(function() {
     //  <span class="name"></span><input class="name" type="text"></input>, {name: 'toto'}, {"name": ".name"}
     //TODO Mamba api si on appelle refresh avant render alors message d'erreur
     //TODO : une fois le rendu fait, déclencher tous les setter pour mettre à jour le modèle avec le dom (notament un select qui se positionne sur le premier élément si la valeur que l'on lui set n'existe pas)
+    //TODO rendre le message plus explicite quand on a oublié une r00t
 });
 	
