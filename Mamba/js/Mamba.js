@@ -87,22 +87,21 @@ Mamba.prototype._initDefaultOptions = function(){
     this._options.debug = true;
 };
 
-Mamba.prototype._insertRenderedDomIntoAnchor = function(renderedDom){
-    checkType(renderedDom, MbaDom);
-    var renderedDom = this._mbaTemplate.getRenderedDom();
+Mamba.prototype._insertRenderedDomIntoAnchor = function(){
+    var newRenderedDom = this._mbaTemplate.getRenderedDom();
     if(this._anchor != null){
         if(this._renderedDom != null)
             this._renderedDom.removeFromParent();
         if(this._domTemplate != null){
             var insertIndex = this._domTemplate.positionInParent();
             this._domTemplate.removeFromParent();
-            this._anchor.insertAtIndex(renderedDom, insertIndex);
+            this._anchor.insertAtIndex(newRenderedDom, insertIndex);
         }
         else{
-            this._anchor.append(renderedDom);
+            this._anchor.append(newRenderedDom);
         }
     }
-    this._renderedDom = renderedDom;
+    this._renderedDom = newRenderedDom;
 };
 
 Mamba.prototype._debugIsActive = function(){

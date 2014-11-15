@@ -122,7 +122,7 @@ function MbaNode(parent, baseDom){
 	};
     
     MbaNode.prototype.replaceInTree = function(toBeReplacedNode){
-        checkType(toBeReplacedNode, MbaNode);
+        checkType(toBeReplacedNode, MbaNodeHtmlElement);
         var parent = toBeReplacedNode.getParent();
         this.setParent(parent);
         var positionInParent = parent.getChildPosition(toBeReplacedNode);
@@ -209,7 +209,7 @@ function MbaNode(parent, baseDom){
     };
     
     MbaNode.prototype.setRenderedDomForRoute = function(dom, route){
-        checkType(dom, MbaDomSingle);
+        checkType(dom, MbaDom);
         checkType(route, MbaRoute);
         this._indexedRenderedDom[route.getIndexes()] = dom;
     };

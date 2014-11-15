@@ -62,6 +62,11 @@ function MbaBinding(cssSelector, anchorProvider, firstTransf){
         visitor.afterVisitBinding(this);
     };
     
+    MbaBinding.prototype.getRepresentation = function(){
+        return {selector : this._selector,
+                self: this};    
+    };
+    
 	if(arguments.length > 0){
 		this.init(cssSelector, anchorProvider, firstTransf);
 	}

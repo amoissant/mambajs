@@ -94,7 +94,7 @@ function MbaTemplate(template, directivesPrecursor){
         this._rootNode = constructor.getRootNode();
 	};
     
-    MbaTemplate.prototype.integrateMambaAndBindingNodes = function(){
+    MbaTemplate.prototype.integrateDirectiveAndBindingNodes = function(){
         var visitor = new IntegrateBindingAndDirectiveNodesVisitor();
         this._templateDirective.accept(visitor);
     };
@@ -149,7 +149,7 @@ function MbaTemplate(template, directivesPrecursor){
         this.constructTemplateDirective();
         this.mergeTemplateDirectives();
         this.constructRootNode();        
-        this.integrateMambaAndBindingNodes();
+        this.integrateDirectiveAndBindingNodes();
         this.addActionBindingsIntoNodes();
         this._isReadyForRender = true;
     };

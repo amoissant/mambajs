@@ -192,6 +192,12 @@ function MbaDirective(precursor, parentPropertyName){
         visitor.afterVisitDirective(this);
     };
     
+    MbaDirective.prototype.getRepresentation = function(){
+          return {rootSelector: (this._rootSelector==null?null:'\''+this._rootSelector+'\''),
+                  accessor: this._accessorChain.toStringWithModel(),
+                  self: this};
+    };
+    
     if(arguments.length != 0){
         this.init(precursor, parentPropertyName);
     }

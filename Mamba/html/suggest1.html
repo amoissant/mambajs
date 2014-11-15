@@ -1,8 +1,8 @@
 <html>	
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="../js/jquery-1.10.1.js"></script>
- 
+    <script type="text/javascript" src="../js/jquery-1.10.1.js"></script>
+    
     <script type="text/javascript" src="../js/MbaError.js"></script>
 	<script type="text/javascript" src="../js/Mamba.js"></script>
 	<script type="text/javascript" src="../js/MbaUtil.js"></script>
@@ -77,117 +77,107 @@
     <script type="text/javascript" src="../js/MbaModelExplorer.js"></script> 
     <script type="text/javascript" src="../js/MbaModelFinder.js"></script> 
     <script type="text/javascript" src="../js/MbaRefreshMethodGenerator.js"></script>
-
-    
-	<script type="text/javascript">
-
-		function addTabulation(){
-			$('textarea').on('keypress', function(e){
-				
-				if(e.keyCode == 9){//tab
-					var tabString = "  ";
-					var start = $(this).get(0).selectionStart;
-    				var end = $(this).get(0).selectionEnd;
-					$(this).val($(this).val().substring(0, start)
-                		+ tabString
-                		+ $(this).val().substring(end));
-
-    				$(this).get(0).selectionStart =
-    				$(this).get(0).selectionEnd = start + tabString.length;
-					return false;
-				}
-			});
-		}
-		
-		
-		$(document).ready(function(){
-
-			$('#html').click(function(){
-				$('#html_errors').text('');			
-			});				
-			$('#model').click(function(){
-				$('#model_errors').text('');			
-			});		
-			$('#directive').click(function(){
-				$('#directive_errors').text('');			
-			});	
-
-			$('#run').click(function(){
-				try{
-                    var modeltextArea = document.querySelector('#model');
-                    eval('model='+modeltextArea.value);
-                    //model = $.parseJSON($('#model').val());//.replace(/\'/g,'"'));	
-				}catch(error){
-				 	$('#model_errors').text(error);
-					return;
-				}
-				try{
-					directive = $.parseJSON($('#directive').val());//.replace(/\'/g,'"'));
-					extra_script = $('#extra_script').val();
-					eval(extra_script);
-				}catch(error){
-				 	$('#directive_errors').text(error);
-					return;
-				}
-				try{
-					//html = $.parseHTML($('#html').val());
-                    html = $('#html').val();
-				}catch(error){
-				 	$('#html_errors').text(error);
-					return;$
-				}		
-				
-                //html = html.replace(/>\s+</g, '><');
-                
-                $('#result').empty();
-                mamba = new Mamba(model, html, directive, '#result');
-                mamba.render();                			
-			});
-			
-			addTabulation();
-		});	
-	</script>
-	<style type="text/css">
-		.half{width:50%}
-		.cent{width:100%;}
-		.error{color:red; width:100%;}
-
-		.blue{color:blue}
-		.red{color:red}
-		.infos{font-size: small}
+  
+    <style type="text/css">
+		body
+        {
+            height :100%; 
+            text-align: center;
+        }
+        .option {
+            visibility: hidden;
+        }
+        .option:hover{
+            cursor: pointer;
+        }
+        .visible {
+            visibility: visible;
+        }
 	</style>
 </head>
 
 <body>
-	<table class="cent">
-		<tbody>
-			<tr>
-				<td class="half">Template html</td>
-				<td class="half">Model</td>
-			</tr>
-			<tr>
-				<td><textarea id="html" rows="15" class="cent" spellcheck="false"></textarea></td>
-				<td><textarea id="model"rows="15" class="cent" spellcheck="false"></textarea></td>
-			</tr>
-			<tr>
-				<td><div id="html_errors" class="error"></div></td>
-				<td><span id="model_errors" class="error"></span></td>
-			</tr>
-			<tr>
-				<td>Directive</td>
-				<td><button id="run">Result</button><span id="time"></span></td>
-			</tr>
-			<tr>
-				<td>
-					<div><textarea id="directive" rows="15" class="cent" spellcheck="false"></textarea></div>
-				</td>
-				<td id="result"></td>
-			</tr>
-			<tr>
-				<td><div id="directive_errors" class="error"></div></td>
-				<td></td>
-			</tr>
-		</tbody>
-	</table>
 </body>
+<script type="text/javascript">
+        
+    /*var html = '<select><option></option></select>';    
+    var model = function() {
+        this.données  = [{code: 1, lib: 'pouet'},
+                         {code: null, lib: 'veuillez choisir'},
+                         {code: 2, lib: 'poulou'}];
+        this.choix = null;
+    };
+    var directive = {
+        "données": {
+            "r00t": "option",
+            "code": "option$value",
+            "lib": "option"
+        },
+        "choix": "select$value->change"
+    };
+    
+    var mamba = new Mamba(new model(), html, directive, 'body');
+    mamba.render();*/
+    function Option(code, libellé){
+        this.code = code;
+        this.libellé = libellé;   
+    };
+    
+    function Select(options, codeSélectionné){
+        this.options;
+        this.valeur;
+        this.valeursVisibles = false;
+        
+        this.init = function(options, codeSélectionné){
+            this.créerLesOptions(options);
+            this.valeur = this.trouverLOption(codeSélectionné);
+        };
+        
+        this.créerLesOptions = function(options){
+            this.options = [];
+            for(var i=0 ; i<options.length ; i++){
+                var currOption = options[i];
+                this.options.push(new Option(currOption.code, currOption.lib));
+            }    
+        };
+        
+        this.trouverLOption = function(code){
+            for(var i=0 ; i<this.options.length ; i++){
+                var currOption = this.options[i];
+                if(this.options[i].code == code)
+                    return currOption;
+            }
+            return null;
+        };
+        
+        this.sélectionner = function(option){
+            console.log('select', option);
+            this.valeur = option;
+            this.toggle();
+        };
+        
+        this.toggle = function(){
+            this.valeursVisibles = !this.valeursVisibles;
+        };
+        
+        this.init(options, codeSélectionné);
+    };
+    
+    
+    var html = '<span class="select"></span><button>V</button><div class="option"></div>';    
+    var model = new Select([{code: 1, lib: 'toto'},
+                            {code: 2, lib: 'tutu'},
+                            {code:3, lib: 'titi'}], 1);
+    var directive = 
+        {'valeur' : {'libellé': 'span'},
+         'valeursVisibles' : '.option@class(visible)',
+         'options' : {'r00t' : '.option',
+                      'libellé' : '.option'},
+         '/toggle': 'button->click',
+         '/sélectionner': '.option->click'
+        };
+    
+    var mamba = new Mamba(model, html, directive, 'body');
+    mamba.render();
+</script>
 </html>

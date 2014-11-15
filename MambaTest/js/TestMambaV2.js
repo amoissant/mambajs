@@ -1021,7 +1021,7 @@ var testMbaV2 = function() {
                                      children: [{type: MbaNodeHtmlElement, dom: tutuTextNode}]}]}]};
         OnAttend(rootNode.match(testBefore)).DEtreVrai();
         
-        mbaTemplate.integrateMambaAndBindingNodes();
+        mbaTemplate.integrateDirectiveAndBindingNodes();
         
         var testAfter = 
             {type: MbaRootNode,
@@ -1081,7 +1081,7 @@ var testMbaV2 = function() {
                                      children: [{type: MbaNodeHtmlElement, dom: thirdTextNode}]}]}]};
         OnAttend(rootNode.match(testBefore)).DEtreVrai();
         
-        mbaTemplate.integrateMambaAndBindingNodes();
+        mbaTemplate.integrateDirectiveAndBindingNodes();
         //rootNode.debug();
         var testAfter = 
             {type: MbaRootNode,

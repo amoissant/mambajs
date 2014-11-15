@@ -45,7 +45,8 @@ function TemplateDirectiveAndBindingVisitor(template, rootDirective){
     
     TemplateDirectiveAndBindingVisitor.prototype.beforeVisitBinding = function(binding){
         checkType(binding, MbaBinding);    
-        var templateBinding = new MbaTemplateBinding(this.getRelativeTemplate(), binding);
+        var relativeTemplate = this.getRelativeTemplate();
+        var templateBinding = new MbaTemplateBinding(relativeTemplate, binding);
         this.getCurrentTemplateDirective().addTemplateBinding(templateBinding);
     };        
     

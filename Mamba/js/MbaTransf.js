@@ -159,3 +159,9 @@ MbaTransf.prototype.referenceModelIntoDom = function(dom){
     checkType(dom, MbaDom);
     dom.referenceModel(this.getLastModel());
 };
+
+MbaTransf.prototype.getRepresentation = function(){
+    return {events : '['+this._events.join(' | ')+']',
+            accessor: this._accessorChain.toStringWithModel(),
+            self: this};
+};

@@ -314,6 +314,7 @@ Test(function() {
         var root = renderIntoRoot(model, html, directive);
         OnAttend(root.innerHTML).DEtreEgalA('<div class="admin"></div>');
     });
+    
     /*<button>v</button>
 <div class="option"></div>
 
@@ -325,7 +326,7 @@ Test(function() {
     {"visible" : ".option@class(visible)",
  "options" : {"r00t" : ".option", 
               "code" : ".option@value", 
-              "libellé" : ".option"},
+              "lib" : ".option"},
  "/toggle": "button->click"}
     */
     //TODO : var mamba = new Mamba({text : 'toto'}, '<div></div>', {"text" : "div'"}); -> détecter que l'erreur viens de la directive :)
@@ -347,5 +348,7 @@ Test(function() {
     //TODO Mamba api si on appelle refresh avant render alors message d'erreur
     //TODO : une fois le rendu fait, déclencher tous les setter pour mettre à jour le modèle avec le dom (notament un select qui se positionne sur le premier élément si la valeur que l'on lui set n'existe pas)
     //TODO rendre le message plus explicite quand on a oublié une r00t
+    //TODO : refacto MbaNodeBinding.updateDom
+    //TODO : refacto IntegrateBindingAndDirectiveNodesVisitor.visitTemplateBinding
 });
 	

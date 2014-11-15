@@ -5,7 +5,7 @@ function MbaDirectiveDebugVisitor(){
     MbaDirectiveDebugVisitor.prototype.beforeVisitDirective = function(directive){
         checkType(directive, MbaDirective);
         this._deep++;
-        console.log(this.getIndentation(), directive);
+        console.log(this.getIndentation()+directive.constructor.name, directive.getRepresentation());
     };
     
     MbaDirectiveDebugVisitor.prototype.afterVisitDirective = function(directive){
@@ -16,7 +16,7 @@ function MbaDirectiveDebugVisitor(){
     MbaDirectiveDebugVisitor.prototype.beforeVisitBinding = function(binding){
         checkType(binding, MbaBinding);
         this._deep++;
-        console.log(this.getIndentation(), binding);
+        console.log(this.getIndentation()+binding.constructor.name, binding.getRepresentation());
     };
     
     MbaDirectiveDebugVisitor.prototype.afterVisitBinding = function(binding){
@@ -27,18 +27,11 @@ function MbaDirectiveDebugVisitor(){
     MbaDirectiveDebugVisitor.prototype.beforeVisitTransformation = function(transformation){
         checkType(transformation, MbaTransf);
         this._deep++;
-        console.log(this.getIndentation(), transformation);
+        console.log(this.getIndentation()+transformation.constructor.name, transformation.getRepresentation());
     };
     
     MbaDirectiveDebugVisitor.prototype.afterVisitTransformation = function(transformation){
         checkType(transformation, MbaTransf);
-        this._deep--;
-    };
-    
-    MbaDirectiveDebugVisitor.prototype.visitAccessorChain = function(accessorChain){
-        checkType(accessorChain, MbaAccessorChain);
-        this._deep++;
-        console.log(this.getIndentation(), accessorChain.toString());
         this._deep--;
     };
     
