@@ -1137,7 +1137,7 @@ var testMbaV2 = function() {
     });
      
     function createTemplateBindingForTestTransformationParam(template, anchorSelector, modelProperty, transformation){
-        var mbaAccessor = new MbaFieldAccessor('name');
+        var mbaAccessor = new MbaAccessor('name');
         var mbaAccessorChain = new MbaAccessorChain().prependAccessor(mbaAccessor);
         var mbaTransf = new MbaTransf(transformation, mbaAccessorChain);
         var mbaBinding = new MbaBinding(anchorSelector, new DefaultAnchorProvider(), mbaTransf);
@@ -1720,9 +1720,9 @@ var testMbaV2 = function() {
     }
     
     Ca('teste l\'application d\'une route par le MbaAccessorChain', function(){
-       var accessorChain = new MbaAccessorChain().prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+       var accessorChain = new MbaAccessorChain().prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         var model = {tata: [{titi: {toto: 'tutu1'}},
                             {titi: {toto: 'tutu2'}}]};
         
@@ -1736,9 +1736,9 @@ var testMbaV2 = function() {
 
     
     Ca('teste l\'application d\'une route partielle par le MbaAccessorChain', function(){
-       var accessorChain = new MbaAccessorChain().prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+       var accessorChain = new MbaAccessorChain().prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         var model = {tata: [{titi: {toto: 'tutu1'}},
                             {titi: {toto: 'tutu2'}}]};
         
@@ -1751,9 +1751,9 @@ var testMbaV2 = function() {
     
      Ca('teste l\'application d\'une route avec plusieurs null par le MbaAccessorChain', function(){
        var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        accessorChain.prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         
         var model = {tata: [{titi: [{toto: 'tutu1'}, {toto: 'tete1'}]},
                             {titi: [{toto: 'tutu2'}, {toto: 'tete2'}]}]};
@@ -1781,9 +1781,9 @@ var testMbaV2 = function() {
     
     Ca('teste l\'application d\'une route avec un null par le MbaAccessorChain', function(){
        var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        accessorChain.prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         
          var model = {tata: [{titi: [{toto: 'tutu1'}, {toto: 'tete1'}]},
                              {titi: [{toto: 'tutu2'}, {toto: 'tete2'}]}]};
@@ -1829,9 +1829,9 @@ var testMbaV2 = function() {
     
     Ca('teste l\'application d\'une route sans null par le MbaAccessorChain', function(){
        var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        accessorChain.prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         
          var model = {tata: [{titi: [{toto: 'tutu1'}, {toto: 'tete1'}]},
                              {titi: [{toto: 'tutu2'}, {toto: 'tete2'}]}]};
@@ -1873,9 +1873,9 @@ var testMbaV2 = function() {
         
     Ca('teste l\'application d\'une route sur un modèle null par le MbaAccessorChain', function(){
        var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        accessorChain.prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         
         var model = null;
         var inputRoute = [0, 1, 0];
@@ -1887,9 +1887,9 @@ var testMbaV2 = function() {
         
     Ca('teste l\'application d\'une route sur un sous-modèle null par le MbaAccessorChain', function(){
         var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        accessorChain.prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         
         var model = {tata: null};
         var inputRoute = [0, 0, 1];
@@ -1901,7 +1901,7 @@ var testMbaV2 = function() {
 
     Ca('teste que l\'on peut mettre à jour une valeur du modèle en suivante une route', function(){
         var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('name'));
+        accessorChain.prependAccessor(new MbaAccessor('name'));
         
         var model = [{"name" : "tutu"},
                      {"name" : "titi"}];
@@ -1916,8 +1916,8 @@ var testMbaV2 = function() {
     
     Ca('teste que l\'on peut mettre à jour une valeur du sous-modèle en suivante une route', function(){
         var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('prop'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('sub'));
+        accessorChain.prependAccessor(new MbaAccessor('prop'));
+        accessorChain.prependAccessor(new MbaAccessor('sub'));
         
         var model = [{"sub" : {"prop" : "toto"}},
                      {"sub" : {"prop" : "tutu"}}];
@@ -3048,9 +3048,9 @@ var testMbaV2 = function() {
     });
     
     Ca('teste la récupération du dernier modèle pour une route', function(){
-        var accessorChain = new MbaAccessorChain().prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        var accessorChain = new MbaAccessorChain().prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         var model = {tata: [{titi: {toto: 'tutu1'}},
                             {titi: {toto: 'tutu2'}}]};
         
@@ -3061,9 +3061,9 @@ var testMbaV2 = function() {
     });
     
     Ca('teste la récupération du dernier modèle pour une route partielle', function(){
-        var accessorChain = new MbaAccessorChain().prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        var accessorChain = new MbaAccessorChain().prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         var model = {tata: [{titi: {toto: 'tutu1'}},
                             {titi: {toto: 'tutu2'}}]};
         
@@ -3075,9 +3075,9 @@ var testMbaV2 = function() {
     
      Ca('teste la récupération du dernier modèle pour une route avec plusieurs null', function(){
         var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        accessorChain.prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         
         var model = {tata: [{titi: [{toto: 'tutu1'}, {toto: 'tete1'}]},
                             {titi: [{toto: 'tutu2'}, {toto: 'tete2'}]}]};
@@ -3103,9 +3103,9 @@ var testMbaV2 = function() {
     
     Ca('teste la récupération du dernier modèle pour une route avec un null', function(){
        var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        accessorChain.prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         
          var model = {tata: [{titi: [{toto: 'tutu1'}, {toto: 'tete1'}]},
                              {titi: [{toto: 'tutu2'}, {toto: 'tete2'}]}]};
@@ -3145,9 +3145,9 @@ var testMbaV2 = function() {
     
     Ca('teste l\'application d\'une route sans null', function(){
        var accessorChain = new MbaAccessorChain();
-        accessorChain.prependAccessor(new MbaFieldAccessor('toto'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('titi'));
-        accessorChain.prependAccessor(new MbaFieldAccessor('tata'));
+        accessorChain.prependAccessor(new MbaAccessor('toto'));
+        accessorChain.prependAccessor(new MbaAccessor('titi'));
+        accessorChain.prependAccessor(new MbaAccessor('tata'));
         
          var model = {tata: [{titi: [{toto: 'tutu1'}, {toto: 'tete1'}]},
                              {titi: [{toto: 'tutu2'}, {toto: 'tete2'}]}]};
