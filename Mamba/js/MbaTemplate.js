@@ -78,7 +78,7 @@ function MbaTemplate(template, directivesPrecursor){
         
     MbaTemplate.prototype.constructTemplateDirective = function(){
         this._template.addMbaId();
-        var visitor = new TemplateDirectiveAndBindingVisitor(this._template, this._rootDirective);    
+        var visitor = new TemplateDirectiveConstructorVisitor(this._template, this._rootDirective);    
         this._rootDirective.visit(visitor);
         this._templateDirective = visitor.getRootTemplateDirective();
     };
