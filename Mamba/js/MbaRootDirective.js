@@ -13,7 +13,7 @@ function MbaRootDirective(precursor){
     
     MbaRootDirective.prototype.debug = function(){
         var visitor = new MbaDirectiveDebugVisitor();
-        this.visit(visitor);
+        this.accept(visitor);
     };
     
     if(arguments.length != 0){

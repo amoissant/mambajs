@@ -70,6 +70,15 @@ function MbaTemplateBinding(template, binding){
 		}
     };
 	
+    MbaTemplateBinding.prototype.accept = function(visitor){
+        checkType(visitor, MbaTemplateDirectiveVisitor);
+        visitor.beforeVisitTemplateBinding(this);
+        for(var i=0 ; i<this._transformations.length ; i++){
+            this._transformations[i].accept(visitor);
+        }
+        visitor.afterVisitTemplateBinding(this);
+    };
+    
     if(arguments.length != 0){
         this.init(template, binding);
     }

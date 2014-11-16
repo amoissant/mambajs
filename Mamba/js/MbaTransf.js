@@ -72,10 +72,8 @@ MbaTransf.prototype.setSuperModel = function(model){
     this._superModel = model;
 };
 
-MbaTransf.prototype.visit = function(visitor){
-    checkType(visitor, MbaDirectiveVisitor);
+MbaTransf.prototype.accept = function(visitor){
     visitor.beforeVisitTransformation(this);
-    visitor.visitAccessorChain(this._accessorChain);
     visitor.afterVisitTransformation(this);
 };
 

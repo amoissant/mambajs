@@ -44,7 +44,7 @@ MbaActionBinding.prototype.setSuperModel = function(superModel){
     this._superModel = superModel;
 };
 
-MbaActionBinding.prototype.visit = function(visitor){
+MbaActionBinding.prototype.accept = function(visitor){
     checkType(visitor, MbaDirectiveVisitor);
     visitor.visitActionBinding(this);
 };

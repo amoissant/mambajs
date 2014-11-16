@@ -175,17 +175,17 @@ function MbaDirective(precursor, parentPropertyName){
         this._actionBindings.push(actionBinding);
     };
     
-    MbaDirective.prototype.visit = function(visitor){
+    MbaDirective.prototype.accept = function(visitor){
         checkType(visitor, MbaDirectiveVisitor);
         visitor.beforeVisitDirective(this);
         for(var i=0 ; i<this._bindings.length ; i++){
-            this._bindings[i].visit(visitor);
+            this._bindings[i].accept(visitor);
         }
         for(var i=0 ; i<this._actionBindings.length ; i++){
-            this._actionBindings[i].visit(visitor);
+            this._actionBindings[i].accept(visitor);
         }
         for(var i=0 ; i<this._subDirectives.length ; i++){
-            this._subDirectives[i].visit(visitor);
+            this._subDirectives[i].accept(visitor);
         }
         visitor.afterVisitDirective(this);
     };

@@ -53,11 +53,11 @@ function MbaBinding(cssSelector, anchorProvider, firstTransf){
 		return renderedDom;
 	};
 	
-    MbaBinding.prototype.visit = function(visitor){
+    MbaBinding.prototype.accept = function(visitor){
         checkType(visitor, MbaDirectiveVisitor);
         visitor.beforeVisitBinding(this);
         for(var i=0 ; i<this._transformations.length ; i++){
-            this._transformations[i].visit(visitor);
+            this._transformations[i].accept(visitor);
         }
         visitor.afterVisitBinding(this);
     };

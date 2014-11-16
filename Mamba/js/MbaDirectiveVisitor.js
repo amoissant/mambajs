@@ -6,5 +6,4 @@ function MbaDirectiveVisitor(){
     MbaDirectiveVisitor.prototype.visitActionBinding = function(actionBinding){};       
     MbaDirectiveVisitor.prototype.beforeVisitTransformation = function(transformation){};  
     MbaDirectiveVisitor.prototype.afterVisitTransformation = function(transformation){};  
-    MbaDirectiveVisitor.prototype.visitAccessorChain = function(accessorChain){};
 }

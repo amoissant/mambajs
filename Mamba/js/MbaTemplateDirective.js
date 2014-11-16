@@ -33,6 +33,10 @@ function MbaTemplateDirective(template, directive){
         return this._rootAnchor;
     };
     
+    MbaTemplateDirective.prototype.getTemplateBindings = function(){
+        return this._templateBindings;
+    };
+    
     MbaTemplateDirective.prototype.findRootAnchor = function(){
         var anchorElements;
         if(this.hasRoot())
@@ -60,28 +64,24 @@ function MbaTemplateDirective(template, directive){
       return this._subTemplateDirectives;  
     };
     
-    MbaTemplateDirective.prototype.accept = function(visitor, index){
+    MbaTemplateDirective.prototype.accept = function(visitor){
         checkType(visitor, MbaTemplateDirectiveVisitor);
-        checkTypeOrNull(index, 'number');
-        if(index == null)
-            index = 0;
-        visitor.beforeVisitTemplateDirective(this, index);
+        visitor.beforeVisitTemplateDirective(this);
         for(var i=0 ; i<this._templateBindings.length ; i++){
-            visitor.visitTemplateBinding(this._templateBindings[i], index, i);
+            this._templateBindings[i].accept(visitor);
+            /*visitor.beforeVisitTemplateBinding(this._templateBindings[i]);
+            visitor.afterVisitTemplateBinding(this._templateBindings[i]);*/
         }
-        visitor.beforeVisitSubTemplateDirectives(this._subTemplateDirectives, index);
         for(var i=0 ; i<this._subTemplateDirectives.length ; i++){
-            this._subTemplateDirectives[i].accept(visitor, i);
+            this._subTemplateDirectives[i].accept(visitor);
         }        
-        visitor.afterVisitSubTemplateDirectives(this._subTemplateDirectives, index);
-        visitor.afterVisitTemplateDirective(this, index);
+        visitor.afterVisitTemplateDirective(this);
     };
     
     MbaTemplateDirective.prototype.match = function(test){
         checkType(test, 'object');
-        var visitor = new TestTemplateDirectiveVisitor(test);
-        this.accept(visitor);
-        return visitor.testSucceed();
+        var checker = new MbaTemplateDirectiveChecker();
+        return checker.checkTemplateDirectiveMatchesTest(this, test);
     }
     
     MbaTemplateDirective.prototype.mergeBindings = function(){

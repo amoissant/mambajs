@@ -1,7 +1,8 @@
 function MbaTemplateDirectiveVisitor(){
-    MbaTemplateDirectiveVisitor.prototype.beforeVisitSubTemplateDirectives = function(subTemplateDirectives, directiveIndex){};
-    MbaTemplateDirectiveVisitor.prototype.afterVisitSubTemplateDirectives = function(subTemplateDirectives, directiveIndex){};
-    MbaTemplateDirectiveVisitor.prototype.beforeVisitTemplateDirective = function(templateDirective, directiveIndex){};
-    MbaTemplateDirectiveVisitor.prototype.afterVisitTemplateDirective = function(templateDirective, directiveIndex){};
-    MbaTemplateDirectiveVisitor.prototype.visitTemplateBinding = function(templateBinding, directiveIndex, bindingIndex){};
+    MbaTemplateDirectiveVisitor.prototype.beforeVisitTemplateDirective = function(templateDirective){};
+    MbaTemplateDirectiveVisitor.prototype.afterVisitTemplateDirective = function(templateDirective){};
+    MbaTemplateDirectiveVisitor.prototype.beforeVisitTemplateBinding = function(templateBinding){};
+    MbaTemplateDirectiveVisitor.prototype.afterVisitTemplateBinding = function(templateBinding){};
+    MbaTemplateDirectiveVisitor.prototype.beforeVisitTransformation = function(transformation){};
+    MbaTemplateDirectiveVisitor.prototype.afterVisitTransformation = function(transformation){};
 }

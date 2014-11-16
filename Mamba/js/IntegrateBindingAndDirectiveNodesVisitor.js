@@ -14,7 +14,7 @@ IntegrateBindingAndDirectiveNodesVisitor.prototype.beforeVisitTemplateDirective 
     }
 };
 
-IntegrateBindingAndDirectiveNodesVisitor.prototype.visitTemplateBinding = function (templateBinding, directiveIndex, bindingIndex) {
+IntegrateBindingAndDirectiveNodesVisitor.prototype.beforeVisitTemplateBinding = function (templateBinding, directiveIndex, bindingIndex) {
     checkType(templateBinding, MbaTemplateBinding);
     checkType(directiveIndex, 'number');
     checkType(bindingIndex, 'number');

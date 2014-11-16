@@ -73,13 +73,13 @@ function MbaTemplate(template, directivesPrecursor){
     
     MbaTemplate.prototype.addTextNodeForBindingText =function(){
         var visitor = new AddTextNodesVisitor(this._template);
-        this._rootDirective.visit(visitor);
+        this._rootDirective.accept(visitor);
     };
         
     MbaTemplate.prototype.constructTemplateDirective = function(){
         this._template.addMbaId();
         var visitor = new TemplateDirectiveConstructorVisitor(this._template, this._rootDirective);    
-        this._rootDirective.visit(visitor);
+        this._rootDirective.accept(visitor);
         this._templateDirective = visitor.getRootTemplateDirective();
     };
     
@@ -101,7 +101,7 @@ function MbaTemplate(template, directivesPrecursor){
         
     MbaTemplate.prototype.addActionBindingsIntoNodes = function(){
         var visitor = new AddActionBindingIntoNodesVisitor(this._template);
-        this._rootDirective.visit(visitor);//TODO renommer cette méthode en accept
+        this._rootDirective.accept(visitor);//TODO renommer cette méthode en accept
     };
     
     MbaTemplate.prototype.updateDomForSuperModel = function(){
