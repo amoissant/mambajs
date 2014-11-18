@@ -2,9 +2,8 @@ function IntegrateBindingAndDirectiveNodesVisitor() {}
 IntegrateBindingAndDirectiveNodesVisitor.prototype = new MbaTemplateDirectiveVisitor();
 IntegrateBindingAndDirectiveNodesVisitor.prototype.constructor = IntegrateBindingAndDirectiveNodesVisitor;
 
-IntegrateBindingAndDirectiveNodesVisitor.prototype.beforeVisitTemplateDirective = function (templateDirective, directiveIndex) {
+IntegrateBindingAndDirectiveNodesVisitor.prototype.beforeVisitTemplateDirective = function (templateDirective) {
     checkType(templateDirective, MbaTemplateDirective);
-    checkType(directiveIndex, 'number');
 
     if (templateDirective.hasRoot()) {
         var rootAnchor = templateDirective.getRootAnchor();
@@ -14,10 +13,8 @@ IntegrateBindingAndDirectiveNodesVisitor.prototype.beforeVisitTemplateDirective 
     }
 };
 
-IntegrateBindingAndDirectiveNodesVisitor.prototype.beforeVisitTemplateBinding = function (templateBinding, directiveIndex, bindingIndex) {
+IntegrateBindingAndDirectiveNodesVisitor.prototype.beforeVisitTemplateBinding = function (templateBinding) {
     checkType(templateBinding, MbaTemplateBinding);
-    checkType(directiveIndex, 'number');
-    checkType(bindingIndex, 'number');
 
     var anchorElements = templateBinding.getAnchor().getElements(); 
     for (var i = 0; i < anchorElements.length; i++) {

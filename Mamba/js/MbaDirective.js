@@ -143,7 +143,7 @@ function MbaDirective(precursor, parentPropertyName){
         checkType(prop, 'string');
         checkType(directive, 'string');
         
-        var parser = MBA_DI.get(DirectiveParser);
+        var parser = MBA_DI.get(DirectiveValueParser);
         var transformation = parser.createTransformation(directive);
         var selector = parser.extractSelector();
         transformation.setAccessorChain(this.createAccessorChain(prop));
@@ -165,7 +165,7 @@ function MbaDirective(precursor, parentPropertyName){
         checkType(prop, 'string');
         var action = prop.substring(1, prop.length);
         var directive = this._precursor[prop];
-        var parser = MBA_DI.get(DirectiveParser);
+        var parser = MBA_DI.get(DirectiveValueParser);
         parser.setDirective(directive);
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -191,7 +191,7 @@ function MbaDirective(precursor, parentPropertyName){
     };
     
     MbaDirective.prototype.getRepresentation = function(){
-          return {rootSelector: (this._rootSelector==null?null:'\''+this._rootSelector+'\''),
+          return {rootSelector: (this._rootSelector==null?null:this._rootSelector),
                   accessor: this._accessorChain.toStringWithModel(),
                   self: this};
     };

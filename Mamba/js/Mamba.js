@@ -47,6 +47,10 @@ Mamba.prototype.debugDirective = function(){
     this._mbaTemplate.getRootDirective().debug();
 };
 
+Mamba.prototype.debugTemplateDirective = function(){
+    this._mbaTemplate.getTemplateDirective().debug();
+};
+
 /********** internal methods **********/
 
 Mamba.prototype._init = function(model, template, directive, anchor){
@@ -109,7 +113,7 @@ Mamba.prototype._debugIsActive = function(){
 };
 
 Mamba.prototype._configureTraces = function(){
-    MBA_DI.bind(DirectiveParser).to(this._debugIsActive() ? DirectiveParserDebug : DirectiveParser);
+    MBA_DI.bind(DirectiveValueParser).to(this._debugIsActive() ? DirectiveValueParserDebug : DirectiveValueParser);
     MBA_DI.bind(MbaTemplate).to(this._debugIsActive() ? MbaTemplateDebug : MbaTemplate);
 };
 

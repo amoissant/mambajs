@@ -1,11 +1,11 @@
-function DirectiveParser(){
+function DirectiveValueParser(){
     
     this._directive;
     this._extractor;
     this._events;
 }
     
-DirectiveParser.prototype.computeIndexes = function(){
+DirectiveValueParser.prototype.computeIndexes = function(){
     var extractors = this.getExtractors();
     for(var i=0 ; i<extractors.length ; i++){
         if(extractors[i].matchDirective(this._directive)){
@@ -15,12 +15,12 @@ DirectiveParser.prototype.computeIndexes = function(){
     }
 };
 
-DirectiveParser.prototype.setDirective = function(directive){
+DirectiveValueParser.prototype.setDirective = function(directive){
     checkType(directive, 'string');
     this._directive = directive;
 };
 
-DirectiveParser.prototype.createTransformation = function(directive){
+DirectiveValueParser.prototype.createTransformation = function(directive){
     checkType(directive, 'string');
     this.setDirective(directive);
     this.computeIndexes();
@@ -29,19 +29,19 @@ DirectiveParser.prototype.createTransformation = function(directive){
     return transformation;
 };
 
-DirectiveParser.prototype.extractSelector = function(){
+DirectiveValueParser.prototype.extractSelector = function(){
     return this._extractor.extractSelector();
 };
 
-DirectiveParser.prototype.extractBinding = function(){
+DirectiveValueParser.prototype.extractBinding = function(){
     return this._extractor.extractBinding();
 };
 
-DirectiveParser.prototype.extractEvents = function(){
+DirectiveValueParser.prototype.extractEvents = function(){
     return this._extractor.extractEvents();
 };
 
-DirectiveParser.prototype.computeEvents = function(){
+DirectiveValueParser.prototype.computeEvents = function(){
     var eventsString = this._extractor.extractEvents();
     this._events = [];
     var reg = new RegExp('->\\(?([^\\)]*)\\)?');
@@ -56,11 +56,11 @@ DirectiveParser.prototype.computeEvents = function(){
 };
 
 
-DirectiveParser.prototype.getAnchorProvider = function(){
+DirectiveValueParser.prototype.getAnchorProvider = function(){
     return this._extractor.getAnchorProvider();    
 };
 
-DirectiveParser.prototype.getExtractors = function(){
+DirectiveValueParser.prototype.getExtractors = function(){
     var extractors = [];
     extractors.push(new CustomFunctionExtractor());
     extractors.push(new ClassWithArgExtractor());

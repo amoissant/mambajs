@@ -47,13 +47,14 @@
     <script type="text/javascript" src="../js/MbaTemplateBinding.js"></script>
     <script type="text/javascript" src="../js/TemplateDirectiveConstructorVisitor.js"></script>
     <script type="text/javascript" src="../js/MbaTemplateDirectiveVisitor.js"></script>
+    <script type="text/javascript" src="../js/MbaTemplateDirectiveDebugVisitor.js"></script>
     <script type="text/javascript" src="../js/MbaNodeVisitor.js"></script>
     <script type="text/javascript" src="../js/DebugNodeVisitor.js"></script>
     <script type="text/javascript" src="../js/TestNodeVisitor.js"></script>
     <script type="text/javascript" src="../js/IntegrateBindingAndDirectiveNodesVisitor.js"></script>
     <script type="text/javascript" src="../js/DirectiveSplitter.js"></script>
-    <script type="text/javascript" src="../js/DirectiveParser.js"></script>
-    <script type="text/javascript" src="../js/DirectiveParserDebug.js"></script>
+    <script type="text/javascript" src="../js/DirectiveValueParser.js"></script>
+    <script type="text/javascript" src="../js/DirectiveValueParserDebug.js"></script>
     <script type="text/javascript" src="../js/DirectiveExtractor.js"></script>
     <script type="text/javascript" src="../js/BaseExtractor.js"></script>
     <script type="text/javascript" src="../js/SimpleExtractor.js"></script>
@@ -171,10 +172,14 @@
         {'valeur' : {'libellé': 'span'},
          'valeursVisibles' : '.option@class(visible)',
          'options' : {'r00t' : '.option',
-                      'libellé' : '.option'},
+                      'libellé' : '.option',
+                      'code' : '.option@code',
+                      'test' : '.option$value'},//TODO le merge des directives est pas bon !
          '/toggle': 'button->click',
          '/sélectionner': '.option->click'
         };
+    //TODO : binder une value à a fois dans le textNode et dans une property, vérifier les directives et template directive
+    //'test' : 'div, div$value' 
     
     var mamba = new Mamba(model, html, directive, 'body');
     mamba.render();

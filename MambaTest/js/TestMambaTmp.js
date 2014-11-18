@@ -1,6 +1,6 @@
 Test(function() {   
  
-    MBA_DI.bind(DirectiveParser).to(DirectiveParser);
+    MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     
     function renderIntoRoot(model, html, directive){
         var root = document.createElement('div');

@@ -1,7 +1,7 @@
 
 var testMbaV2 = function() {
 
-    MBA_DI.bind(DirectiveParser).to(DirectiveParser);
+    MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     
     function renderIntoRoot(model, html, directive){
         var root = document.createElement('div');
@@ -1932,7 +1932,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive minimale', function(){
         var directive = 'toto';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector(directive);
@@ -1946,7 +1946,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive avec attribut', function(){
         var directive = 'toto@attr';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -1960,7 +1960,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive avec attribut et paramètres', function(){
         var directive = 'toto@attr(param)';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -1974,7 +1974,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive de type propriété', function(){
         var directive = 'toto$prop';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -1988,7 +1988,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive de type propriété, selecteur avec $', function(){
         var directive = 'toto[foo$="bar"]$prop';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -2002,7 +2002,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive avec fonction référencé', function(){
         var directive = 'toto$:fonctionName';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -2016,7 +2016,7 @@ var testMbaV2 = function() {
     
      Ca('teste l\'extraction des selecteur, binding et evènement sur directive avec fonction custom', function(){
         var directive = 'toto${function(arg1, arg2){....}}';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -2030,7 +2030,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive minimale avec evènement', function(){
         var directive = 'toto->blur';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector(directive);
@@ -2044,7 +2044,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive avec attribut et evènement', function(){
         var directive = 'toto@attr->blur';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -2058,7 +2058,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive avec attribut et paramètres et evènement', function(){
         var directive = 'toto@attr(param)->blur';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -2072,7 +2072,7 @@ var testMbaV2 = function() {
     
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive avec fonction référencé et evènement', function(){
         var directive = 'toto$:fonctionName->blur';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);         
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -2086,7 +2086,7 @@ var testMbaV2 = function() {
     
      Ca('teste l\'extraction des selecteur, binding et evènement sur directive avec fonction custom et evènement', function(){
         var directive = 'toto${function(arg1, arg2){....}}->blur';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -2101,7 +2101,7 @@ var testMbaV2 = function() {
     Ca('teste l\'extraction des selecteur, binding et evènement sur directive avec fonction custom contenant des symboles'
         +' spéciaux et evènement', function(){
         var directive = 'toto${function(arg1, arg2){console.log(\'@$:${->\');}}->blur';
-        var parser = new DirectiveParser();
+        var parser = new DirectiveValueParser();
         parser.setDirective(directive);
         parser.computeIndexes();
         var selector = parser.extractSelector();
@@ -2153,7 +2153,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une transformation de texte', function(){
         var directive = 'titi';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         
         OnAttend(transformation instanceof MbaTextTransf).DEtreVrai();
@@ -2161,7 +2161,7 @@ var testMbaV2 = function() {
         
     Ca('teste la transformation de texte', function(){
         var directive = 'titi';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createTextNode('');
         
@@ -2174,7 +2174,7 @@ var testMbaV2 = function() {
     
     Ca('teste la lecture du dom pour une transformation texte', function(){
         var directive = 'titi';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createTextNode('');
         
@@ -2184,7 +2184,7 @@ var testMbaV2 = function() {
         
     Ca('teste la création d\'une transformation d\'attribut', function(){
         var directive = 'titi@attr';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         
         OnAttend(transformation instanceof MbaAttributeTransf).DEtreVrai();
@@ -2193,7 +2193,7 @@ var testMbaV2 = function() {
     
     Ca('teste la transformation d\'attribut', function(){
         var directive = 'titi@attr';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         
@@ -2209,7 +2209,7 @@ var testMbaV2 = function() {
         
     Ca('teste la lecture du dom pour une transformation d\'attribut', function(){
        var directive = 'titi@attr';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         
@@ -2226,7 +2226,7 @@ var testMbaV2 = function() {
     
       Ca('teste la transformation de type propriété', function(){
         var directive = 'titi$prop';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         
@@ -2236,7 +2236,7 @@ var testMbaV2 = function() {
         
     Ca('teste la lecture du dom pour une transformation de type propriété', function(){
        var directive = 'titi$prop';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         
@@ -2246,7 +2246,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une transformation de classe sans argument', function(){
         var directive = 'toto@class';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         
         OnAttend(transformation instanceof MbaClassTransf).DEtreVrai();
@@ -2254,7 +2254,7 @@ var testMbaV2 = function() {
     
      Ca('teste la transformation de classe sans argument', function(){
         var directive = 'toto@class';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
          
@@ -2270,7 +2270,7 @@ var testMbaV2 = function() {
     
     Ca('teste la transformation de classe sans argument, élément avec déjà une classe', function(){
         var directive = 'toto@class';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         domElement.classList.add('tutu');
@@ -2287,7 +2287,7 @@ var testMbaV2 = function() {
     
     Ca('teste la transformation de classe sans argument et valeur booléenne lève une exception', function(){
         var directive = 'toto@class';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
          
@@ -2303,7 +2303,7 @@ var testMbaV2 = function() {
        
     Ca('teste la création d\'une transformation de classe avec argument', function(){
         var directive = 'toto@class(tutu)';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         
@@ -2313,7 +2313,7 @@ var testMbaV2 = function() {
     
     Ca('teste la transformation de classe avec argument', function(){
         var directive = 'toto@class(tutu)';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         
@@ -2326,7 +2326,7 @@ var testMbaV2 = function() {
     
     Ca('teste la transformation de classe avec argument, élément avec déjà une classe', function(){
         var directive = 'toto@class(tutu)';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         domElement.classList.add('toto');
@@ -2340,7 +2340,7 @@ var testMbaV2 = function() {
     
     Ca('teste que la transformation de classe avec argument et valeur non booléenne lève une exception', function(){
         var directive = 'toto@class(tutu)';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         
@@ -2356,7 +2356,7 @@ var testMbaV2 = function() {
     
     Ca('teste la lecture du dom pour une transformation classe avec argument', function(){
        var directive = 'titi@class(tutu)';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         domElement.classList.add('tutu');
@@ -2374,7 +2374,7 @@ var testMbaV2 = function() {
         var refFunction = function(domElement){domElement.id='toto';};
         MBA_CST.REF_FUNCTIONS = {myFunction : refFunction};
         var directive = 'toto$:myFunction';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
         var domElement = document.createElement('div');
         
@@ -2388,7 +2388,7 @@ var testMbaV2 = function() {
         var refFunction = function(domElement){domElement.id='toto';};
         MBA_CST.REF_FUNCTIONS = {myFunctionZZ : refFunction};
         var directive = 'toto$:myFunction';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         try{
             var transformation = directiveParser.createTransformation(directive);
         }
@@ -2401,7 +2401,7 @@ var testMbaV2 = function() {
     
     Ca('teste la création d\'une transformation avec fonction custom', function(){
         var directive = 'toto${function(a, b){return a+b;}}';
-        var directiveParser = new DirectiveParser();
+        var directiveParser = new DirectiveValueParser();
         var transformation = directiveParser.createTransformation(directive);
            
         OnAttend(transformation instanceof MbaCustomFunctionTransf).DEtreVrai();
@@ -2445,7 +2445,7 @@ var testMbaV2 = function() {
         var directivesTypes =  getDirectivesTypes();
         for(var i=0 ; i<directivesTypes.length; i++){
             var directive = directivesTypes[i]+'->click';
-            var directiveParser = new DirectiveParser();
+            var directiveParser = new DirectiveValueParser();
             var transformation = directiveParser.createTransformation(directive);
         
             var events = transformation.getEvents();
@@ -2458,7 +2458,7 @@ var testMbaV2 = function() {
         var directivesTypes =  getDirectivesTypes();
         for(var i=0 ; i<directivesTypes.length; i++){
             var directive = directivesTypes[i]+'->(click, blur)';
-            var directiveParser = new DirectiveParser();
+            var directiveParser = new DirectiveValueParser();
             var transformation = directiveParser.createTransformation(directive);
         
             var events = transformation.getEvents();
