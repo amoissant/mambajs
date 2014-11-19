@@ -1,6 +1,7 @@
 var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
+    MBA_DI.bind(MbaBindingParser).to(MbaBindingParser);
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
@@ -96,6 +97,28 @@ var testMbaV3 = function() {
         
         OnAttend(domMultipliers[3].getSelector()).DEtreEgalA('video');
         OnAttend(domMultipliers[3].getModelAccessor().toStringWithModel()).DEtreEgalA('model.other');        
+    });
+    
+    Ca('teste que l\'on récupère la liste des bindings de propriété', function(){
+        var directive = 
+            {name : 'div', 
+             coordinates: {r00t : 'a',
+                           tel : '.tel', 
+                           fax : '.fax'}};
+        
+        var manager = new MbaManager();
+        manager.parseDirective(directive);
+        var propertyBindings = manager.getPropertyBindings();
+
+        OnAttend(propertyBindings.length).DEtreEgalA(3);
+        OnAttend(propertyBindings[0].getSelector()).DEtreEgalA('div');
+        OnAttend(propertyBindings[0].getPropertyAccessor().toStringWithModel()).DEtreEgalA('model.name');
+        
+        OnAttend(propertyBindings[1].getSelector()).DEtreEgalA('.tel');
+        OnAttend(propertyBindings[1].getPropertyAccessor().toStringWithModel()).DEtreEgalA('model.coordinates.tel');
+        
+        OnAttend(propertyBindings[2].getSelector()).DEtreEgalA('.fax');
+        OnAttend(propertyBindings[2].getPropertyAccessor().toStringWithModel()).DEtreEgalA('model.coordinates.fax');
     });
     
 };

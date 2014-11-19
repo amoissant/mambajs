@@ -1,20 +1,20 @@
-function DirectiveSplitter(){
+function MbaBindingSplitter(){
       
     this._directive;
     this._commaIndexesToAvoid;
     this._filteredCommaIndexes;
     this._allCommaIndexes;
     
-    DirectiveSplitter.prototype.setDirective = function(directive){
+    MbaBindingSplitter.prototype.setDirective = function(directive){
         checkType(directive, 'string');
         this._directive = directive;
     };
     
-    DirectiveSplitter.prototype.getDirective = function(){
+    MbaBindingSplitter.prototype.getDirective = function(){
         return this._directive;  
     };
     
-    DirectiveSplitter.prototype.computeMultipleEventRanges = function(){
+    MbaBindingSplitter.prototype.computeMultipleEventRanges = function(){
         var eventRanges = [];
         var diretive = this.getDirective();
         var regexp = new RegExp('->\\(([^,\\(\\)]*,[^,\\(\\)]*)+\\)', 'g');
@@ -28,12 +28,12 @@ function DirectiveSplitter(){
         return eventRanges;
     };
     
-    DirectiveSplitter.prototype.computeCustomFunctionRanges = function(){
+    MbaBindingSplitter.prototype.computeCustomFunctionRanges = function(){
         var customFunctionsRanges = [];
         var customFunctionExtractor = new CustomFunctionExtractor();
         var currDirective = this.getDirective();
         var currIndexOffset = 0;
-        while(customFunctionExtractor.matchDirective(currDirective)){
+        while(customFunctionExtractor.matchBinding(currDirective)){
             var currRange = {};
             currRange.start = customFunctionExtractor.getBindingIndex()+currIndexOffset
             currRange.end = customFunctionExtractor.getEventIndex()+currIndexOffset;
@@ -45,7 +45,7 @@ function DirectiveSplitter(){
         return customFunctionsRanges;
     };
     
-    DirectiveSplitter.prototype.computeAllCommaIndexes = function(){
+    MbaBindingSplitter.prototype.computeAllCommaIndexes = function(){
         this._allCommaIndexes = [];
         var diretive = this.getDirective();
         var regexp = new RegExp(',', 'g');
@@ -55,13 +55,13 @@ function DirectiveSplitter(){
         }
     };
     
-    DirectiveSplitter.prototype.computeCommaRangesToAvoid = function(){
+    MbaBindingSplitter.prototype.computeCommaRangesToAvoid = function(){
         var eventRanges = this.computeMultipleEventRanges();
         var customFunctionIndexes = this.computeCustomFunctionRanges();
         this._commaRangesToAvoid = eventRanges.concat(customFunctionIndexes);        
     };
     
-    DirectiveSplitter.prototype.filterCommaIndexes = function(){
+    MbaBindingSplitter.prototype.filterCommaIndexes = function(){
         this.computeCommaRangesToAvoid();
         this.computeAllCommaIndexes();
         this._filteredCommaIndexes = [];
@@ -81,7 +81,7 @@ function DirectiveSplitter(){
         this._filteredCommaIndexes.push(this._directive.length);
     };
     
-    DirectiveSplitter.prototype.splitDirective = function(directive){
+    MbaBindingSplitter.prototype.splitRawBinding = function(directive){
         checkType(directive, 'string');
         this.setDirective(directive);
         var splittedDirectives = [];

@@ -4,7 +4,7 @@ function DirectiveExtractor(){
         return this._directive;
     };
     
-    DirectiveExtractor.prototype.matchDirective = function(directive){
+    DirectiveExtractor.prototype.matchBinding = function(directive){
         checkType(directive, 'string');
         this._directive = directive;
         return this.match();

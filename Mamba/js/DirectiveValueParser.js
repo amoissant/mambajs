@@ -8,7 +8,7 @@ function DirectiveValueParser(){
 DirectiveValueParser.prototype.computeIndexes = function(){
     var extractors = this.getExtractors();
     for(var i=0 ; i<extractors.length ; i++){
-        if(extractors[i].matchDirective(this._directive)){
+        if(extractors[i].matchBinding(this._directive)){
             this._extractor = extractors[i];
             break;
         }

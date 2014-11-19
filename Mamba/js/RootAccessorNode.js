@@ -32,7 +32,7 @@ RootAccessorNode.prototype.getChildren = function(){
 
 RootAccessorNode.prototype.addMbaNodes = function(mbaNodes){
     checkTypeOrNull(mbaNodes, 'array', MbaNode);
-    pushAll(this._mbaNodes, mbaNodes);
+    pushAllOld(this._mbaNodes, mbaNodes);
 };
 
 RootAccessorNode.prototype.getMbaNodes = function(){

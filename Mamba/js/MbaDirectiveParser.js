@@ -1,29 +1,23 @@
 function MbaDirectiveParser(){
-    this._domMultipliers;
+    this._domMultiplierParser;
+    this._propertyBindingParser;
     this._memberChain;
     this._memberValue;
-    this._parsers;
-    this._domMultiplierParser;
+    this._domMultipliers;
+    this._propertyBindings;    
 }
 
 MbaDirectiveParser.prototype.parse = function(directive){
     this._memberChain = [];
+    this._domMultipliers = [];
+    this._propertyBindings = [];
     this.createParsers();
-    this.initParsers();
     this.inspectDirective(directive);
-    this.retrieveResults();
 };
 
 MbaDirectiveParser.prototype.createParsers = function(){
-    this._parsers = [];
     this._domMultiplierParser = new MbaDomMultiplierParser();
-    this._parsers.push(this._domMultiplierParser);
-};
-
-MbaDirectiveParser.prototype.initParsers = function(){
-    for(var i=0 ; i<this._parsers.length ; i++){
-        this._parsers[i].init();
-    }
+    this._propertyBindingParser = new MbaPropertyBindingParser();
 };
 
 MbaDirectiveParser.prototype.inspectDirective = function(directive){
@@ -45,12 +39,18 @@ MbaDirectiveParser.prototype.inspectModelValue = function(){
 };
 
 MbaDirectiveParser.prototype.runParsers = function(){
-    for(var i=0 ; i<this._parsers.length ; i++){
-        this._parsers[i].parseMemberChainAndValue(this._memberChain, this._memberValue);
+    if(this._domMultiplierParser.accepts(this._memberChain, this._memberValue)){
+        var domMultiplier = this._domMultiplierParser.createDomMultiplier();
+        this._domMultipliers.push(domMultiplier);
+    }
+    else {
+        var propertyBindings = this._propertyBindingParser.createPropertyBindings(this._memberChain, this._memberValue);
+        PushAll(propertyBindings).into(this._propertyBindings);
     }
 };
 
 MbaDirectiveParser.prototype.inspectDirectiveArray = function(directiveArray){
+    checkType(directiveArray, Array);
     for(var i=0 ; i<directiveArray.length ; i++){
         this.inspectDirective(directiveArray[i]);
     }
@@ -64,10 +64,11 @@ MbaDirectiveParser.prototype.memberValueIsArraySubDirective = function(){
     return this._memberValue instanceof Array;
 };
 
-MbaDirectiveParser.prototype.retrieveResults = function(){
-  this._domMultipliers = this._domMultiplierParser.getDomMultipliers();  
-};
-
 MbaDirectiveParser.prototype.getDomMultipliers = function(){
     return this._domMultipliers;
 };
+
+MbaDirectiveParser.prototype.getPropertyBindings = function(){
+    return this._propertyBindings;
+};
+

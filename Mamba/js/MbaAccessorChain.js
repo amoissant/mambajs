@@ -8,7 +8,16 @@ function MbaAccessorChain(){
     this._modelHasNotMember;
     this._modelValue; 
     
-    MbaAccessorChain.prototype.init = function(){
+    MbaAccessorChain.prototype.init = function(memberChain){
+        checkType(memberChain, 'array', 'string');
+        this._accessors = [];
+        this._completeRoutes = {};
+        this._beforeEndRoutes = {};
+        this.createAccessors(memberChain);
+        return this;
+    };
+    
+    MbaAccessorChain.prototype.initOld = function(){
         this._accessors = [];
         this._completeRoutes = {};
         this._beforeEndRoutes = {};
@@ -47,6 +56,13 @@ function MbaAccessorChain(){
     
     MbaAccessorChain.prototype.modelHasNotMember = function(){
         return this._modelHasNotMember;
+    };
+    
+    MbaAccessorChain.prototype.createAccessors = function(memberChain){
+        checkType(memberChain, 'array', 'string');
+        for(var i=0 ; i<memberChain.length ; i++){
+            this.appendAccessor(new MbaAccessor(memberChain[i]));
+        }   
     };
     
     MbaAccessorChain.prototype.prependAccessor = function(accessor){
@@ -172,7 +188,7 @@ function MbaAccessorChain(){
                 this._lastModel = modelArray[i];
                 this.readWithAccessor(accessorIndex);
                 if(this._modelValue instanceof Array)
-                    pushAll(nextModelValue, this._modelValue);
+                    pushAllOld(nextModelValue, this._modelValue);
                 else
                     nextModelValue.push(this._modelValue);
             }
@@ -250,5 +266,5 @@ function MbaAccessorChain(){
         return stringRepresentation;
     };
     
-    this.init();
+    this.initOld();
 }

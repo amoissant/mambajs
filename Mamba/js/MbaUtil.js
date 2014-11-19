@@ -177,11 +177,18 @@ function isATextNode(node){
 	return node.nodeName == "#text";
 }
 
-function pushAll(context, anotherArray){
+function pushAllOld(context, anotherArray){
     for(var i=0 ; i<anotherArray.length ; i++){
         context.push(anotherArray[i]);
     }
 };
+
+function PushAll(elements){
+    return {into : function(destination){
+        for(var i=0 ; i<elements.length ; i++)
+            destination.push(elements[i]);
+    }};
+}
 
 function stringToDom(string){
     var root = document.createElement('div');

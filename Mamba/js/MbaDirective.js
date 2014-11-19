@@ -127,8 +127,8 @@ function MbaDirective(precursor, parentPropertyName){
         checkType(prop, 'string');
         
         var directive = this._precursor[prop];
-        var splitter = new DirectiveSplitter();
-        var splittedDirectives = splitter.splitDirective(directive);
+        var splitter = new MbaBindingSplitter();
+        var splittedDirectives = splitter.splitRawBinding(directive);
         var bindings = [];		
         for(var i=0 ; i<splittedDirectives.length ; i++){
 			var currDirective = splittedDirectives[i];
