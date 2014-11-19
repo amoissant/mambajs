@@ -1,6 +1,5 @@
-function MbaBindingParser(){
+function MbaTextBindingParser(){
     this._textBinding;
-    this._memberChain;
     this._extractorList;
     this._matchingExtractor;
     this._domTransformation;
@@ -8,34 +7,17 @@ function MbaBindingParser(){
     this._events;
 }
 
-MbaBindingParser.prototype.createPropertyBinding = function(textBinding, memberChain){
+MbaTextBindingParser.prototype.parseTextBinding = function(textBinding){
     checkType(textBinding, 'string');
-    checkType(memberChain, 'array', 'string');
     this._textBinding = textBinding;
-    this._memberChain = memberChain;
     this.initExtractorList();
     this.findMatchingExtractor();
     this.extractDomTransformation();
     this.extractSelector();
     this.extractEvents();
-    return this.constructPropertyBinding();
 };
 
-//TODO factoriser code
-MbaBindingParser.prototype.createActionBinding = function(textBinding, memberChain){
-    checkType(textBinding, 'string');
-    checkType(memberChain, 'array', 'string');
-    this._textBinding = textBinding;
-    this._memberChain = memberChain;
-    this.initExtractorList();
-    this.findMatchingExtractor();
-    //this.extractDomTransformation(); que pour propertyBinding
-    this.extractSelector();
-    this.extractEvents();
-    return this.constructActionBinding();
-};
-
-MbaBindingParser.prototype.initExtractorList = function(){
+MbaTextBindingParser.prototype.initExtractorList = function(){
     this._extractorList = [];
     this._extractorList.push(new CustomFunctionExtractor());
     this._extractorList.push(new ClassWithArgExtractor());
@@ -46,7 +28,7 @@ MbaBindingParser.prototype.initExtractorList = function(){
     this._extractorList.push(new SimpleExtractor());
 };
 
-MbaBindingParser.prototype.findMatchingExtractor = function(){
+MbaTextBindingParser.prototype.findMatchingExtractor = function(){
     for(var i=0 ; i<this._extractorList.length ; i++){
         var currentExtractor = this._extractorList[i];
         if(currentExtractor.matchBinding(this._textBinding)){
@@ -56,22 +38,22 @@ MbaBindingParser.prototype.findMatchingExtractor = function(){
     }
 };
 
-MbaBindingParser.prototype.extractDomTransformation = function(){
+MbaTextBindingParser.prototype.extractDomTransformation = function(){
     this._domTransformation = this._matchingExtractor.createTransformation();
 };
 
-MbaBindingParser.prototype.extractSelector = function(){
+MbaTextBindingParser.prototype.extractSelector = function(){
     this._selector = this._matchingExtractor.extractSelector();
 };
 
-MbaBindingParser.prototype.extractEvents = function(){
+MbaTextBindingParser.prototype.extractEvents = function(){
     this._events = [];
     var textEvents = this._matchingExtractor.extractEvents();
     this.splitTextEvents(textEvents);
     this.trimEvents();
 };
 
-MbaBindingParser.prototype.splitTextEvents = function(textEvents){
+MbaTextBindingParser.prototype.splitTextEvents = function(textEvents){
     checkType(textEvents, 'string');
     var eventRegExp = new RegExp('->\\(?([^\\)]*)\\)?');
     if(eventRegExp.test(textEvents)){
@@ -80,23 +62,21 @@ MbaBindingParser.prototype.splitTextEvents = function(textEvents){
     }//TODO ca donne quoi si on passe 'div$value->' ? faudrait pas avoir un event vide
 };
 
-MbaBindingParser.prototype.trimEvents = function(){
+MbaTextBindingParser.prototype.trimEvents = function(){
     for(var i=0 ; i<this._events.length ; i++){
         this._events[i] = this._events[i].trim();
     }
 };
 
-MbaBindingParser.prototype.constructPropertyBinding = function(){
-    return new MbaPropertyBinding()
-                .init(this._selector,
-                      this._memberChain, 
-                      this._domTransformation,
-                      this._events);
+MbaTextBindingParser.prototype.getSelector = function(){
+    return this._selector;
 };
 
-MbaBindingParser.prototype.constructActionBinding = function(){
-    return new MbaActionBinding2()
-                .init(this._selector,
-                      this._memberChain,
-                      this._events);
+MbaTextBindingParser.prototype.getDomTransformation = function(){
+    return this._domTransformation;
 };
+
+MbaTextBindingParser.prototype.getEvents = function(){
+    return this._events;
+};
+

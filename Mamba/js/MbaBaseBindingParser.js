@@ -31,12 +31,13 @@ MbaBaseBindingParser.prototype.constructAllBindings = function(){
 MbaBaseBindingParser.prototype.constructBinding = function(textBinding){
     checkType(textBinding, 'string');
     var memberChainCopy = this.copyMemberChain();
-    this._bindingParser = MBA_DI.get(MbaBindingParser);
-    var binding = this.instanciateBinding(textBinding, memberChainCopy);
+    this._bindingParser = MBA_DI.get(MbaTextBindingParser);
+    this._bindingParser.parseTextBinding(textBinding);
+    var binding = this.instanciateBinding(memberChainCopy);
     return binding;
 };
 
-MbaBaseBindingParser.prototype.instanciateBinding = function(textBinding, memberChain){
+MbaBaseBindingParser.prototype.instanciateBinding = function(memberChain){
     //abstract method
 };
     

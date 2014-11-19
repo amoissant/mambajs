@@ -1,7 +1,7 @@
 var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
-    MBA_DI.bind(MbaBindingParser).to(MbaBindingParser);
+    MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 

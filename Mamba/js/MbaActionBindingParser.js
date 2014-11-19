@@ -15,11 +15,12 @@ MbaActionBindingParser.prototype.createActionsBindings = function(){
     return this.constructAllBindings();
 };
 
-MbaActionBindingParser.prototype.instanciateBinding = function(textBinding, memberChain){
+MbaActionBindingParser.prototype.instanciateBinding = function(memberChain){
     memberChain = this.replaceLastMemberByModelAction(memberChain);
-    return this._bindingParser.createActionBinding(textBinding, memberChain);
+    var selector = this._bindingParser.getSelector();
+    var events = this._bindingParser.getEvents();
+    return new MbaActionBinding2().init(selector, memberChain, events);
 };
-
 
 MbaActionBindingParser.prototype.computeModelAction = function(){
     this._modelAction = this._lastMember.substring(1);

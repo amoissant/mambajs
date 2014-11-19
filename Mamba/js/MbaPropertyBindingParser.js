@@ -9,6 +9,9 @@ MbaPropertyBindingParser.prototype.createPropertyBindings = function(memberChain
     return this.constructAllBindings();
 };
 
-MbaBaseBindingParser.prototype.instanciateBinding = function(textBinding, memberChain){
-    return this._bindingParser.createPropertyBinding(textBinding, memberChain);
+MbaPropertyBindingParser.prototype.instanciateBinding = function(memberChain){
+    var selector = this._bindingParser.getSelector();
+    var domTransformation = this._bindingParser.getDomTransformation();
+    var events = this._bindingParser.getEvents();
+    return new MbaPropertyBinding().init(selector, memberChain, domTransformation, events);
 };
