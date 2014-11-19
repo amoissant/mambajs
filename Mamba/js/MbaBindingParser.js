@@ -21,6 +21,20 @@ MbaBindingParser.prototype.createPropertyBinding = function(textBinding, memberC
     return this.constructPropertyBinding();
 };
 
+//TODO factoriser code
+MbaBindingParser.prototype.createActionBinding = function(textBinding, memberChain){
+    checkType(textBinding, 'string');
+    checkType(memberChain, 'array', 'string');
+    this._textBinding = textBinding;
+    this._memberChain = memberChain;
+    this.initExtractorList();
+    this.findMatchingExtractor();
+    //this.extractDomTransformation(); que pour propertyBinding
+    this.extractSelector();
+    this.extractEvents();
+    return this.constructActionBinding();
+};
+
 MbaBindingParser.prototype.initExtractorList = function(){
     this._extractorList = [];
     this._extractorList.push(new CustomFunctionExtractor());
@@ -77,5 +91,12 @@ MbaBindingParser.prototype.constructPropertyBinding = function(){
                 .init(this._selector,
                       this._memberChain, 
                       this._domTransformation,
+                      this._events);
+};
+
+MbaBindingParser.prototype.constructActionBinding = function(){
+    return new MbaActionBinding2()
+                .init(this._selector,
+                      this._memberChain,
                       this._events);
 };

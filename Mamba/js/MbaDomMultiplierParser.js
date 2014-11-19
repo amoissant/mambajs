@@ -12,7 +12,8 @@ MbaDomMultiplierParser.prototype.accepts = function(memberChain, memberValue){
 };
 
 MbaDomMultiplierParser.prototype.lastMemberIsRoot = function(){
-    return this._memberChain[this._memberChain.length-1] == MBA_CST.ROOT;
+    var lastMember = this._memberChain[this._memberChain.length-1];
+    return lastMember == MBA_CST.ROOT;
 };
 
 MbaDomMultiplierParser.prototype.createDomMultiplier = function(){

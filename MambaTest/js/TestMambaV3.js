@@ -121,4 +121,27 @@ var testMbaV3 = function() {
         OnAttend(propertyBindings[2].getPropertyAccessor().toStringWithModel()).DEtreEgalA('model.coordinates.fax');
     });
     
+    Ca('teste que l\'on récupère la liste des bindings d\'action', function(){
+        var directive = 
+            {'name' : 'div', 
+             '/toto' : '.toto',
+             'coordinates': {'r00t' : 'a',
+                           'tel' : '.tel', 
+                           '/delete' : 'button, .del'}};
+        
+        var manager = new MbaManager();
+        manager.parseDirective(directive);
+        var actionBindings = manager.getActionBindings();
+
+        OnAttend(actionBindings.length).DEtreEgalA(3);
+        OnAttend(actionBindings[0].getSelector()).DEtreEgalA('.toto');
+        OnAttend(actionBindings[0].getActionAccessor().toStringWithModel()).DEtreEgalA('model.toto');
+        
+        OnAttend(actionBindings[1].getSelector()).DEtreEgalA('button');
+        OnAttend(actionBindings[1].getActionAccessor().toStringWithModel()).DEtreEgalA('model.coordinates.delete');
+        
+        OnAttend(actionBindings[2].getSelector()).DEtreEgalA('.del');
+        OnAttend(actionBindings[2].getActionAccessor().toStringWithModel()).DEtreEgalA('model.coordinates.delete');
+    });
+    
 };

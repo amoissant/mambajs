@@ -1,6 +1,7 @@
 function MbaDirectiveParser(){
     this._domMultiplierParser;
     this._propertyBindingParser;
+    this._actionBindingParser;
     this._memberChain;
     this._memberValue;
     this._domMultipliers;
@@ -11,6 +12,7 @@ MbaDirectiveParser.prototype.parse = function(directive){
     this._memberChain = [];
     this._domMultipliers = [];
     this._propertyBindings = [];
+    this._actionBindings = [];
     this.createParsers();
     this.inspectDirective(directive);
 };
@@ -18,6 +20,7 @@ MbaDirectiveParser.prototype.parse = function(directive){
 MbaDirectiveParser.prototype.createParsers = function(){
     this._domMultiplierParser = new MbaDomMultiplierParser();
     this._propertyBindingParser = new MbaPropertyBindingParser();
+    this._actionBindingParser = new MbaActionBindingParser();
 };
 
 MbaDirectiveParser.prototype.inspectDirective = function(directive){
@@ -42,6 +45,10 @@ MbaDirectiveParser.prototype.runParsers = function(){
     if(this._domMultiplierParser.accepts(this._memberChain, this._memberValue)){
         var domMultiplier = this._domMultiplierParser.createDomMultiplier();
         this._domMultipliers.push(domMultiplier);
+    }
+    else if(this._actionBindingParser.accepts(this._memberChain, this._memberValue)){
+        var actionBindings  = this._actionBindingParser.createActionsBindings();
+        PushAll(actionBindings).into(this._actionBindings);
     }
     else {
         var propertyBindings = this._propertyBindingParser.createPropertyBindings(this._memberChain, this._memberValue);
@@ -70,5 +77,9 @@ MbaDirectiveParser.prototype.getDomMultipliers = function(){
 
 MbaDirectiveParser.prototype.getPropertyBindings = function(){
     return this._propertyBindings;
+};
+
+MbaDirectiveParser.prototype.getActionBindings = function(){
+    return this._actionBindings;
 };
 

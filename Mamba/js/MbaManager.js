@@ -10,7 +10,7 @@ MbaManager.prototype.parseDirective = function(directive){
     directiveParseur.parse(directive);
     this._domMultipliers = directiveParseur.getDomMultipliers();
     this._propertyBindings = directiveParseur.getPropertyBindings();
-    //this._actionBindings = directiveParseur.getActionBindings();  
+    this._actionBindings = directiveParseur.getActionBindings();  
 };
 
 MbaManager.prototype.getDomMultipliers = function(){

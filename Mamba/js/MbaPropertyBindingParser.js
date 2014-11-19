@@ -2,6 +2,7 @@ function MbaPropertyBindingParser(){
     this._memberChain;
     this._rawBinding;
     this._splittedBindings;
+    this._propertyBindings;
 }
 
 MbaPropertyBindingParser.prototype.createPropertyBindings = function(memberChain, rawBinding){
