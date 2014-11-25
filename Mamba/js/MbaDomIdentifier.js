@@ -1,19 +1,16 @@
-function MbaDomIdentifier(domArray){
-    
-    this._domArray;
+function MbaDomIdentifier(){
+    this._domElements;
     this._currentId;
-    
-    if(arguments.length > 0)
-        this.init(domArray);
 }
 
-MbaDomIdentifier.prototype.init = function(domArray){
-    this._domArray = domArray;
+MbaDomIdentifier.prototype.init = function(domElements){
+    this._domElements = domElements;
+    return this;
 };
 
 MbaDomIdentifier.prototype.addIdsLevelOrder = function(){
     this._currentId = 0;
-    this.addIdsToDomCollection(this._domArray);
+    this.addIdsToDomCollection(this._domElements);
 };
 
 MbaDomIdentifier.prototype.addIdsToDomCollection = function(domCollection){

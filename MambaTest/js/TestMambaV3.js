@@ -5,7 +5,7 @@ var testMbaV3 = function() {
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
-        var domIdentifier = new MbaDomIdentifier(dom.getElements());
+        var domIdentifier = new MbaDomIdentifier().init(dom.getElements());
         domIdentifier.addIdsLevelOrder();
         
         var root = dom.selectOneMax('#root'); 
@@ -21,7 +21,7 @@ var testMbaV3 = function() {
     
     Ca('teste l\'ajout des identifiants enfant maximum dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
-        var domIdentifier = new MbaDomIdentifier(dom.getElements());
+        var domIdentifier = new MbaDomIdentifier().init(dom.getElements());
         domIdentifier.addIdsLevelOrder();
         
         var root = dom.selectOneMax('#root'); 

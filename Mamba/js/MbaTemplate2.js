@@ -1,14 +1,28 @@
 function MbaTemplate2(){
-    this._rootDomElements;
+    this._rootDom;
+    this._templateTree;
+    this._templateNodeMap;
 };
 
-MbaTemplate2.prototype.init = function(rootDomElements){
-    checkType(rootDomElements, MbaDom);
-    this._rootDomElements = rootDomElements;
+MbaTemplate2.prototype.init = function(rootDom){
+    checkType(rootDom, MbaDom);
+    this._rootDom = rootDom;
+    this.addIdToAllDomElements();
+    this.constructTemplateTreeAndMap();
     return this;
 };
 
 MbaTemplate2.prototype.findForSelector = function(cssSelector){
     checkType(cssSelector, 'string');
-    return this._rootDomElements.select(cssSelector);
+    return this._rootDom.select(cssSelector);
+};
+
+MbaTemplate2.prototype.addIdToAllDomElements = function(){
+    var rootDomElements = this._rootDom.getElements();
+    var domIdentifier = new MbaDomIdentifier().init(rootDomElements);
+    domIdentifier.addIdsLevelOrder();
+};
+
+MbaTemplate2.prototype.constructTemplateTreeAndMap = function(){
+    
 };

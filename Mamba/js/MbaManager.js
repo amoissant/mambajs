@@ -46,8 +46,6 @@ MbaManager.prototype.linkDomMultiplierTreeToTemplate = function(){
 MbaManager.prototype.setTemplate = function(template){
     checkType(template, MbaDom);
     this._template = new MbaTemplate2().init(template);
-    var domIdentifier = new MbaDomIdentifier(template.getElements());//TODO fonction init pour domIdentifier
-    domIdentifier.addIdsLevelOrder();
 };
 
 MbaManager.prototype.getDomMultipliers = function(){
