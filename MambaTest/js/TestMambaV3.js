@@ -281,6 +281,27 @@ var testMbaV3 = function() {
             .DEtreEgalA('3');
     });
     
+    function domElementForRoute(templateTree, route){
+        var routeCopy = route.slice();
+        var templateNodeForRoute = templateTree;
+        while(routeCopy.length > 0){
+            templateNodeForRoute = templateNodeForRoute._childNodes[routeCopy.shift()];
+        }
+        if(templateNodeForRoute == null)
+            throw new Error('template node not found for route ['+route.join(',')+']');
+        return templateNodeForRoute._domElement.outerHTML;
+    }
+    
+    Ca('teste la construction du MbaTemplateTree', function(){
+        var templateString = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
+        var mbaTemplate = new MbaTemplate2().init(templateString);
+        mbaTemplate.constructTemplateTree();
+        var templateTree = mbaTemplate._templateTree;
+        OnAttend(templateTree._childNodes.length).DEtreEgalA(2);
+        OnAttend(domElementForRoute(templateTree, [0])).DEtreEgalA('<a class="person"></a>');
+        OnAttend(domElementForRoute(templateTree, [1])).DEtreEgalA('<div class="person"><span class="vehicle"></span></div>');
+        OnAttend(domElementForRoute(templateTree, [1, 0])).DEtreEgalA('<span class="vehicle"></span>');        
+    });
     //TODO : id des accessorchain sans model et le calculer une fois pour toute
     
        /*new MbaDomMultiplier().init(['persons', 'garage']),
@@ -289,4 +310,4 @@ var testMbaV3 = function() {
             new MbaDomMultiplier().init(['persons', 'garage', 'vehicles']),
             new MbaDomMultiplier().init(['persons2', 'garage2']),
             new MbaDomMultiplier().init(['persons2'])*/
-};
+}

@@ -8,7 +8,7 @@ MbaTemplate2.prototype.init = function(rootDom){
     checkType(rootDom, MbaDom);
     this._rootDom = rootDom;
     this.addIdToAllDomElements();
-    this.constructTemplateTreeAndMap();
+    this.constructTemplateTree();
     return this;
 };
 
@@ -23,6 +23,6 @@ MbaTemplate2.prototype.addIdToAllDomElements = function(){
     domIdentifier.addIdsLevelOrder();
 };
 
-MbaTemplate2.prototype.constructTemplateTreeAndMap = function(){
-    
+MbaTemplate2.prototype.constructTemplateTree = function(){
+    this._templateTree = new MbaTemplateTree().init(this._rootDom.getElements());
 };
