@@ -1,6 +1,8 @@
 function MbaDomMultiplierNode(){
     this._domMultiplier;
     this._relativeAccesor;
+    this._template;
+    this._domElementsToCloneMap;
 }
 MbaDomMultiplierNode.prototype = new MbaDomMultiplierBaseNode();
 MbaDomMultiplierNode.prototype.constructor = MbaDomMultiplierNode;
@@ -41,6 +43,29 @@ MbaDomMultiplierNode.prototype.initRelativeAccessorForChildren = function(){
     }
 };
 
+MbaDomMultiplierNode.prototype.linkToTemplate = function(template){
+    checkType(template, MbaTemplate2);
+    this._template = template;
+    this.constructDomElementsToCloneMap();
+    this.askChildrenToLinkTemplate();
+};
+
+MbaDomMultiplierNode.prototype.constructDomElementsToCloneMap = function(){
+    this._domElementsToCloneMap = {};
+    var domElementsToClone = this._template.findForSelector(this._domMultiplier.getSelector());
+    for(var i=0 ; i<domElementsToClone.length ; i++){
+        var currentDomElement = domElementsToClone[i];
+        var domElementDetachedCopy = currentDomElement.cloneNode(false);
+        this._domElementsToCloneMap[currentDomElement._mbaId] = domElementDetachedCopy;
+    }
+};
+
+MbaDomMultiplierNode.prototype.askChildrenToLinkTemplate = function(){
+    for(var i=0 ; i<this._childNodes.length ; i++){
+        this._childNodes[i].linkToTemplate(this._template);
+    }
+};
+
 MbaDomMultiplierNode.prototype.getDomMultiplier = function(){
     return this._domMultiplier;
 };
@@ -49,4 +74,11 @@ MbaDomMultiplierNode.prototype.getRelativeAccessor = function(){
     return this._relativeAccessor;
 };
 
+MbaDomMultiplierNode.prototype.getDomElementsToClone = function(){
+    var domElementsArray = [];
+    for(var domId in this._domElementsToCloneMap){
+        domElementsArray.push(this._domElementsToCloneMap[domId]);
+    }
+    return domElementsArray;
+};
     

@@ -3,6 +3,7 @@ function MbaManager(){
     this._propertyBindings;
     this._actionBindings;
     this._domMultiplierTree;
+    this._template;
 }
 
 
@@ -36,6 +37,17 @@ MbaManager.prototype.constructDomMultiplierTree = function(){
         this._domMultiplierTree.addNodeForDomMultiplier(this._domMultipliers[i]);
     }
     this._domMultiplierTree.initAllRelativeAccessors();
+};
+
+MbaManager.prototype.linkDomMultiplierTreeToTemplate = function(){
+    this._domMultiplierTree.linkToTemplate(this._template);
+};
+
+MbaManager.prototype.setTemplate = function(template){
+    checkType(template, MbaDom);
+    this._template = new MbaTemplate2().init(template);
+    var domIdentifier = new MbaDomIdentifier(template.getElements());//TODO fonction init pour domIdentifier
+    domIdentifier.addIdsLevelOrder();
 };
 
 MbaManager.prototype.getDomMultipliers = function(){

@@ -166,7 +166,7 @@ var testMbaV3 = function() {
         OnAttend(modelAccessorString(sortedDomMultipliers[3])).DEtreEgalA('model.persons2.vehicles2');
     });
     
-    function modelAccessorStringForRoute(domMultiplierTree, route){
+    function domMultiplierNodeForRoute(domMultiplierTree, route){
         var routeCopy = route.slice();
         var nodeForRoute = domMultiplierTree;
         while(routeCopy.length > 0){
@@ -174,6 +174,11 @@ var testMbaV3 = function() {
         }
         if(nodeForRoute == null)
             throw new Error('dom multiplier not found for route ['+route.join(',')+']');
+        return nodeForRoute;
+    };
+    
+    function modelAccessorStringForRoute(domMultiplierTree, route){
+        var nodeForRoute = domMultiplierNodeForRoute(domMultiplierTree, route);
         return modelAccessorString(nodeForRoute.getDomMultiplier());
     };
         
@@ -198,13 +203,7 @@ var testMbaV3 = function() {
     });
   
     function relativeAccessorStringForRoute(domMultiplierTree, route){
-        var routeCopy = route.slice();
-        var nodeForRoute = domMultiplierTree;
-        while(routeCopy.length > 0){
-            nodeForRoute = nodeForRoute.getChildNodes()[routeCopy.shift()];
-        }
-        if(nodeForRoute == null)
-            throw new Error('dom multiplier not found for route ['+route.join(',')+']');
+        var nodeForRoute = domMultiplierNodeForRoute(domMultiplierTree, route);
         return nodeForRoute.getRelativeAccessor().toString();
     };
     
@@ -228,9 +227,60 @@ var testMbaV3 = function() {
         OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1, 1])).DEtreEgalA('[vehicles2]');
     });
     
-    Ca('teste l\'ajout des élément sà lconer dans les domMultiplierNode', function(){
+    function domElementToCloneForRoute(domMultiplierTree, route){
+        var nodeForRoute = domMultiplierNodeForRoute(domMultiplierTree, route);
+        var domElements = new MbaDom(nodeForRoute.getDomElementsToClone());
+        return domElements.toString();
+    };
+    
+   Ca('teste l\'ajout des élément de dom à cloner dans les domMultiplierNode', function(){
+        var template = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
+        var domMultipliers = [
+            new MbaDomMultiplier().init(['persons'], '.person'),
+            new MbaDomMultiplier().init(['persons', 'vehicles'], '.vehicle')
+        ];
+        var manager = new MbaManager();
+        manager._domMultipliers = domMultipliers;
+        manager.createDomMultiplierTree();
+        manager.setTemplate(template);
+        manager.linkDomMultiplierTreeToTemplate();
         
-    })
+        var domMultiplierTree = manager.getDomMultiplierTree();
+        OnAttend(domElementToCloneForRoute(domMultiplierTree, [0]))
+            .DEtreEgalA('<a class="person"></a><div class="person"></div>');
+        OnAttend(domElementToCloneForRoute(domMultiplierTree, [0, 0]))
+            .DEtreEgalA('<span class="vehicle"></span>');
+    });
+    
+    function domElementsIdToCloneForRoute(domMultiplierTree, route){
+        var nodeForRoute = domMultiplierNodeForRoute(domMultiplierTree, route);
+        var domIdsMap = nodeForRoute._domElementsToCloneMap;
+        var domIds = [];
+        for(var domId in domIdsMap){
+            domIds.push(domId);
+        }
+        return domIds.join(',');
+    };
+    
+    Ca('teste la liste des id des éléments de dom à cloner dans les domMultiplierNode', function(){
+        var template = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
+        var domMultipliers = [
+            new MbaDomMultiplier().init(['persons'], '.person'),
+            new MbaDomMultiplier().init(['persons', 'vehicles'], '.vehicle')
+        ];
+        var manager = new MbaManager();
+        manager._domMultipliers = domMultipliers;
+        manager.createDomMultiplierTree();
+        manager.setTemplate(template);
+        manager.linkDomMultiplierTreeToTemplate();
+        
+        var domMultiplierTree = manager.getDomMultiplierTree();
+        OnAttend(domElementsIdToCloneForRoute(domMultiplierTree, [0]))
+            .DEtreEgalA('1,2');
+        OnAttend(domElementsIdToCloneForRoute(domMultiplierTree, [0, 0]))
+            .DEtreEgalA('3');
+    });
+    
     //TODO : id des accessorchain sans model et le calculer une fois pour toute
     
        /*new MbaDomMultiplier().init(['persons', 'garage']),
