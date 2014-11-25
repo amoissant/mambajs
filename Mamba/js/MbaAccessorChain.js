@@ -8,12 +8,21 @@ function MbaAccessorChain(){
     this._modelHasNotMember;
     this._modelValue; 
     
-    MbaAccessorChain.prototype.init = function(memberChain){
+    MbaAccessorChain.prototype.initFromMemberChain = function(memberChain){
         checkType(memberChain, 'array', 'string');
         this._accessors = [];
         this._completeRoutes = {};
         this._beforeEndRoutes = {};
         this.createAccessors(memberChain);
+        return this;
+    };
+    
+    MbaAccessorChain.prototype.initFromAccessorChain = function(accessorChain){
+        checkType(accessorChain, MbaAccessorChain);
+        this._accessors = [];
+        this._completeRoutes = {};
+        this._beforeEndRoutes = {};
+        PushAll(accessorChain.getAccessors()).into(this._accessors);
         return this;
     };
     
@@ -56,6 +65,14 @@ function MbaAccessorChain(){
     
     MbaAccessorChain.prototype.modelHasNotMember = function(){
         return this._modelHasNotMember;
+    };
+    
+    MbaAccessorChain.prototype.getSize = function(){
+        return this._accessors.length;
+    };
+    
+    MbaAccessorChain.prototype.getId = function(){
+        return this.toStringWithModel();
     };
     
     MbaAccessorChain.prototype.createAccessors = function(memberChain){
@@ -265,6 +282,21 @@ function MbaAccessorChain(){
         }
         return stringRepresentation;
     };
+    
+    MbaAccessorChain.prototype.hasSameRoot = function(other){
+        var rootSize = Math.min(this.getSize(), other.getSize());
+        for(var i=0; i<rootSize ; i++){
+            if(!this.getAccessor(i).equals(other.getAccessor(i)))
+                return false;
+        }
+        return true;
+    };
+    
+    MbaAccessorChain.prototype.removeNFirstAccessors = function(n){
+        for(var i=0; i<n ; i++){
+            this._accessors.shift();  
+        }
+    };  
     
     this.initOld();
 }

@@ -13,7 +13,7 @@ MbaPropertyBinding.prototype.init = function(selector, memberChain, domTransform
     this._selector = selector;
     this._domTransformation = domTransformation;
     this._events = events;
-    this._propertyAccessor = new MbaAccessorChain().init(memberChain);
+    this._propertyAccessor = new MbaAccessorChain().initFromMemberChain(memberChain);
     return this;
 };
 

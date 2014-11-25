@@ -31,6 +31,10 @@ function MbaAccessor(precursor){
         return !model.hasOwnProperty(this._member);
     };
     
+    MbaAccessor.prototype.equals = function(other){
+        return this._member == other._member;
+    };
+    
     MbaAccessor.prototype.toString = function(){
       return this._member;  
     };

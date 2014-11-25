@@ -45,6 +45,10 @@ var testMbaV3 = function() {
         OnAttend(domMultipliers.length).DEtreEgalA(0);
     });
     
+    function modelAccessorString(domMultiplier){
+        return domMultiplier.getModelAccessor().toStringWithModel();
+    }
+    
     Ca('teste que l\'on récupère la liste des dom multipliers', function(){
         var directive = 
             {r00t : 'div', 
@@ -60,19 +64,19 @@ var testMbaV3 = function() {
 
         OnAttend(domMultipliers.length).DEtreEgalA(5);
         OnAttend(domMultipliers[0].getSelector()).DEtreEgalA('div');
-        OnAttend(domMultipliers[0].getModelAccessor().toStringWithModel()).DEtreEgalA('model');
+        OnAttend(modelAccessorString(domMultipliers[0])).DEtreEgalA('model');
         
         OnAttend(domMultipliers[1].getSelector()).DEtreEgalA('span');
-        OnAttend(domMultipliers[1].getModelAccessor().toStringWithModel()).DEtreEgalA('model.sub');
+        OnAttend(modelAccessorString(domMultipliers[1])).DEtreEgalA('model.sub');
         
         OnAttend(domMultipliers[2].getSelector()).DEtreEgalA('a');
-        OnAttend(domMultipliers[2].getModelAccessor().toStringWithModel()).DEtreEgalA('model.other');
+        OnAttend(modelAccessorString(domMultipliers[2])).DEtreEgalA('model.other');
         
         OnAttend(domMultipliers[3].getSelector()).DEtreEgalA('input');
-        OnAttend(domMultipliers[3].getModelAccessor().toStringWithModel()).DEtreEgalA('model.other.subSub');
+        OnAttend(modelAccessorString(domMultipliers[3])).DEtreEgalA('model.other.subSub');
         
         OnAttend(domMultipliers[4].getSelector()).DEtreEgalA('video');
-        OnAttend(domMultipliers[4].getModelAccessor().toStringWithModel()).DEtreEgalA('model.anotherOne');        
+        OnAttend(modelAccessorString(domMultipliers[4])).DEtreEgalA('model.anotherOne');        
     });
     
     Ca('teste que l\'on récupère la liste des dom multipliers avec sous directive tableau', function(){
@@ -87,16 +91,16 @@ var testMbaV3 = function() {
 
         OnAttend(domMultipliers.length).DEtreEgalA(4);
         OnAttend(domMultipliers[0].getSelector()).DEtreEgalA('div');
-        OnAttend(domMultipliers[0].getModelAccessor().toStringWithModel()).DEtreEgalA('model');
+        OnAttend(modelAccessorString(domMultipliers[0])).DEtreEgalA('model');
         
         OnAttend(domMultipliers[1].getSelector()).DEtreEgalA('a');
-        OnAttend(domMultipliers[1].getModelAccessor().toStringWithModel()).DEtreEgalA('model.other');
+        OnAttend(modelAccessorString(domMultipliers[1])).DEtreEgalA('model.other');
         
         OnAttend(domMultipliers[2].getSelector()).DEtreEgalA('input');
-        OnAttend(domMultipliers[2].getModelAccessor().toStringWithModel()).DEtreEgalA('model.other.subSub');
+        OnAttend(modelAccessorString(domMultipliers[2])).DEtreEgalA('model.other.subSub');
         
         OnAttend(domMultipliers[3].getSelector()).DEtreEgalA('video');
-        OnAttend(domMultipliers[3].getModelAccessor().toStringWithModel()).DEtreEgalA('model.other');        
+        OnAttend(modelAccessorString(domMultipliers[3])).DEtreEgalA('model.other');        
     });
     
     Ca('teste que l\'on récupère la liste des bindings de propriété', function(){
@@ -144,4 +148,95 @@ var testMbaV3 = function() {
         OnAttend(actionBindings[2].getActionAccessor().toStringWithModel()).DEtreEgalA('model.coordinates.delete');
     });
     
+    Ca('test le tri des dom multiplier', function(){
+        var domMultipliers = [
+            new MbaDomMultiplier().init(['persons2'], ''),
+            new MbaDomMultiplier().init(['persons2', 'vehicles2'], ''),
+            new MbaDomMultiplier().init(['persons'], ''),
+            new MbaDomMultiplier().init(['persons', 'vehicles'], '')
+        ];
+        var manager = new MbaManager();
+        manager._domMultipliers = domMultipliers;
+        manager.sortDomMultipliers();
+        
+        var sortedDomMultipliers = manager.getDomMultipliers();
+        OnAttend(modelAccessorString(sortedDomMultipliers[0])).DEtreEgalA('model.persons');
+        OnAttend(modelAccessorString(sortedDomMultipliers[1])).DEtreEgalA('model.persons2');
+        OnAttend(modelAccessorString(sortedDomMultipliers[2])).DEtreEgalA('model.persons.vehicles');
+        OnAttend(modelAccessorString(sortedDomMultipliers[3])).DEtreEgalA('model.persons2.vehicles2');
+    });
+    
+    function modelAccessorStringForRoute(domMultiplierTree, route){
+        var routeCopy = route.slice();
+        var nodeForRoute = domMultiplierTree;
+        while(routeCopy.length > 0){
+            nodeForRoute = nodeForRoute.getChildNodes()[routeCopy.shift()];
+        }
+        if(nodeForRoute == null)
+            throw new Error('dom multiplier not found for route ['+route.join(',')+']');
+        return modelAccessorString(nodeForRoute.getDomMultiplier());
+    };
+        
+    Ca('test la création de l\'abre des dom multiplier', function(){
+        var domMultipliers = [
+            new MbaDomMultiplier().init(['persons2'], ''),
+            new MbaDomMultiplier().init(['persons2', 'adresses'], ''),
+            new MbaDomMultiplier().init(['persons2', 'vehicles2'], ''),
+            new MbaDomMultiplier().init(['persons'], ''),
+            new MbaDomMultiplier().init(['persons', 'vehicles'], '')
+        ];
+        var manager = new MbaManager();
+        manager._domMultipliers = domMultipliers;
+        manager.createDomMultiplierTree();
+        
+        var domMultiplierTree = manager.getDomMultiplierTree();
+        OnAttend(modelAccessorStringForRoute(domMultiplierTree, [0])).DEtreEgalA('model.persons');
+        OnAttend(modelAccessorStringForRoute(domMultiplierTree, [0, 0])).DEtreEgalA('model.persons.vehicles');
+        OnAttend(modelAccessorStringForRoute(domMultiplierTree, [1])).DEtreEgalA('model.persons2');
+        OnAttend(modelAccessorStringForRoute(domMultiplierTree, [1, 0])).DEtreEgalA('model.persons2.adresses');
+        OnAttend(modelAccessorStringForRoute(domMultiplierTree, [1, 1])).DEtreEgalA('model.persons2.vehicles2');
+    });
+  
+    function relativeAccessorStringForRoute(domMultiplierTree, route){
+        var routeCopy = route.slice();
+        var nodeForRoute = domMultiplierTree;
+        while(routeCopy.length > 0){
+            nodeForRoute = nodeForRoute.getChildNodes()[routeCopy.shift()];
+        }
+        if(nodeForRoute == null)
+            throw new Error('dom multiplier not found for route ['+route.join(',')+']');
+        return nodeForRoute.getRelativeAccessor().toString();
+    };
+    
+    Ca('test l\'initialisation des relativeAccessor dans l\'arbre des dom multiplier', function(){
+        var domMultipliers = [
+            new MbaDomMultiplier().init(['persons2'], ''),
+            new MbaDomMultiplier().init(['persons2', 'adresses'], ''),
+            new MbaDomMultiplier().init(['persons2', 'vehicles2'], ''),
+            new MbaDomMultiplier().init(['persons'], ''),
+            new MbaDomMultiplier().init(['persons', 'vehicles'], '')
+        ];
+        var manager = new MbaManager();
+        manager._domMultipliers = domMultipliers;
+        manager.createDomMultiplierTree();
+        
+        var domMultiplierTree = manager.getDomMultiplierTree();
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0])).DEtreEgalA('[persons]');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0, 0])).DEtreEgalA('[vehicles]');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1])).DEtreEgalA('[persons2]');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1, 0])).DEtreEgalA('[adresses]');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1, 1])).DEtreEgalA('[vehicles2]');
+    });
+    
+    Ca('teste l\'ajout des élément sà lconer dans les domMultiplierNode', function(){
+        
+    })
+    //TODO : id des accessorchain sans model et le calculer une fois pour toute
+    
+       /*new MbaDomMultiplier().init(['persons', 'garage']),
+            new MbaDomMultiplier().init(['persons2', 'garage2', 'vehicles2']),
+            new MbaDomMultiplier().init(['persons']),
+            new MbaDomMultiplier().init(['persons', 'garage', 'vehicles']),
+            new MbaDomMultiplier().init(['persons2', 'garage2']),
+            new MbaDomMultiplier().init(['persons2'])*/
 };
