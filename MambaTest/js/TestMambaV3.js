@@ -293,15 +293,26 @@ var testMbaV3 = function() {
     }
     
     Ca('teste la construction du MbaTemplateTree', function(){
-        var templateString = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
-        var mbaTemplate = new MbaTemplate2().init(templateString);
-        mbaTemplate.constructTemplateTree();
+        var templateDom = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
+        var mbaTemplate = new MbaTemplate2().init(templateDom);
         var templateTree = mbaTemplate._templateTree;
         OnAttend(templateTree._childNodes.length).DEtreEgalA(2);
         OnAttend(domElementForRoute(templateTree, [0])).DEtreEgalA('<a class="person"></a>');
         OnAttend(domElementForRoute(templateTree, [1])).DEtreEgalA('<div class="person"><span class="vehicle"></span></div>');
         OnAttend(domElementForRoute(templateTree, [1, 0])).DEtreEgalA('<span class="vehicle"></span>');        
     });
+    
+    Ca('teste la construction de la MbaTemplateNodeMap', function(){
+        var templateDom = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
+        var mbaTemplate = new MbaTemplate2().init(templateDom);
+        var nodeMap = mbaTemplate._templateNodeMap;
+        
+        OnAttend(Object.keys(nodeMap).length).DEtreEgalA(3);
+        OnAttend(domToString(nodeMap[1])).DEtreEgalA('<a class="person"></a>');
+        OnAttend(domToString(nodeMap[2])).DEtreEgalA('<div class="person"><span class="vehicle"></span></div>');
+        OnAttend(domToString(nodeMap[3])).DEtreEgalA('<span class="vehicle"></span>');
+    });
+    
     //TODO : id des accessorchain sans model et le calculer une fois pour toute
     
        /*new MbaDomMultiplier().init(['persons', 'garage']),

@@ -9,6 +9,7 @@ MbaTemplate2.prototype.init = function(rootDom){
     this._rootDom = rootDom;
     this.addIdToAllDomElements();
     this.constructTemplateTree();
+    this.constructTemplateNodeMap();
     return this;
 };
 
@@ -26,3 +27,17 @@ MbaTemplate2.prototype.addIdToAllDomElements = function(){
 MbaTemplate2.prototype.constructTemplateTree = function(){
     this._templateTree = new MbaTemplateTree().init(this._rootDom.getElements());
 };
+
+MbaTemplate2.prototype.constructTemplateNodeMap = function(){
+    this._templateNodeMap = {};
+    this.registerDomElementsRecursively(this._rootDom.getElements());
+};
+
+MbaTemplate2.prototype.registerDomElementsRecursively = function(domElements){
+    checkIsDomSetOrEmpty(domElements);
+    for(var i=0 ; i<domElements.length ; i++){
+        var currentDomElement = domElements[i];
+        this._templateNodeMap[currentDomElement._mbaId] = currentDomElement;
+        this.registerDomElementsRecursively(currentDomElement.childNodes);
+    }
+}
