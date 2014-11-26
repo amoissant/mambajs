@@ -6,21 +6,16 @@ function MbaAccessorChain2(){
 
 MbaAccessorChain2.prototype.initFromMemberChain = function(memberChain){
     checkType(memberChain, 'array', 'string');
-    this.initFields();
+    this._accessors = [];
     this.createAccessors(memberChain);
     return this;
 };
     
 MbaAccessorChain2.prototype.initFromAccessorChain = function(accessorChain){
     checkType(accessorChain, MbaAccessorChain2);
-    this.initFields();
+    this._accessors = [];
     PushAll(accessorChain._accessors).into(this._accessors);
     return this;
-};
-
-MbaAccessorChain2.prototype.initFields = function(){
-    this._accessors = [];
-    this._beforeEndRoutes = {};
 };
 
 MbaAccessorChain2.prototype.createAccessors = function(memberChain){

@@ -13,3 +13,7 @@ MbaTemplateNode.prototype.init = function(parent, domElement){
     this._domElement = domElement;
     return this;
 };
+
+MbaTemplateNode.prototype.getId = function(){
+    return this._domElement._mbaId;
+};

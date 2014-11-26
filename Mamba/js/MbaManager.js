@@ -45,7 +45,16 @@ MbaManager.prototype.linkDomMultiplierTreeToTemplate = function(){
 
 MbaManager.prototype.setTemplate = function(template){
     checkType(template, MbaDom);
-    this._template = new MbaTemplate2().init(template);
+    var domMultipliersSelectors = this.getDomMultipliersSelectors();
+    this._template = new MbaTemplate2().init(template, domMultipliersSelectors);
+};
+
+MbaManager.prototype.getDomMultipliersSelectors = function(){
+    var domMultipliersSelectors = [];
+    for(var i=0 ; i<this._domMultipliers.length ; i++){
+        domMultipliersSelectors.push(this._domMultipliers[i].getSelector());
+    }
+    return domMultipliersSelectors;
 };
 
 MbaManager.prototype.getDomMultipliers = function(){

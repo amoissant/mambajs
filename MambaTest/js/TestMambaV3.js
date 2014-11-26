@@ -294,23 +294,26 @@ var testMbaV3 = function() {
     
     Ca('teste la construction du MbaTemplateTree', function(){
         var templateDom = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
-        var mbaTemplate = new MbaTemplate2().init(templateDom);
+        var mbaTemplate = new MbaTemplate2().init(templateDom, ['.person']);
         var templateTree = mbaTemplate._templateTree;
         OnAttend(templateTree._childNodes.length).DEtreEgalA(2);
         OnAttend(domElementForRoute(templateTree, [0])).DEtreEgalA('<a class="person"></a>');
         OnAttend(domElementForRoute(templateTree, [1])).DEtreEgalA('<div class="person"><span class="vehicle"></span></div>');
-        OnAttend(domElementForRoute(templateTree, [1, 0])).DEtreEgalA('<span class="vehicle"></span>');        
+        OnAttend(domElementForRoute(templateTree, [1, 0])).DEtreEgalA('<span class="vehicle"></span>');   
+        
+        OnAttend(templateTree._childNodes[0] instanceof MbaTemplateNode).DEtreVrai();
+        OnAttend(templateTree._childNodes[1] instanceof MbaTemplateNodeMultipliable).DEtreVrai();
     });
     
     Ca('teste la construction de la MbaTemplateNodeMap', function(){
         var templateDom = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
-        var mbaTemplate = new MbaTemplate2().init(templateDom);
+        var mbaTemplate = new MbaTemplate2().init(templateDom, []);
         var nodeMap = mbaTemplate._templateNodeMap;
         
         OnAttend(Object.keys(nodeMap).length).DEtreEgalA(3);
-        OnAttend(domToString(nodeMap[1])).DEtreEgalA('<a class="person"></a>');
-        OnAttend(domToString(nodeMap[2])).DEtreEgalA('<div class="person"><span class="vehicle"></span></div>');
-        OnAttend(domToString(nodeMap[3])).DEtreEgalA('<span class="vehicle"></span>');
+        OnAttend(domToString(nodeMap[1]._domElement)).DEtreEgalA('<a class="person"></a>');
+        OnAttend(domToString(nodeMap[2]._domElement)).DEtreEgalA('<div class="person"><span class="vehicle"></span></div>');
+        OnAttend(domToString(nodeMap[3]._domElement)).DEtreEgalA('<span class="vehicle"></span>');
     });
     
     //TODO : id des accessorchain sans model et le calculer une fois pour toute
