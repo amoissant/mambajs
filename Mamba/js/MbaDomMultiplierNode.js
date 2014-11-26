@@ -28,7 +28,7 @@ MbaDomMultiplierNode.prototype.initRelativeAccessor = function(parentAccessorSiz
 
 MbaDomMultiplierNode.prototype.createRelativeAccessor = function(){
     var domMultiplierAccessor = this._domMultiplier.getModelAccessor();
-    this._relativeAccessor = new MbaAccessorChain().initFromAccessorChain(domMultiplierAccessor);  
+    this._relativeAccessor = new MbaAccessorChain2().initFromAccessorChain(domMultiplierAccessor);  
 };
 
 MbaDomMultiplierNode.prototype.removeParentRootFromRelativeAccessor = function(parentAccessorSize){
