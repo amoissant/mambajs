@@ -320,6 +320,17 @@ var testMbaV3 = function() {
         OnAttend(domToString(nodeMap[3]._domElement)).DEtreEgalA('<span class="vehicle"></span>');
     });
     
+    Ca('teste le rendu sans multiplication d\'éléments', function(){
+        var templateDom = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
+        var mbaTemplate = new MbaTemplate2().init(templateDom, []);
+        
+        var modelAccessor = new MbaAccessorChain2().initFromMemberChain([]);
+        mbaTemplate._templateTree.renderForAccessorAndRoute(modelAccessor, ['-']);
+        var renderedDom = mbaTemplate.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
+    });
+    
     //TODO : id des accessorchain sans model et le calculer une fois pour toute
     
        /*new MbaDomMultiplier().init(['persons', 'garage']),

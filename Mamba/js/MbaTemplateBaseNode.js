@@ -24,6 +24,16 @@ MbaTemplateBaseNode.prototype.constructChildrenForDomElements = function(domElem
     }
 };
 
+MbaTemplateBaseNode.prototype.renderChildrenForAccessorAndRoute = function(modelAccessor, route){
+    checkType(modelAccessor, MbaAccessorChain2);
+    checkType(route, 'array', 'string');
+    for(var i=0 ; i<this._childNodes.length ; i++){
+        var currentNode = this._childNodes[i];
+        if(!(currentNode instanceof MbaTemplateNodeMultipliable))
+            currentNode.renderForAccessorAndRoute(modelAccessor, route);
+    }
+};
+
 MbaTemplateBaseNode.prototype.getChildNodes = function(){
     return this._childNodes;
 }

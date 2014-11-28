@@ -70,3 +70,7 @@ MbaTemplate2.prototype.registerDomElementsRecursively = function(templateNodes){
         this.registerDomElementsRecursively(currentNode.getChildNodes());
     }
 }
+
+MbaTemplate2.prototype.getRenderedDom = function(){
+    return this._templateTree.getRenderedDom();
+};

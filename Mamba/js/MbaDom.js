@@ -220,6 +220,12 @@ MbaDom.prototype.add = function (dom){
     }
 };
 
+MbaDom.prototype.addElement = function (domElement){
+    checkType(domElement, 'domElement');
+    this._dom.push(domElement);
+};
+
+
 MbaDom.prototype.remove = function(dom){
     checkType(dom, MbaDom);
 
