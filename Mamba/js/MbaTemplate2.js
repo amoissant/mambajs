@@ -1,7 +1,5 @@
 function MbaTemplate2(){
     this._rootDom;
-    this._domMultipliersSelectors;
-    this._templateNodeInstanciator;
     this._templateTree;
     this._templateNodeMap;
 };
@@ -10,17 +8,10 @@ MbaTemplate2.prototype.init = function(rootDom, domMultipliersSelectors){
     checkType(rootDom, MbaDom);
     checkType(domMultipliersSelectors, 'array', 'string');
     this._rootDom = rootDom;
-    this._domMultipliersSelectors = domMultipliersSelectors;
     this.addIdToAllDomElements();
-    this.createTemplateNodeInstanciator();
-    this.constructTemplateTree();
+    this.constructTemplateTree(domMultipliersSelectors);
     this.constructTemplateNodeMap();
     return this;
-};
-
-MbaTemplate2.prototype.findForSelector = function(cssSelector){
-    checkType(cssSelector, 'string');
-    return this._rootDom.select(cssSelector);
 };
 
 MbaTemplate2.prototype.addIdToAllDomElements = function(){
@@ -29,15 +20,23 @@ MbaTemplate2.prototype.addIdToAllDomElements = function(){
     domIdentifier.addIdsLevelOrder();
 };
 
-MbaTemplate2.prototype.createTemplateNodeInstanciator = function(){
-    var multipliableDomElmentsIds = this.getMultipliableDomElementsIds();
-    this._templateNodeInstanciator = new MbaTemplateNodeInstanciator().init(multipliableDomElmentsIds);
+MbaTemplate2.prototype.constructTemplateTree = function(domMultipliersSelectors){
+    checkType(domMultipliersSelectors, 'array', 'string');
+    var templateNodeInstanciator = this.createTemplateNodeInstanciator(domMultipliersSelectors);
+    this._templateTree = new MbaTemplateTree().init(this._rootDom.getElements(), templateNodeInstanciator);
 };
- 
-MbaTemplate2.prototype.getMultipliableDomElementsIds = function(){
+
+MbaTemplate2.prototype.createTemplateNodeInstanciator = function(domMultipliersSelectors){
+    checkType(domMultipliersSelectors, 'array', 'string');
+    var multipliableDomElmentsIds = this.getMultipliableDomElementsIds(domMultipliersSelectors);
+    return new MbaTemplateNodeInstanciator().init(multipliableDomElmentsIds);
+};
+
+MbaTemplate2.prototype.getMultipliableDomElementsIds = function(domMultipliersSelectors){
+    checkType(domMultipliersSelectors, 'array', 'string');
     var multipliableDomElmentsIds = [];
-    for(var i=0 ; i<this._domMultipliersSelectors.length ; i++){
-        var selector = this._domMultipliersSelectors[i];
+    for(var i=0 ; i<domMultipliersSelectors.length ; i++){
+        var selector = domMultipliersSelectors[i];
         Uti.array(multipliableDomElmentsIds).pushAll(this.getDomElementsIdsForSelector(selector));
     }
     return multipliableDomElmentsIds;
@@ -53,8 +52,9 @@ MbaTemplate2.prototype.getDomElementsIdsForSelector = function(selector){
     return domElementsIds;
 };
 
-MbaTemplate2.prototype.constructTemplateTree = function(){
-    this._templateTree = new MbaTemplateTree().init(this._rootDom.getElements(), this._templateNodeInstanciator);
+MbaTemplate2.prototype.findForSelector = function(cssSelector){
+    checkType(cssSelector, 'string');
+    return this._rootDom.select(cssSelector);
 };
 
 MbaTemplate2.prototype.constructTemplateNodeMap = function(){
