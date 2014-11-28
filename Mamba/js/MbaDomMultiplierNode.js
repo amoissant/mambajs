@@ -74,11 +74,4 @@ MbaDomMultiplierNode.prototype.getRelativeAccessor = function(){
     return this._relativeAccessor;
 };
 
-MbaDomMultiplierNode.prototype.getDomElementsToClone = function(){
-    var domElementsArray = [];
-    for(var domId in this._domElementsToCloneMap){
-        domElementsArray.push(this._domElementsToCloneMap[domId]);
-    }
-    return domElementsArray;
-};
     

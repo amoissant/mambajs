@@ -14,7 +14,7 @@ MbaAccessorChain2.prototype.initFromMemberChain = function(memberChain){
 MbaAccessorChain2.prototype.initFromAccessorChain = function(accessorChain){
     checkType(accessorChain, MbaAccessorChain2);
     this._accessors = [];
-    PushAll(accessorChain._accessors).into(this._accessors);
+    Uti.array(this._accessors).pushAll(accessorChain._accessors);
     return this;
 };
 

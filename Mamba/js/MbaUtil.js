@@ -183,18 +183,47 @@ function pushAllOld(context, anotherArray){
     }
 };
 
-function PushAll(elements){
-    return {into : function(destination){
-        for(var i=0 ; i<elements.length ; i++)
-            destination.push(elements[i]);
-    }};
-}
-
 function stringToDom(string){
     var root = document.createElement('div');
     root.innerHTML = string;
     return root.childNodes;
 }
 
+var arrayFunctions = {
+    array : null,
+    pushAll : function(elements){
+        for(var i=0 ; i<elements.length ; i++)
+            this.array.push(elements[i]);
+    }    
+};
 
+var mapFunctions = {
+    map : null,
+    values: function(){
+        var values = [];
+        for(var key in this.map){
+            values.push(this.map[key]);
+        }
+        return values;   
+    },
+    keys: function(){
+        var keys = [];
+        for(var key in this.map){
+            keys.push(key);
+        }
+        return keys;   
+    }   
+};
+
+
+var Uti = {
+    array : function(array){
+        arrayFunctions.array = array;
+        return arrayFunctions;
+    },
+    map : function(map){
+        mapFunctions.map = map;
+        return mapFunctions;
+    }
+};
 

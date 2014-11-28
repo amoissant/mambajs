@@ -33,12 +33,12 @@ MbaTemplate2.prototype.createTemplateNodeInstanciator = function(){
     var multipliableDomElmentsIds = this.getMultipliableDomElementsIds();
     this._templateNodeInstanciator = new MbaTemplateNodeInstanciator().init(multipliableDomElmentsIds);
 };
-
+ 
 MbaTemplate2.prototype.getMultipliableDomElementsIds = function(){
     var multipliableDomElmentsIds = [];
     for(var i=0 ; i<this._domMultipliersSelectors.length ; i++){
         var selector = this._domMultipliersSelectors[i];
-        PushAll(this.getDomElementsIdsForSelector(selector)).into(multipliableDomElmentsIds);
+        Uti.array(multipliableDomElmentsIds).pushAll(this.getDomElementsIdsForSelector(selector));
     }
     return multipliableDomElmentsIds;
 };

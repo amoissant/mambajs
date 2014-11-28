@@ -229,7 +229,8 @@ var testMbaV3 = function() {
     
     function domElementToCloneForRoute(domMultiplierTree, route){
         var nodeForRoute = domMultiplierNodeForRoute(domMultiplierTree, route);
-        var domElements = new MbaDom(nodeForRoute.getDomElementsToClone());
+        var domElementsArray = Uti.map(nodeForRoute._domElementsToCloneMap).values();
+        var domElements = new MbaDom(domElementsArray);
         return domElements.toString();
     };
     
@@ -255,10 +256,7 @@ var testMbaV3 = function() {
     function domElementsIdToCloneForRoute(domMultiplierTree, route){
         var nodeForRoute = domMultiplierNodeForRoute(domMultiplierTree, route);
         var domIdsMap = nodeForRoute._domElementsToCloneMap;
-        var domIds = [];
-        for(var domId in domIdsMap){
-            domIds.push(domId);
-        }
+        var domIds = Uti.map(domIdsMap).keys();
         return domIds.join(',');
     };
     
@@ -281,15 +279,21 @@ var testMbaV3 = function() {
             .DEtreEgalA('3');
     });
     
+    function templateNodeForRoute(templateTree, route){
+        var routeCopy = route.slice();
+        var nodeForRoute = templateTree;
+        while(routeCopy.length > 0){
+            nodeForRoute = nodeForRoute.getChildNodes()[routeCopy.shift()];
+        }
+        if(nodeForRoute == null)
+            throw new Error('Template node not found for route ['+route.join(',')+']');
+        return nodeForRoute;
+    }
+    
     function domElementForRoute(templateTree, route){
         var routeCopy = route.slice();
-        var templateNodeForRoute = templateTree;
-        while(routeCopy.length > 0){
-            templateNodeForRoute = templateNodeForRoute._childNodes[routeCopy.shift()];
-        }
-        if(templateNodeForRoute == null)
-            throw new Error('template node not found for route ['+route.join(',')+']');
-        return templateNodeForRoute._domElement.outerHTML;
+        var nodeForRoute = templateNodeForRoute(templateTree, route);
+        return nodeForRoute._domElement.outerHTML;
     }
     
     Ca('teste la construction du MbaTemplateTree', function(){
@@ -310,7 +314,7 @@ var testMbaV3 = function() {
         var mbaTemplate = new MbaTemplate2().init(templateDom, []);
         var nodeMap = mbaTemplate._templateNodeMap;
         
-        OnAttend(Object.keys(nodeMap).length).DEtreEgalA(3);
+        OnAttend(Uti.map(nodeMap).keys().length).DEtreEgalA(3);
         OnAttend(domToString(nodeMap[1]._domElement)).DEtreEgalA('<a class="person"></a>');
         OnAttend(domToString(nodeMap[2]._domElement)).DEtreEgalA('<div class="person"><span class="vehicle"></span></div>');
         OnAttend(domToString(nodeMap[3]._domElement)).DEtreEgalA('<span class="vehicle"></span>');

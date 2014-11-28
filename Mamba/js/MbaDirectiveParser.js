@@ -48,11 +48,11 @@ MbaDirectiveParser.prototype.runParsers = function(){
     }
     else if(this._actionBindingParser.accepts(this._memberChain, this._memberValue)){
         var actionBindings  = this._actionBindingParser.createActionsBindings();
-        PushAll(actionBindings).into(this._actionBindings);
+        Uti.array(this._actionBindings).pushAll(actionBindings);
     }
     else {
         var propertyBindings = this._propertyBindingParser.createPropertyBindings(this._memberChain, this._memberValue);
-        PushAll(propertyBindings).into(this._propertyBindings);
+        Uti.array(this._propertyBindings).pushAll(propertyBindings);
     }
 };
 

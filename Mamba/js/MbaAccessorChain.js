@@ -22,7 +22,7 @@ function MbaAccessorChain(){
         this._accessors = [];
         this._completeRoutes = {};
         this._beforeEndRoutes = {};
-        PushAll(accessorChain.getAccessors()).into(this._accessors);
+        Uti.array(this._accessors).pushAll(accessorChain.getAccessors());
         return this;
     };
     
