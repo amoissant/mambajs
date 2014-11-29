@@ -10,8 +10,8 @@ MbaActionBinding2.prototype.init = function(selector, memberChain, events){
     checkType(events, 'array', 'string');
     this._selector = selector;
     this._events = events;
-    this._actionAccessor = new MbaAccessorChain2().initFromMemberChain(memberChain);
-    return this;
+    this._actionAccessor = new MbaAccessorChain2().initWithRootModelAccessorFromMemberChain(memberChain);
+    return this
 };
 
 MbaActionBinding2.prototype.getSelector = function(){

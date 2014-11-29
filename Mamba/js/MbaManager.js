@@ -6,6 +6,14 @@ function MbaManager(){
     this._template;
 }
 
+MbaManager.prototype.init = function(template, directive){
+    checkType(template, MbaDom);
+    this.parseDirective(directive);
+    this.createDomMultiplierTree();
+    this.setTemplate(template);
+    this.linkDomMultiplierTreeToTemplate();
+    return this;
+};
 
 MbaManager.prototype.parseDirective = function(directive){
     var directiveParseur = new MbaDirectiveParser(directive);
@@ -57,6 +65,11 @@ MbaManager.prototype.getDomMultipliersSelectors = function(){
     return domMultipliersSelectors;
 };
 
+MbaManager.prototype.render = function(model){
+    this._template.initRenderedDom();
+    this._domMultiplierTree.renderForModel(model);
+};
+
 MbaManager.prototype.getDomMultipliers = function(){
     return this._domMultipliers;    
 };
@@ -71,4 +84,8 @@ MbaManager.prototype.getActionBindings = function(){
 
 MbaManager.prototype.getDomMultiplierTree = function(){
     return this._domMultiplierTree;
+};
+
+MbaManager.prototype.getRenderedDom = function(){
+    return this._template.getRenderedDom();
 };

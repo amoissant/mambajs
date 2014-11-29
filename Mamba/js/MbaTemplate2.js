@@ -71,6 +71,16 @@ MbaTemplate2.prototype.registerDomElementsRecursively = function(templateNodes){
     }
 }
 
+MbaTemplate2.prototype.initRenderedDom = function(){
+    var modelAccessorChain = new MbaAccessorChain2().initFromMemberChain([]);
+    this._templateTree.renderForAccessorAndRoute(modelAccessorChain, []);
+};
+
+MbaTemplate2.prototype.multiplyDom = function(domId, modelAccessor, route){
+    var templateNode = this._templateNodeMap[domId];
+    templateNode.multiplyForAccessorAndRoute(modelAccessor, route);
+};
+
 MbaTemplate2.prototype.getRenderedDom = function(){
     return this._templateTree.getRenderedDom();
 };

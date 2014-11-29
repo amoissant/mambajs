@@ -1,7 +1,7 @@
 function MbaTemplateNode(){
     this._domElement;
     this._parent;
-    this._renderedDomMap;
+    this._renderedDomMap;//TODO : ici au lieux d'avoir une map de map il suffit d'avoir une map de tableau
 }
 MbaTemplateNode.prototype = new MbaTemplateBaseNode();
 MbaTemplateNode.prototype.constructor = MbaTemplateNode;
@@ -40,13 +40,14 @@ MbaTemplateNode.prototype.hasRenderedDomForAccessor = function(modelAccessor){
 
 MbaTemplateNode.prototype.initRenderedDomForAccessor = function(modelAccessor){
     checkType(modelAccessor, MbaAccessorChain2);
-    this._renderedDomMap[modelAccessor.getId()] = {};
+    this._renderedDomMap[modelAccessor.getId()] = {};//TODO tableau ici plutot
 };
 
 MbaTemplateNode.prototype.getDomElementForAccessorAndRoute = function(modelAccessor, route){
     checkType(modelAccessor, MbaAccessorChain2);
     checkType(route, 'array', 'string');
-    return this._renderedDomMap[modelAccessor.getId()][route];
+    return this._renderedDomMap[modelAccessor.getId()][route];//TODO ; utiliser la fin de la route 
+    //ex : return this._renderedDomMap[modelAccessor.getId()][dernier élément de la route]
 };
 
 MbaTemplateNode.prototype.setDomElementForAccessorAndRoute = function(domElement, modelAccessor, route){
@@ -72,7 +73,7 @@ MbaTemplateNode.prototype.insertDomElement = function(domElement, domId, modelAc
     //TODO optimiser ici, mettre en cache les parentModelAccessor par exemple
     var parentModelAccessor = new MbaAccessorChain2().initFromAccessorChain(modelAccessor);
     var parentRoute = route.slice();
-    while(!this.hasRenderedDomForAccessor(parentModelAccessor)){
+    while(!this.hasRenderedDomForAccessor(parentModelAccessor) && parentModelAccessor.getSize() > 0){
         parentModelAccessor.removeLastAccessor();
         parentRoute.pop();
     }

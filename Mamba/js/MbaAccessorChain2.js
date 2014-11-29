@@ -1,8 +1,14 @@
 function MbaAccessorChain2(){
-    
     this._accessors;
     this._modelValue; 
 }
+
+MbaAccessorChain2.prototype.initWithRootModelAccessorFromMemberChain = function(memberChain){
+    checkType(memberChain, 'array', 'string');
+    this.initFromMemberChain(memberChain);
+    this.prependRootModelAccessor();
+    return this;
+};
 
 MbaAccessorChain2.prototype.initFromMemberChain = function(memberChain){
     checkType(memberChain, 'array', 'string');
@@ -30,12 +36,20 @@ MbaAccessorChain2.prototype.appendAccessor = function(accessor){
     this._accessors.push(accessor);
 };
 
+MbaAccessorChain2.prototype.prependRootModelAccessor = function(){
+    this._accessors.splice(0, 0, new MbaSelfAccessor());
+};
+
 MbaAccessorChain2.prototype.removeNFirstAccessors = function(n){
     for(var i=0; i<n ; i++){
         this._accessors.shift();  
     }
 };  
-
+    
+MbaAccessorChain2.prototype.removeLastAccessor = function(){
+    this._accessors.pop();  
+};  
+    
 MbaAccessorChain2.prototype.hasSameRoot = function(other){
     var rootSize = Math.min(this.getSize(), other.getSize());
     for(var i=0; i<rootSize ; i++){
@@ -45,23 +59,17 @@ MbaAccessorChain2.prototype.hasSameRoot = function(other){
     return true;
 };
 
-MbaAccessorChain2.prototype.toString = function(){
-    var stringRepresentation = '[';
+MbaAccessorChain2.prototype.getSubModel = function (parentModel){
+    var currentModel = parentModel;
     for(var i=0 ; i<this._accessors.length ; i++){
-        stringRepresentation += this._accessors[i].toString()+', ';
+        //TODO : si subModel est un tableau alors erreur -> il faut mettre une 'r00t'
+        this._accessors[i].getModelValue(currentModel);
     }
-    if(this._accessors.length> 0)
-        stringRepresentation = stringRepresentation.substring(0, stringRepresentation.length-2);
-    stringRepresentation += ']';
-    return stringRepresentation;
+    return currentModel;
 };
 
-MbaAccessorChain2.prototype.toStringWithModel = function(){
-    var stringRepresentation = 'model';
-    for(var i=0 ; i<this._accessors.length ; i++){
-        stringRepresentation += '.'+this._accessors[i].toString();
-    }
-    return stringRepresentation;
+MbaAccessorChain2.prototype.toString = function(){
+    return this._accessors.join('.');
 };
 
 MbaAccessorChain2.prototype.getSize = function(){
@@ -69,5 +77,5 @@ MbaAccessorChain2.prototype.getSize = function(){
 };
 
 MbaAccessorChain2.prototype.getId = function(){
-    return this.toStringWithModel();
+    return this.toString();
 };

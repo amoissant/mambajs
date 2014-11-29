@@ -66,6 +66,30 @@ MbaDomMultiplierNode.prototype.askChildrenToLinkTemplate = function(){
     }
 };
 
+MbaDomMultiplierNode.prototype.renderForModelWithRoute = function(model, route){
+    checkType(route, 'array', 'string');
+    //var subModelRoute = route.slice();
+    var subModel = this._relativeAccessor.getSubModel(model);    
+    var relativeAccessorSize = this._relativeAccessor.getSize();
+    for(var i=0 ; i<relativeAccessorSize ; i++){
+        route.push('-');
+    }
+    
+    for(var i=0 ; i<subModel.length ; i++){
+        route.push(i.toString());
+        for(var domId in this._domElementsToCloneMap){
+            this._template.multiplyDom(domId, this._domMultiplier.getModelAccessor(), route);
+        }
+        //TODO appel récursif
+        route.pop();
+    }
+    
+    
+    for(var i=0 ; i<relativeAccessorSize ; i++){//TODO peut etre que ca marche sans cette partie
+        route.pop();
+    }
+};
+
 MbaDomMultiplierNode.prototype.getDomMultiplier = function(){
     return this._domMultiplier;
 };

@@ -7,7 +7,7 @@ MbaDomMultiplier.prototype.init = function(memberChain, selector){
     checkType(memberChain, 'array', 'string');
     checkType(selector, 'string');
     this._selector = selector;
-    this._modelAccessor = new MbaAccessorChain2().initFromMemberChain(memberChain);
+    this._modelAccessor = new MbaAccessorChain2().initWithRootModelAccessorFromMemberChain(memberChain);
     return this;
 };
 
