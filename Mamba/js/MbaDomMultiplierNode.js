@@ -66,9 +66,8 @@ MbaDomMultiplierNode.prototype.askChildrenToLinkTemplate = function(){
     }
 };
 
-MbaDomMultiplierNode.prototype.renderForModelWithRoute = function(model, route){
+MbaDomMultiplierNode.prototype.createDomForModelWithRoute = function(model, route){//route ets un variable de DomMultiplierNode dont on fait varier la dernier élément
     checkType(route, 'array', 'string');
-    //var subModelRoute = route.slice();
     var subModel = this._relativeAccessor.getSubModel(model);    
     var relativeAccessorSize = this._relativeAccessor.getSize();
     for(var i=0 ; i<relativeAccessorSize ; i++){
@@ -78,7 +77,8 @@ MbaDomMultiplierNode.prototype.renderForModelWithRoute = function(model, route){
     for(var i=0 ; i<subModel.length ; i++){
         route.push(i.toString());
         for(var domId in this._domElementsToCloneMap){
-            this._template.multiplyDom(domId, this._domMultiplier.getModelAccessor(), route);
+            var modelRoute = new MbaRoute2().initFromAccessorAndIndexes(this._domMultiplier.getModelAccessor(), route);
+            this._template.createDomForRoute(domId, modelRoute);
         }
         //TODO appel récursif
         route.pop();

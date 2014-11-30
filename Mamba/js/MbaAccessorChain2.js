@@ -3,6 +3,12 @@ function MbaAccessorChain2(){
     this._modelValue; 
 }
 
+MbaAccessorChain2.prototype.initWithRootModelAccessor = function(){
+    this.initFromMemberChain([]);
+    this.prependRootModelAccessor();
+    return this;
+};
+
 MbaAccessorChain2.prototype.initWithRootModelAccessorFromMemberChain = function(memberChain){
     checkType(memberChain, 'array', 'string');
     this.initFromMemberChain(memberChain);
@@ -12,15 +18,20 @@ MbaAccessorChain2.prototype.initWithRootModelAccessorFromMemberChain = function(
 
 MbaAccessorChain2.prototype.initFromMemberChain = function(memberChain){
     checkType(memberChain, 'array', 'string');
-    this._accessors = [];
+    this.initEmpty();
     this.createAccessors(memberChain);
     return this;
 };
     
 MbaAccessorChain2.prototype.initFromAccessorChain = function(accessorChain){
     checkType(accessorChain, MbaAccessorChain2);
-    this._accessors = [];
+    this.initEmpty();
     Uti.array(this._accessors).pushAll(accessorChain._accessors);
+    return this;
+};
+
+MbaAccessorChain2.prototype.initEmpty = function(){
+    this._accessors = [];
     return this;
 };
 
@@ -78,4 +89,8 @@ MbaAccessorChain2.prototype.getSize = function(){
 
 MbaAccessorChain2.prototype.getId = function(){
     return this.toString();
+};
+
+MbaAccessorChain2.prototype.isEmpty = function(){
+    return this._accessors.length == 0;
 };

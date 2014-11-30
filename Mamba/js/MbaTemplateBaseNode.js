@@ -24,13 +24,12 @@ MbaTemplateBaseNode.prototype.constructChildrenForDomElements = function(domElem
     }
 };
 
-MbaTemplateBaseNode.prototype.renderChildrenForAccessorAndRoute = function(modelAccessor, route){
-    checkType(modelAccessor, MbaAccessorChain2);
-    checkType(route, 'array', 'string');
+MbaTemplateBaseNode.prototype.askChildrenCreateDomForRoute = function(modelRoute){
+    checkType(modelRoute, MbaRoute2);
     for(var i=0 ; i<this._childNodes.length ; i++){
         var currentNode = this._childNodes[i];
         if(!(currentNode instanceof MbaTemplateNodeMultipliable))
-            currentNode.renderForAccessorAndRoute(modelAccessor, route);
+            currentNode.createDomForRoute(modelRoute);
     }
 };
 

@@ -17,13 +17,13 @@ MbaDomMultiplierTree.prototype.linkToTemplate = function(template){
     }
 };
 
-MbaDomMultiplierTree.prototype.renderForModel = function(model){
-    this.renderForOneModel(model, []);
+MbaDomMultiplierTree.prototype.createDomForModel = function(model){
+    this.createDomForOneModel(model, []);
 };
 
-MbaDomMultiplierTree.prototype.renderForOneModel = function(model, route){
+MbaDomMultiplierTree.prototype.createDomForOneModel = function(model, route){
     checkType(route, 'array', 'string');
     for(var i=0 ; i<this._childNodes.length ; i++){
-        this._childNodes[i].renderForModelWithRoute(model, route);
+        this._childNodes[i].createDomForModelWithRoute(model, route);
     }
 };

@@ -67,7 +67,7 @@ MbaManager.prototype.getDomMultipliersSelectors = function(){
 
 MbaManager.prototype.render = function(model){
     this._template.initRenderedDom();
-    this._domMultiplierTree.renderForModel(model);
+    this._domMultiplierTree.createDomForModel(model);
 };
 
 MbaManager.prototype.getDomMultipliers = function(){
