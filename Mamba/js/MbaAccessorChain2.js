@@ -70,11 +70,13 @@ MbaAccessorChain2.prototype.hasSameRoot = function(other){
     return true;
 };
 
-MbaAccessorChain2.prototype.getSubModel = function (parentModel){
+MbaAccessorChain2.prototype.getSubModel = function (parentModel, modelRoute){
+    checkType(modelRoute, MbaRoute2);
     var currentModel = parentModel;
     for(var i=0 ; i<this._accessors.length ; i++){
         //TODO : si subModel est un tableau alors erreur -> il faut mettre une 'r00t'
         this._accessors[i].getModelValue(currentModel);
+        modelRoute.appendUndefinedIndex();
     }
     return currentModel;
 };

@@ -3,6 +3,8 @@ function MbaDomMultiplierNode(){
     this._relativeAccesor;
     this._template;
     this._domElementsToCloneMap;
+    this._modelRoute;
+    this._modelArray;
 }
 MbaDomMultiplierNode.prototype = new MbaDomMultiplierBaseNode();
 MbaDomMultiplierNode.prototype.constructor = MbaDomMultiplierNode;
@@ -11,6 +13,7 @@ MbaDomMultiplierNode.prototype.init = function(domMultiplier){
     checkType(domMultiplier, MbaDomMultiplier);
     MbaDomMultiplierBaseNode.prototype.init.call(this);
     this._domMultiplier = domMultiplier;
+    this._modelRoute = new MbaRoute2().initFromAccessor(this._domMultiplier.getModelAccessor());
     return this;
 };
 
@@ -66,28 +69,30 @@ MbaDomMultiplierNode.prototype.askChildrenToLinkTemplate = function(){
     }
 };
 
-MbaDomMultiplierNode.prototype.createDomForModelWithRoute = function(model, route){//route ets un variable de DomMultiplierNode dont on fait varier la dernier élément
-    checkType(route, 'array', 'string');
-    var subModel = this._relativeAccessor.getSubModel(model);    
-    var relativeAccessorSize = this._relativeAccessor.getSize();
-    for(var i=0 ; i<relativeAccessorSize ; i++){
-        route.push('-');
-    }
-    
-    for(var i=0 ; i<subModel.length ; i++){
-        route.push(i.toString());
-        for(var domId in this._domElementsToCloneMap){
-            var modelRoute = new MbaRoute2().initFromAccessorAndIndexes(this._domMultiplier.getModelAccessor(), route);
-            this._template.createDomForRoute(domId, modelRoute);
-        }
+MbaDomMultiplierNode.prototype.createDomForModelWithIndexes = function(parentModel, parentIndexes){
+    checkType(parentIndexes, 'array', 'string');
+    this.setModelArrayAndRoute(parentModel, parentIndexes);
+    this.createDomForEachModel();
+};
+
+MbaDomMultiplierNode.prototype.createDomForEachModel = function(){
+    for(var i=0 ; i<this._modelArray.length ; i++){
+        this.createDomForModelAtIndex(i);
         //TODO appel récursif
-        route.pop();
     }
-    
-    
-    for(var i=0 ; i<relativeAccessorSize ; i++){//TODO peut etre que ca marche sans cette partie
-        route.pop();
+};    
+
+MbaDomMultiplierNode.prototype.createDomForModelAtIndex = function(index){
+    this._modelRoute.setlastIndex(index);
+    for(var domId in this._domElementsToCloneMap){
+        this._template.createDomForRoute(domId, this._modelRoute);
     }
+};
+
+MbaDomMultiplierNode.prototype.setModelArrayAndRoute = function(parentModel, parentIndexes){
+    this._modelRoute.setIndexes(parentIndexes);
+    this._modelArray = this._relativeAccessor.getSubModel(parentModel, this._modelRoute);    
+    this._modelRoute.appendUndefinedIndex();
 };
 
 MbaDomMultiplierNode.prototype.getDomMultiplier = function(){

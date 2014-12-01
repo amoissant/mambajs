@@ -21,9 +21,9 @@ MbaDomMultiplierTree.prototype.createDomForModel = function(model){
     this.createDomForOneModel(model, []);
 };
 
-MbaDomMultiplierTree.prototype.createDomForOneModel = function(model, route){
-    checkType(route, 'array', 'string');
+MbaDomMultiplierTree.prototype.createDomForOneModel = function(model, indexes){
+    checkType(indexes, 'array', 'string');
     for(var i=0 ; i<this._childNodes.length ; i++){
-        this._childNodes[i].createDomForModelWithRoute(model, route);
+        this._childNodes[i].createDomForModelWithIndexes(model, indexes);
     }
 };

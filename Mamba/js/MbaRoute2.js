@@ -17,6 +17,13 @@ MbaRoute2.prototype.initFromAccessorAndIndexes = function(accessorChain, indexes
     return this;
 };
 
+MbaRoute2.prototype.initFromAccessor = function(accessorChain){
+    checkType(accessorChain, MbaAccessorChain2);
+    this._accessorChain = accessorChain;
+    this._routeIndexes = [];
+    return this;
+};
+
 MbaRoute2.prototype.clone = function(){
     var clone = new MbaRoute2();
     clone._accessorChain = new MbaAccessorChain2().initFromAccessorChain(this._accessorChain);
@@ -32,6 +39,19 @@ MbaRoute2.prototype.removeLastPart = function(){
     
 MbaRoute2.prototype.getAccessorId = function(){
     return this._accessorChain.getId();
+};
+
+MbaRoute2.prototype.appendUndefinedIndex = function(){
+    this._routeIndexes.push('-');
+};
+
+MbaRoute2.prototype.setlastIndex = function(index){
+    this._routeIndexes[this._routeIndexes.length-1] = index;
+};
+
+MbaRoute2.prototype.setIndexes = function(indexes){
+    checkType(indexes, 'array', 'string');
+    this._routeIndexes = indexes;
 };
 
 MbaRoute2.prototype.getIndex = function(){
