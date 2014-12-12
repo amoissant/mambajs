@@ -96,3 +96,19 @@ MbaAccessorChain2.prototype.getId = function(){
 MbaAccessorChain2.prototype.isEmpty = function(){
     return this._accessors.length == 0;
 };
+
+//TODO : optimiser en calculant une seule fois
+MbaAccessorChain2.prototype.toStringWithIndexes = function(indexes){
+    checkType(indexes, 'array', 'number');
+    if(this.isEmpty())
+        return '_';
+    
+    var stringRepresentation = '';
+    for(var i=0 ; i<this._accessors.length ; i++){
+        stringRepresentation += this._accessors[i];
+        var index = indexes[i];
+        if(index != '-')
+            stringRepresentation += '['+index+']';
+    }
+    return stringRepresentation;
+};

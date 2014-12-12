@@ -2,6 +2,7 @@ function MbaTemplateNode(){
     this._domElement;
     this._parent;
     this._renderedDomMap;
+    this._domSizeForParentRoute;
 }
 MbaTemplateNode.prototype = new MbaTemplateBaseNode();
 MbaTemplateNode.prototype.constructor = MbaTemplateNode;
@@ -13,6 +14,7 @@ MbaTemplateNode.prototype.init = function(parent, domElement){
     this._parent = parent;
     this._domElement = domElement;
     this._renderedDomMap = {};
+    this._domSizeForParentRoute = {};
     return this;
 };
 
@@ -27,8 +29,9 @@ MbaTemplateNode.prototype.createDomElementForRoute = function(modelRoute){
     if(!this.hasRenderedDomForRoute(modelRoute))
         this.initRenderedDomForRoute(modelRoute);
     var newDomElement = this._domElement.cloneNode(false);
+    var newDomElementId = this._domElement._mbaId;
     this.setDomElementForRoute(newDomElement, modelRoute); 
-    this.insertIntoParent(newDomElement, modelRoute);
+    this.insertDomElementIntoParent(newDomElement, newDomElementId, modelRoute);
 }; 
 
 MbaTemplateNode.prototype.hasRenderedDomForRoute = function(modelRoute){
@@ -47,25 +50,65 @@ MbaTemplateNode.prototype.setDomElementForRoute = function(domElement, modelRout
     this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndex()] = domElement;
 };
 
-MbaTemplateNode.prototype.insertIntoParent = function(domElement, modelRoute){
+MbaTemplateNode.prototype.insertDomElementIntoParent = function(domElement, domId, modelRoute){
     checkType(modelRoute, MbaRoute2);
-    var domId = this._domElement._mbaId;
-    this._parent.insertDomElement(domElement, domId, modelRoute);
+    checkType(domId, 'number');
+    var parentRoute = this._parent.computeParentRoute(modelRoute);//TODO optimiser car c'est appelé deux fois
+    this._parent.insertChildDomElement(domElement, domId, modelRoute);
+    this.increaseDomSizeForParentRoute(parentRoute);
 };
 
-MbaTemplateNode.prototype.insertDomElement = function(domElement, domId, modelRoute){
-    checkType(domElement, 'domElement');
-    checkType(domId, 'number');
-    checkType(modelRoute, MbaRoute2);
-    //TODO optimiser ici, mettre en cache les parentModelAccessor par exemple
-    var parentRoute = modelRoute.clone();
+MbaTemplateNode.prototype.computeParentRoute = function(childRoute){
+    checkType(childRoute, MbaRoute2);
+    var parentRoute = childRoute.clone();
     while(!this.hasRenderedDomForRoute(parentRoute)){
         if(parentRoute.isEmpty())
             throw new Error('can\'t find rendered dom for parent route');
         parentRoute.removeLastPart();
     }
+    return parentRoute;
+};
+
+MbaTemplateNode.prototype.insertChildDomElement = function(childDomElement, childDomId, childRoute){
+    checkType(childDomElement, 'domElement');
+    checkType(childDomId, 'number');
+    checkType(childRoute, MbaRoute2);
+    var parentRoute = this.computeParentRoute(childRoute);
+    var insertBeforeIndex = this.computeChildInsertionIndex(childDomId, parentRoute);
     var parentDomElement = this.getDomElementForRoute(parentRoute);
-    parentDomElement.appendChild(domElement);
+    var nextChildDomElement = parentDomElement.childNodes[insertBeforeIndex];
+    parentDomElement.insertBefore(childDomElement, nextChildDomElement);
+};
+
+MbaTemplateNode.prototype.computeChildInsertionIndex = function(childDomId, parentRoute){
+    checkType(childDomId, 'number');
+    checkType(parentRoute, MbaRoute2);;
+    var insertionIndex = 0;
+    for(var i=0 ; i<this._childNodes.length ; i++){
+        var childTemplateNode = this._childNodes[i];
+        insertionIndex += childTemplateNode.getDomSizeForParentRoute(parentRoute);
+        if(childTemplateNode.getId() == childDomId)
+            return insertionIndex;
+    }
+    throw new Error('childDomId not found in parent\'s children.');
+};
+
+MbaTemplateNode.prototype.increaseDomSizeForParentRoute = function(parentRoute){
+    checkType(parentRoute, MbaRoute2);
+    this.initIfNeededDomSizeForParentRoute(parentRoute);
+    this._domSizeForParentRoute[parentRoute]++;
+};
+
+MbaTemplateNode.prototype.getDomSizeForParentRoute = function(parentRoute){
+    checkType(parentRoute, MbaRoute2);
+    this.initIfNeededDomSizeForParentRoute(parentRoute);
+    return this._domSizeForParentRoute[parentRoute];
+};
+
+MbaTemplateNode.prototype.initIfNeededDomSizeForParentRoute = function(parentRoute){
+    checkType(parentRoute, MbaRoute2);
+    if(this._domSizeForParentRoute[parentRoute] == null)
+        this._domSizeForParentRoute[parentRoute] = 0;
 };
 
 MbaTemplateNode.prototype.getDomElementForRoute = function(modelRoute){

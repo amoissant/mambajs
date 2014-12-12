@@ -2,20 +2,6 @@ var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
-
-      Ca('teste le rendu avec multiplication d\'éléments et modèle tableau', function(){
-        var template = new MbaDomFromString('<div>list of persons</div><div class="list"><a class="person"></a></div><span>end</span>');
-        var directive = {'r00t' : '.person'};
-        var model = [{}, {}];
-        
-        var manager = new MbaManager().init(template, directive);
-        manager.render(model);
-        var renderedDom = manager.getRenderedDom();
-    
-        OnAttend(renderedDom.toString()).DEtreEgalA('<div>list of persons</div><div class="list"><a class="person"></a><a class="person"></a></div><span>end</span>');
-    });
-    
-    //return ;
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
@@ -344,6 +330,30 @@ var testMbaV3 = function() {
         var renderedDom = manager.getRenderedDom();
     
         OnAttend(renderedDom.toString()).DEtreEgalA('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
+    });
+    
+    Ca('teste le rendu avec multiplication d\'éléments et modèle tableau', function(){
+        var template = new MbaDomFromString('<div>list of persons</div><div class="list"><a class="person"></a></div><span>end</span>');
+        var directive = {'r00t' : '.person'};
+        var model = [{}, {}];
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div>list of persons</div><div class="list"><a class="person"></a><a class="person"></a></div><span>end</span>');
+    });
+    
+    Ca('teste le rendu multiplie les éléments et les place au bon endroit', function(){
+        var template = new MbaDomFromString('<div class="list"><span id="begin"></span><a class="person"></a><span id="end"></span></div>');
+        var directive = {'r00t' : '.person'};
+        var model = [{}, {}];
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><a class="person"></a><a class="person"></a><span id="end"></span></div>');
     });
     
     

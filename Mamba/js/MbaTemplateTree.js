@@ -17,33 +17,19 @@ MbaTemplateTree.prototype.init = function(domElements, templateNodeInstanciator)
 MbaTemplateTree.prototype.createDomForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
     this.askChildrenCreateDomForRoute(modelRoute);
-    //this.renderChildrenForAccessorAndRoute(modelAccessor, route);
 };
-/*
 
-MbaTemplateTree.prototype.renderForAccessorAndRoute = function(modelAccessor, route){
-    checkType(modelAccessor, MbaAccessorChain2);
-    checkType(route, 'array', 'string');
-    this.renderChildrenForAccessorAndRoute(modelAccessor, route);
-};
-*/
-
-MbaTemplateTree.prototype.insertDomElement = function(domElement, domId, modelRoute){
+MbaTemplateTree.prototype.insertChildDomElement = function(domElement, domId, modelRoute){
     checkType(domElement, 'domElement');
     checkType(domId, 'number');
     checkType(modelRoute, MbaRoute2);
     this._renderedDom.addElement(domElement);
 };
-/*
 
-MbaTemplateTree.prototype.insertDomElement = function(domElement, domId, modelAccessor, route){
-    checkType(domElement, 'domElement');
-    checkType(domId, 'number');
-    checkType(modelAccessor, MbaAccessorChain2);
-    checkType(route, 'array', 'string');
-    this._renderedDom.addElement(domElement);
+MbaTemplateTree.prototype.computeParentRoute = function(childRoute){
+    checkType(childRoute, MbaRoute2);
+    return childRoute;//TODO childRoute ou route vide ?
 };
-*/
 
 MbaTemplateTree.prototype.getRenderedDom = function(){
     return this._renderedDom;

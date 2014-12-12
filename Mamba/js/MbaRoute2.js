@@ -64,5 +64,9 @@ MbaRoute2.prototype.getIndex = function(){
 MbaRoute2.prototype.isEmpty = function(){
     return this._accessorChain.isEmpty();
 };
+
+MbaRoute2.prototype.toString = function(){
+    return this._accessorChain.toStringWithIndexes(this._routeIndexes);
+};
     
     
