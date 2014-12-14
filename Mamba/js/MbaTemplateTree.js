@@ -13,7 +13,6 @@ MbaTemplateTree.prototype.init = function(domElements, templateNodeInstanciator)
     return this;
 };
 
-
 MbaTemplateTree.prototype.createDomForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
     this.askChildrenCreateDomForRoute(modelRoute);

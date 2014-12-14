@@ -70,29 +70,36 @@ MbaDomMultiplierNode.prototype.askChildrenToLinkTemplate = function(){
 };
 
 MbaDomMultiplierNode.prototype.createDomForModelWithIndexes = function(parentModel, parentIndexes){
-    checkType(parentIndexes, 'array', 'string');
+    checkType(parentIndexes, Array);
     this.setModelArrayAndRoute(parentModel, parentIndexes);
     this.createDomForEachModel();
 };
 
+MbaDomMultiplierNode.prototype.setModelArrayAndRoute = function(parentModel, parentIndexes){
+    this._modelRoute.copyIndexes(parentIndexes);
+    this._modelArray = this._relativeAccessor.getSubModelAndUpdateRoute(parentModel, this._modelRoute);
+};
+
 MbaDomMultiplierNode.prototype.createDomForEachModel = function(){
     for(var i=0 ; i<this._modelArray.length ; i++){
-        this.createDomForModelAtIndex(i);
-        //TODO appel récursif
+        this._modelRoute.setlastIndex(i);
+        this.createDomForAllElementsToClone();
+        this.askChildrenCreateDomForModel(this._modelArray[i]);
     }
 };    
 
-MbaDomMultiplierNode.prototype.createDomForModelAtIndex = function(index){
-    this._modelRoute.setlastIndex(index);
+MbaDomMultiplierNode.prototype.createDomForAllElementsToClone = function(){
     for(var domId in this._domElementsToCloneMap){
         this._template.createDomForRoute(domId, this._modelRoute);
     }
 };
 
-MbaDomMultiplierNode.prototype.setModelArrayAndRoute = function(parentModel, parentIndexes){
-    this._modelRoute.setIndexes(parentIndexes);
-    this._modelArray = this._relativeAccessor.getSubModel(parentModel, this._modelRoute);    
-    this._modelRoute.appendUndefinedIndex();
+MbaDomMultiplierNode.prototype.askChildrenCreateDomForModel = function(model){
+    var indexes = this._modelRoute.getIndexes();
+    for(var i=0 ; i<this._childNodes.length ; i++){
+        var currentChild = this._childNodes[i];
+        currentChild.createDomForModelWithIndexes(model, indexes);
+    }
 };
 
 MbaDomMultiplierNode.prototype.getDomMultiplier = function(){

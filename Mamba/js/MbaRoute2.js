@@ -42,7 +42,13 @@ MbaRoute2.prototype.getAccessorId = function(){
 };
 
 MbaRoute2.prototype.appendUndefinedIndex = function(){
-    this._routeIndexes.push('-');
+    this._routeIndexes.push(undefined);
+};
+
+MbaRoute2.prototype.copyIndexes = function(indexes){
+    checkType(indexes, Array);
+    Uti.array(this._routeIndexes).empty();
+    Uti.array(this._routeIndexes).pushAll(indexes);
 };
 
 MbaRoute2.prototype.setlastIndex = function(index){
@@ -50,16 +56,17 @@ MbaRoute2.prototype.setlastIndex = function(index){
 };
 
 MbaRoute2.prototype.setIndexes = function(indexes){
-    checkType(indexes, 'array', 'string');
+    checkType(indexes, Array);
     this._routeIndexes = indexes;
 };
 
-MbaRoute2.prototype.getIndex = function(){
-    if(this._routeIndexes.length == 0)
-        return '-';
-    else
-        return this._routeIndexes[this._routeIndexes.length-1];
+MbaRoute2.prototype.getIndexes = function(){
+    return this._routeIndexes;
 };
+
+MbaRoute2.prototype.getIndexesId = function(){
+    return '_'+this._routeIndexes.join('-')+'_';
+}
 
 MbaRoute2.prototype.isEmpty = function(){
     return this._accessorChain.isEmpty();

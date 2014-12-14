@@ -70,12 +70,12 @@ MbaAccessorChain2.prototype.hasSameRoot = function(other){
     return true;
 };
 
-MbaAccessorChain2.prototype.getSubModel = function (parentModel, modelRoute){
+MbaAccessorChain2.prototype.getSubModelAndUpdateRoute = function (parentModel, modelRoute){
     checkType(modelRoute, MbaRoute2);
     var currentModel = parentModel;
     for(var i=0 ; i<this._accessors.length ; i++){
         //TODO : si subModel est un tableau alors erreur -> il faut mettre une 'r00t'
-        this._accessors[i].getModelValue(currentModel);
+        currentModel = this._accessors[i].getModelValue(currentModel);
         modelRoute.appendUndefinedIndex();
     }
     return currentModel;
@@ -96,19 +96,20 @@ MbaAccessorChain2.prototype.getId = function(){
 MbaAccessorChain2.prototype.isEmpty = function(){
     return this._accessors.length == 0;
 };
-
+ 
 //TODO : optimiser en calculant une seule fois
 MbaAccessorChain2.prototype.toStringWithIndexes = function(indexes){
-    checkType(indexes, 'array', 'number');
+    checkType(indexes, Array);
     if(this.isEmpty())
-        return '_';
+        return '_';//an empty string could be ok but debugger doesn't see object's member with 'empty string' key.
     
     var stringRepresentation = '';
     for(var i=0 ; i<this._accessors.length ; i++){
         stringRepresentation += this._accessors[i];
         var index = indexes[i];
-        if(index != '-')
+        if(index != undefined)
             stringRepresentation += '['+index+']';
+        stringRepresentation += '.';
     }
-    return stringRepresentation;
+    return stringRepresentation.substring(0, stringRepresentation.length-1);
 };

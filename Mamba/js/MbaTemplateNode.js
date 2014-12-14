@@ -41,13 +41,13 @@ MbaTemplateNode.prototype.hasRenderedDomForRoute = function(modelRoute){
 
 MbaTemplateNode.prototype.initRenderedDomForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
-    this._renderedDomMap[modelRoute.getAccessorId()] = [];
+    this._renderedDomMap[modelRoute.getAccessorId()] = {};
 };
 
 MbaTemplateNode.prototype.setDomElementForRoute = function(domElement, modelRoute){
     checkType(domElement, 'domElement');
     checkType(modelRoute, MbaRoute2);
-    this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndex()] = domElement;
+    this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndexesId()] = domElement;
 };
 
 MbaTemplateNode.prototype.insertDomElementIntoParent = function(domElement, domId, modelRoute){
@@ -113,7 +113,7 @@ MbaTemplateNode.prototype.initIfNeededDomSizeForParentRoute = function(parentRou
 
 MbaTemplateNode.prototype.getDomElementForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
-    return this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndex()];
+    return this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndexesId()];
 };
 
 MbaTemplateNode.prototype.getId = function(){

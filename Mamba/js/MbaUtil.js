@@ -194,7 +194,12 @@ var arrayFunctions = {
     pushAll : function(elements){
         for(var i=0 ; i<elements.length ; i++)
             this.array.push(elements[i]);
-    }    
+    },
+    empty : function(){
+        var length = this.array.length;
+        for(var i=0 ; i<length ; i++)
+            this.array.pop();
+    } 
 };
 
 var mapFunctions = {

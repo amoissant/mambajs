@@ -220,9 +220,9 @@ var testMbaV3 = function() {
         manager.createDomMultiplierTree();
         
         var domMultiplierTree = manager.getDomMultiplierTree();
-        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0])).DEtreEgalA('persons');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0])).DEtreEgalA('model.persons');
         OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0, 0])).DEtreEgalA('vehicles');
-        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1])).DEtreEgalA('persons2');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1])).DEtreEgalA('model.persons2');
         OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1, 0])).DEtreEgalA('adresses');
         OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1, 1])).DEtreEgalA('vehicles2');
     });
@@ -344,7 +344,7 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div>list of persons</div><div class="list"><a class="person"></a><a class="person"></a></div><span>end</span>');
     });
     
-    Ca('teste le rendu multiplie les éléments et les place au bon endroit', function(){
+    Ca('teste que le rendu multiplie les éléments et les place au bon endroit', function(){
         var template = new MbaDomFromString('<div class="list"><span id="begin"></span><a class="person"></a><span id="end"></span></div>');
         var directive = {'r00t' : '.person'};
         var model = [{}, {}];
@@ -356,7 +356,18 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><a class="person"></a><a class="person"></a><span id="end"></span></div>');
     });
     
+    Ca('teste que le rendu multiplie les éléments et est récursif', function(){
+        var template = new MbaDomFromString('<div class="list"><span id="begin"></span><div class="person"><a class="address"></a></div><span id="end"></span></div>');
+        var directive = {'r00t' : '.person',
+                         'sub' : {'r00t' : '.address'}};
+        var model = [{"sub" : [{}]}, {"sub" : [{}, {}]}];
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
     
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person"><a class="address"></a></div><div class="person"><a class="address"></a><a class="address"></a></div><span id="end"></span></div>');
+    });   
     //TODO : id des accessorchain sans model et le calculer une fois pour toute
     
        /*new MbaDomMultiplier().init(['persons', 'garage']),
