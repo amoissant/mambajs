@@ -2,6 +2,7 @@ function MbaTemplate2(){
     this._rootDom;
     this._templateTree;
     this._templateNodeMap;
+    this._isReadyToRender;
 };
 
 MbaTemplate2.prototype.init = function(rootDom, domMultipliersSelectors){
@@ -11,6 +12,7 @@ MbaTemplate2.prototype.init = function(rootDom, domMultipliersSelectors){
     this.addIdToAllDomElements();
     this.constructTemplateTree(domMultipliersSelectors);
     this.constructTemplateNodeMap();
+    this._isReadyToRender = false;
     return this;
 };
 
@@ -75,6 +77,7 @@ MbaTemplate2.prototype.initRenderedDom = function(){
     var modelAccessorChain = new MbaAccessorChain2().initFromMemberChain([]);
     var modelRoute = new MbaRoute2().init();
     this._templateTree.createDomForRoute(modelRoute);
+    this._isReadyToRender = true;
 };
 
 MbaTemplate2.prototype.createDomForRoute = function(domId, modelRoute){
@@ -86,4 +89,8 @@ MbaTemplate2.prototype.createDomForRoute = function(domId, modelRoute){
 
 MbaTemplate2.prototype.getRenderedDom = function(){
     return this._templateTree.getRenderedDom();
+};
+
+MbaTemplate2.prototype.isReadyToRender = function(){
+    return this._isReadyToRender;
 };

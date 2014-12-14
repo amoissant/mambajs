@@ -51,8 +51,12 @@ MbaRoute2.prototype.copyIndexes = function(indexes){
     Uti.array(this._routeIndexes).pushAll(indexes);
 };
 
-MbaRoute2.prototype.setlastIndex = function(index){
+MbaRoute2.prototype.setLastIndex = function(index){
     this._routeIndexes[this._routeIndexes.length-1] = index;
+};
+
+MbaRoute2.prototype.setLastIndexToUndefined = function(){
+    this._routeIndexes[this._routeIndexes.length-1] = undefined;
 };
 
 MbaRoute2.prototype.setIndexes = function(indexes){

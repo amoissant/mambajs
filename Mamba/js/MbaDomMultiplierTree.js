@@ -17,13 +17,8 @@ MbaDomMultiplierTree.prototype.linkToTemplate = function(template){
     }
 };
 
-MbaDomMultiplierTree.prototype.createDomForModel = function(model){
-    this.createDomForOneModel(model, []);
-};
-
-MbaDomMultiplierTree.prototype.createDomForOneModel = function(model, indexes){
-    checkType(indexes, 'array', 'string');
+MbaDomMultiplierTree.prototype.updateDomForModel = function(model){
     for(var i=0 ; i<this._childNodes.length ; i++){
-        this._childNodes[i].createDomForModelWithIndexes(model, indexes);
+        this._childNodes[i].updateDomForModelWithIndexes(model, []);
     }
 };

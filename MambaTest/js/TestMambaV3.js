@@ -2,7 +2,7 @@ var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
-    
+        
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
         var domIdentifier = new MbaDomIdentifier().init(dom.getElements());
@@ -356,8 +356,8 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><a class="person"></a><a class="person"></a><span id="end"></span></div>');
     });
     
-    Ca('teste que le rendu multiplie les éléments et est récursif', function(){
-        var template = new MbaDomFromString('<div class="list"><span id="begin"></span><div class="person"><a class="address"></a></div><span id="end"></span></div>');
+    Ca('teste que le rendu multiplie les éléments récursivement', function(){
+        var template = new MbaDomFromString('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
         var directive = {'r00t' : '.person',
                          'sub' : {'r00t' : '.address'}};
         var model = [{"sub" : [{}]}, {"sub" : [{}, {}]}];
@@ -366,8 +366,70 @@ var testMbaV3 = function() {
         manager.render(model);
         var renderedDom = manager.getRenderedDom();
     
-        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person"><a class="address"></a></div><div class="person"><a class="address"></a><a class="address"></a></div><span id="end"></span></div>');
-    });   
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a><a class="address"></a>end</div><span id="end"></span></div>');
+    });  
+    
+     Ca('teste que le rendu multiplie les éléments avec modèle parent', function(){
+        var template = new MbaDomFromString('<div class="list"><span id="begin"></span><a class="person"></a><span id="end"></span></div>');
+        var directive = {'children': {'r00t' : '.person'}};
+        var model = {'children' : [{}, {}]};
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><a class="person"></a><a class="person"></a><span id="end"></span></div>');
+    });
+    
+    Ca('teste la multiplication récursive avec deux listes au même niveau', function(){
+        var template = new MbaDomFromString('<div class="root">list1<div class="list1"></div>end_list1<span></span>list2<div class="list2">begin<a class="subList"></a>end</div></div>');
+        var directive = {'list1' : {'r00t' : '.list1'},
+                         'list2' : {'r00t' : '.list2',
+                                    'sublist' : {'r00t' : '.subList'}}};
+        var model = {'list1' : [{}, {}],
+                     'list2' : [{'sublist' : [{}, {}]}, 
+                                {'sublist' : [{}]}]};
+    
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="root">list1<div class="list1"></div><div class="list1"></div>end_list1<span></span>list2<div class="list2">begin<a class="subList"></a><a class="subList"></a>end</div><div class="list2">begin<a class="subList"></a>end</div></div>');
+    });  
+    
+    Ca('teste l\'ajout d\'éléments multipliés', function(){
+        var template = new MbaDomFromString('<div class="list"><div class="person"></div></div>');
+        var directive = {'r00t' : '.person'};
+        var model = [{}, {}];
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><div class="person"></div><div class="person"></div></div>');
+        
+        model.push({});
+        manager.render(model);
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><div class="person"></div><div class="person"></div><div class="person"></div></div>');
+    }); 
+    
+    Ca('teste l\'ajout d\'éléments multipliés récursivement', function(){
+        var template = new MbaDomFromString('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
+        var directive = {'r00t' : '.person',
+                         'sub' : {'r00t' : '.address'}};
+        var model = [{"sub" : []}, {"sub" : [{}]}];
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">beginend</div><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
+        
+        model[0].sub.push({});
+        model[1].sub.push({});
+        manager.render(model);
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a><a class="address"></a>end</div><span id="end"></span></div>');
+    });
     //TODO : id des accessorchain sans model et le calculer une fois pour toute
     
        /*new MbaDomMultiplier().init(['persons', 'garage']),

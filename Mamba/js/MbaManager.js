@@ -66,8 +66,9 @@ MbaManager.prototype.getDomMultipliersSelectors = function(){
 };
 
 MbaManager.prototype.render = function(model){
-    this._template.initRenderedDom();
-    this._domMultiplierTree.createDomForModel(model);
+    if(!this._template.isReadyToRender())
+        this._template.initRenderedDom();
+    this._domMultiplierTree.updateDomForModel(model);
 };
 
 MbaManager.prototype.getDomMultipliers = function(){

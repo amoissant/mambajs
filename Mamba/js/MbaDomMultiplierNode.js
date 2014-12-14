@@ -5,6 +5,7 @@ function MbaDomMultiplierNode(){
     this._domElementsToCloneMap;
     this._modelRoute;
     this._modelArray;
+    this._previousModelSize;
 }
 MbaDomMultiplierNode.prototype = new MbaDomMultiplierBaseNode();
 MbaDomMultiplierNode.prototype.constructor = MbaDomMultiplierNode;
@@ -14,6 +15,7 @@ MbaDomMultiplierNode.prototype.init = function(domMultiplier){
     MbaDomMultiplierBaseNode.prototype.init.call(this);
     this._domMultiplier = domMultiplier;
     this._modelRoute = new MbaRoute2().initFromAccessor(this._domMultiplier.getModelAccessor());
+    this._previousModelSize = {};
     return this;
 };
 
@@ -69,10 +71,10 @@ MbaDomMultiplierNode.prototype.askChildrenToLinkTemplate = function(){
     }
 };
 
-MbaDomMultiplierNode.prototype.createDomForModelWithIndexes = function(parentModel, parentIndexes){
+MbaDomMultiplierNode.prototype.updateDomForModelWithIndexes = function(parentModel, parentIndexes){
     checkType(parentIndexes, Array);
     this.setModelArrayAndRoute(parentModel, parentIndexes);
-    this.createDomForEachModel();
+    this.createUpdateDeleteDomForEachModel();
 };
 
 MbaDomMultiplierNode.prototype.setModelArrayAndRoute = function(parentModel, parentIndexes){
@@ -80,26 +82,57 @@ MbaDomMultiplierNode.prototype.setModelArrayAndRoute = function(parentModel, par
     this._modelArray = this._relativeAccessor.getSubModelAndUpdateRoute(parentModel, this._modelRoute);
 };
 
-MbaDomMultiplierNode.prototype.createDomForEachModel = function(){
-    for(var i=0 ; i<this._modelArray.length ; i++){
-        this._modelRoute.setlastIndex(i);
-        this.createDomForAllElementsToClone();
-        this.askChildrenCreateDomForModel(this._modelArray[i]);
-    }
+MbaDomMultiplierNode.prototype.createUpdateDeleteDomForEachModel = function(){
+    this.updateDomForExistingModels();
+    this.createDomForAddedModels();
+    this.updatePreviousModelSize();
 };    
 
+MbaDomMultiplierNode.prototype.updateDomForExistingModels = function(){
+    var previousModelSize = this.getPreviousModelSize();
+    for(var i=0 ; i<previousModelSize ; i++){
+        this._modelRoute.setLastIndex(i);
+        this.askChildrenUpdateDomForModel(this._modelArray[i]);
+    }    
+};
+
+MbaDomMultiplierNode.prototype.createDomForAddedModels = function(){
+    var previousModelSize = this.getPreviousModelSize();
+    for(var i=previousModelSize ; i<this._modelArray.length ; i++){
+        this._modelRoute.setLastIndex(i);
+        this.createDomForAllElementsToClone();
+        this.askChildrenUpdateDomForModel(this._modelArray[i]);
+    }
+};
+
+MbaDomMultiplierNode.prototype.deleteDomForRemovedModels = function(){
+    
+};
+
+MbaDomMultiplierNode.prototype.getPreviousModelSize = function(){
+    this._modelRoute.setLastIndexToUndefined();//TODO optimiser en faisant un variable dédiée ?
+    if(this._previousModelSize[this._modelRoute] == null)
+        this._previousModelSize[this._modelRoute] = 0;
+    return this._previousModelSize[this._modelRoute];
+};
+    
 MbaDomMultiplierNode.prototype.createDomForAllElementsToClone = function(){
     for(var domId in this._domElementsToCloneMap){
         this._template.createDomForRoute(domId, this._modelRoute);
     }
 };
 
-MbaDomMultiplierNode.prototype.askChildrenCreateDomForModel = function(model){
+MbaDomMultiplierNode.prototype.askChildrenUpdateDomForModel = function(model){
     var indexes = this._modelRoute.getIndexes();
     for(var i=0 ; i<this._childNodes.length ; i++){
         var currentChild = this._childNodes[i];
-        currentChild.createDomForModelWithIndexes(model, indexes);
+        currentChild.updateDomForModelWithIndexes(model, indexes);
     }
+};
+
+MbaDomMultiplierNode.prototype.updatePreviousModelSize = function(){
+    this._modelRoute.setLastIndexToUndefined();
+    this._previousModelSize[this._modelRoute] = this._modelArray.length;
 };
 
 MbaDomMultiplierNode.prototype.getDomMultiplier = function(){
