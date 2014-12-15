@@ -29,9 +29,8 @@ MbaTemplateNode.prototype.createDomElementForRoute = function(modelRoute){
     if(!this.hasRenderedDomForRoute(modelRoute))
         this.initRenderedDomForRoute(modelRoute);
     var newDomElement = this._domElement.cloneNode(false);
-    var newDomElementId = this._domElement._mbaId;
-    this.setDomElementForRoute(newDomElement, modelRoute); 
-    this.insertDomElementIntoParent(newDomElement, newDomElementId, modelRoute);
+    this.addIntoRenderedDomMap(newDomElement, modelRoute); 
+    this.insertDomElementIntoParent(newDomElement, this.getTemplateDomId(), modelRoute);
 }; 
 
 MbaTemplateNode.prototype.hasRenderedDomForRoute = function(modelRoute){
@@ -44,7 +43,7 @@ MbaTemplateNode.prototype.initRenderedDomForRoute = function(modelRoute){
     this._renderedDomMap[modelRoute.getAccessorId()] = {};
 };
 
-MbaTemplateNode.prototype.setDomElementForRoute = function(domElement, modelRoute){
+MbaTemplateNode.prototype.addIntoRenderedDomMap = function(domElement, modelRoute){
     checkType(domElement, 'domElement');
     checkType(modelRoute, MbaRoute2);
     this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndexesId()] = domElement;
@@ -87,7 +86,7 @@ MbaTemplateNode.prototype.computeChildInsertionIndex = function(childDomId, pare
     for(var i=0 ; i<this._childNodes.length ; i++){
         var childTemplateNode = this._childNodes[i];
         insertionIndex += childTemplateNode.getDomSizeForParentRoute(parentRoute);
-        if(childTemplateNode.getId() == childDomId)
+        if(childTemplateNode.getTemplateDomId() == childDomId)
             return insertionIndex;
     }
     throw new Error('childDomId not found in parent\'s children.');
@@ -116,6 +115,44 @@ MbaTemplateNode.prototype.getDomElementForRoute = function(modelRoute){
     return this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndexesId()];
 };
 
-MbaTemplateNode.prototype.getId = function(){
+MbaTemplateNode.prototype.deleteDomForRoute = function(modelRoute){
+    this.askChildrenDeleteDomForRoute(modelRoute);
+    this.deleteDomElementForRoute(modelRoute);
+};
+
+MbaTemplateNode.prototype.deleteDomElementForRoute = function(modelRoute){
+    checkType(modelRoute, MbaRoute2);
+    var domElement = this.getDomElementForRoute(modelRoute);
+    this.removeDomElementIntoParent(domElement, modelRoute);
+    this.removeFromRenderedDomMap(modelRoute);
+}; 
+
+MbaTemplateNode.prototype.removeFromRenderedDomMap = function(modelRoute){
+    delete this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndexesId()];
+};
+
+MbaTemplateNode.prototype.removeDomElementIntoParent = function(domElement, modelRoute){
+    checkType(domElement, 'domElement');
+    checkType(modelRoute, MbaRoute2);
+    var parentRoute = this._parent.computeParentRoute(modelRoute);//TODO optimiser car c'est appelé plusieurs fois
+    this._parent.removeChildDomElement(domElement, this.getTemplateDomId(), modelRoute);
+    this.decreaseDomSizeForParentRoute(parentRoute);
+};
+
+MbaTemplateNode.prototype.removeChildDomElement = function(childDomElement, childDomId, childRoute){
+    checkType(childDomElement, 'domElement');
+    checkType(childDomId, 'number');
+    checkType(childRoute, MbaRoute2);
+    var parentRoute = this.computeParentRoute(childRoute);
+    var parentDomElement = this.getDomElementForRoute(parentRoute);
+    parentDomElement.removeChild(childDomElement);
+};
+
+MbaTemplateNode.prototype.decreaseDomSizeForParentRoute = function(parentRoute){
+    checkType(parentRoute, MbaRoute2);
+    this._domSizeForParentRoute[parentRoute]--;
+};
+
+MbaTemplateNode.prototype.getTemplateDomId = function(){
     return this._domElement._mbaId;
 };

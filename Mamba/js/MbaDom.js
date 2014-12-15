@@ -225,6 +225,10 @@ MbaDom.prototype.addElement = function (domElement){
     this._dom.push(domElement);
 };
 
+MbaDom.prototype.removeElement = function(domElement){
+    checkType(dom, 'domElement');
+    this._dom.splice(this._dom.indexOf(domElement), 1);
+};
 
 MbaDom.prototype.remove = function(dom){
     checkType(dom, MbaDom);

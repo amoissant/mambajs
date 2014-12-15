@@ -68,7 +68,7 @@ MbaTemplate2.prototype.registerDomElementsRecursively = function(templateNodes){
     checkType(templateNodes, 'array', MbaTemplateNode);
     for(var i=0 ; i<templateNodes.length ; i++){
         var currentNode = templateNodes[i];
-        this._templateNodeMap[currentNode.getId()] = currentNode;
+        this._templateNodeMap[currentNode.getTemplateDomId()] = currentNode;
         this.registerDomElementsRecursively(currentNode.getChildNodes());
     }
 }
@@ -85,6 +85,13 @@ MbaTemplate2.prototype.createDomForRoute = function(domId, modelRoute){
     checkType(modelRoute, MbaRoute2);
     var templateNode = this._templateNodeMap[domId];
     templateNode.createDomForRoute(modelRoute);
+};
+
+MbaTemplate2.prototype.deleteDomForRoute = function(domId, modelRoute){
+    checkType(domId, 'string');
+    checkType(modelRoute, MbaRoute2);
+    var templateNode = this._templateNodeMap[domId];
+    templateNode.deleteDomForRoute(modelRoute);
 };
 
 MbaTemplate2.prototype.getRenderedDom = function(){

@@ -85,12 +85,13 @@ MbaDomMultiplierNode.prototype.setModelArrayAndRoute = function(parentModel, par
 MbaDomMultiplierNode.prototype.createUpdateDeleteDomForEachModel = function(){
     this.updateDomForExistingModels();
     this.createDomForAddedModels();
+    this.deleteDomForRemovedModels();
     this.updatePreviousModelSize();
 };    
 
 MbaDomMultiplierNode.prototype.updateDomForExistingModels = function(){
-    var previousModelSize = this.getPreviousModelSize();
-    for(var i=0 ; i<previousModelSize ; i++){
+    var updateEndIndex = Math.min(this._modelArray.length, this.getPreviousModelSize());
+    for(var i=0 ; i<updateEndIndex ; i++){
         this._modelRoute.setLastIndex(i);
         this.askChildrenUpdateDomForModel(this._modelArray[i]);
     }    
@@ -106,7 +107,13 @@ MbaDomMultiplierNode.prototype.createDomForAddedModels = function(){
 };
 
 MbaDomMultiplierNode.prototype.deleteDomForRemovedModels = function(){
-    
+    var deleteStartIndex = this._modelArray.length;
+    var deleteEndIndex = this.getPreviousModelSize();
+    for(var i=deleteStartIndex ; i<deleteEndIndex ; i++){
+        this._modelRoute.setLastIndex(i);
+        this.deleteDomForAllElementsToClone();
+        this.askChildrenUpdateDomForModel(this._modelArray[i]);
+    }
 };
 
 MbaDomMultiplierNode.prototype.getPreviousModelSize = function(){
@@ -129,10 +136,26 @@ MbaDomMultiplierNode.prototype.askChildrenUpdateDomForModel = function(model){
         currentChild.updateDomForModelWithIndexes(model, indexes);
     }
 };
+/*
+
+MbaDomMultiplierNode.prototype.askChildrenDeleteDomForModel = function(model){
+    var indexes = this._modelRoute.getIndexes();
+    for(var i=0 ; i<this._childNodes.length ; i++){
+        var currentChild = this._childNodes[i];
+        currentChild.deleteDomForModelWithIndexes(model, indexes);
+    }
+};
+*/
 
 MbaDomMultiplierNode.prototype.updatePreviousModelSize = function(){
     this._modelRoute.setLastIndexToUndefined();
     this._previousModelSize[this._modelRoute] = this._modelArray.length;
+};
+
+MbaDomMultiplierNode.prototype.deleteDomForAllElementsToClone = function(){
+    for(var domId in this._domElementsToCloneMap){
+        this._template.deleteDomForRoute(domId, this._modelRoute);
+    }
 };
 
 MbaDomMultiplierNode.prototype.getDomMultiplier = function(){

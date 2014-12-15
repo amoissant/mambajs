@@ -82,7 +82,7 @@ MbaAccessorChain2.prototype.getSubModelAndUpdateRoute = function (parentModel, m
 };
 
 MbaAccessorChain2.prototype.toString = function(){
-    return this._accessors.join('.');
+    return this._accessors.join('.');//TODO sortir une valeur spéciale quand vide
 };
 
 MbaAccessorChain2.prototype.getSize = function(){

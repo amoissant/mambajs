@@ -33,6 +33,15 @@ MbaTemplateBaseNode.prototype.askChildrenCreateDomForRoute = function(modelRoute
     }
 };
 
+MbaTemplateBaseNode.prototype.askChildrenDeleteDomForRoute = function(modelRoute){
+    checkType(modelRoute, MbaRoute2);
+    for(var i=0 ; i<this._childNodes.length ; i++){
+        var currentNode = this._childNodes[i];
+        if(!(currentNode instanceof MbaTemplateNodeMultipliable))
+            currentNode.deleteDomForRoute(modelRoute);
+    }
+};
+
 MbaTemplateBaseNode.prototype.getChildNodes = function(){
     return this._childNodes;
 }

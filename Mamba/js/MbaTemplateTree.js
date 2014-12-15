@@ -25,6 +25,13 @@ MbaTemplateTree.prototype.insertChildDomElement = function(domElement, domId, mo
     this._renderedDom.addElement(domElement);
 };
 
+MbaTemplateTree.prototype.removeChildDomElement = function(domElement, domId, modelRoute){
+    checkType(domElement, 'domElement');
+    checkType(domId, 'number');
+    checkType(modelRoute, MbaRoute2);
+    this._renderedDom.removeElement(domElement);
+};
+
 MbaTemplateTree.prototype.computeParentRoute = function(childRoute){
     checkType(childRoute, MbaRoute2);
     return childRoute;//TODO childRoute ou route vide ?
