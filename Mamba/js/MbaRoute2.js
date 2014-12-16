@@ -79,5 +79,10 @@ MbaRoute2.prototype.isEmpty = function(){
 MbaRoute2.prototype.toString = function(){
     return this._accessorChain.toStringWithIndexes(this._routeIndexes);
 };
+
+MbaRoute2.prototype.isParentOfRouteId = function(routeId){
+    var id = this.toString();
+    return routeId.indexOf(id) != -1;
+};
     
     

@@ -2,8 +2,9 @@ var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
- 
-    /*Ca('teste la suppression d\'éléments multipliés modèle tableau', function(){
+
+    
+    Ca('teste la suppression d\'éléments multipliés modèle tableau', function(){
         var template = new MbaDomFromString('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
         var directive = {'r00t' : '.person',
                          'sub' : {'r00t' : '.address'}};
@@ -17,10 +18,10 @@ var testMbaV3 = function() {
         model.pop();
         manager.render(model);
         
-        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">beginend</div><span id="end"></span></div>');
-    });*/
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
+    });
     
-    //return; 
+   //return; 
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
@@ -468,7 +469,25 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">beginend</div><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
     });
     
-   
+     Ca('teste la suppression d\'éléments multipliés modèle tableau puis l\'ajout', function(){
+        var template = new MbaDomFromString('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
+        var directive = {'r00t' : '.person',
+                         'sub' : {'r00t' : '.address'}};
+        var model = [{"sub" : [{}]}, {"sub" : [{}, {}]}];
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+     
+        model.pop();
+        manager.render(model);
+        model.push({"sub" : [{}]});
+
+        manager.render(model);
+        
+        console.log(renderedDom);
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
+    });  
+    
     //TODO : id des accessorchain sans model et le calculer une fois pour toute
     
        /*new MbaDomMultiplier().init(['persons', 'garage']),

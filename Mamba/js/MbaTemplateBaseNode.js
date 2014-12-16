@@ -32,7 +32,7 @@ MbaTemplateBaseNode.prototype.askChildrenCreateDomForRoute = function(modelRoute
             currentNode.createDomForRoute(modelRoute);
     }
 };
-
+/*
 MbaTemplateBaseNode.prototype.askChildrenDeleteDomForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
     for(var i=0 ; i<this._childNodes.length ; i++){
@@ -40,7 +40,7 @@ MbaTemplateBaseNode.prototype.askChildrenDeleteDomForRoute = function(modelRoute
         if(!(currentNode instanceof MbaTemplateNodeMultipliable))
             currentNode.deleteDomForRoute(modelRoute);
     }
-};
+};*/
 
 MbaTemplateBaseNode.prototype.getChildNodes = function(){
     return this._childNodes;

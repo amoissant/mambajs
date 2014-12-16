@@ -2,6 +2,7 @@ function MbaTemplateNode(){
     this._domElement;
     this._parent;
     this._renderedDomMap;
+    this._routes;
     this._domSizeForParentRoute;
 }
 MbaTemplateNode.prototype = new MbaTemplateBaseNode();
@@ -14,6 +15,7 @@ MbaTemplateNode.prototype.init = function(parent, domElement){
     this._parent = parent;
     this._domElement = domElement;
     this._renderedDomMap = {};
+    this._routes = {};
     this._domSizeForParentRoute = {};
     return this;
 };
@@ -26,8 +28,6 @@ MbaTemplateNode.prototype.createDomForRoute = function(modelRoute){
 
 MbaTemplateNode.prototype.createDomElementForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
-    if(!this.hasRenderedDomForRoute(modelRoute))
-        this.initRenderedDomForRoute(modelRoute);
     var newDomElement = this._domElement.cloneNode(false);
     this.addIntoRenderedDomMap(newDomElement, modelRoute); 
     this.insertDomElementIntoParent(newDomElement, this.getTemplateDomId(), modelRoute);
@@ -35,18 +35,16 @@ MbaTemplateNode.prototype.createDomElementForRoute = function(modelRoute){
 
 MbaTemplateNode.prototype.hasRenderedDomForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
-    return this._renderedDomMap[modelRoute.getAccessorId()] != null;
-};
-
-MbaTemplateNode.prototype.initRenderedDomForRoute = function(modelRoute){
-    checkType(modelRoute, MbaRoute2);
-    this._renderedDomMap[modelRoute.getAccessorId()] = {};
+    return this._renderedDomMap[modelRoute] != null;
 };
 
 MbaTemplateNode.prototype.addIntoRenderedDomMap = function(domElement, modelRoute){
     checkType(domElement, 'domElement');
     checkType(modelRoute, MbaRoute2);
-    this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndexesId()] = domElement;
+    this._renderedDomMap[modelRoute] = domElement;
+    this._routes[modelRoute] = modelRoute.clone();//TODO couteux, optimiser l'implémentation de la classe route
+    //si on veut juste pouvoir enlever la fin pour computeParentRoute alors une chaine de caractère devrait suffire :)
+    //-> "model[0].sub[1]" à vérifier au bench
 };
 
 MbaTemplateNode.prototype.insertDomElementIntoParent = function(domElement, domId, modelRoute){
@@ -112,13 +110,36 @@ MbaTemplateNode.prototype.initIfNeededDomSizeForParentRoute = function(parentRou
 
 MbaTemplateNode.prototype.getDomElementForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
-    return this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndexesId()];
+    var domElement = this._renderedDomMap[modelRoute];
+    if(domElement == null)
+        throw new Error('dom Element is null.')
+    return domElement;
 };
 
 MbaTemplateNode.prototype.deleteDomForRoute = function(modelRoute){
+    checkType(modelRoute, MbaRoute2);
     this.askChildrenDeleteDomForRoute(modelRoute);
     this.deleteDomElementForRoute(modelRoute);
 };
+
+MbaTemplateNode.prototype.askChildrenDeleteDomForRoute = function(modelRoute){
+    checkType(modelRoute, MbaRoute2);
+    for(var i=0 ; i<this._childNodes.length ; i++){
+        var currentNode = this._childNodes[i];
+        if((currentNode instanceof MbaTemplateNodeMultipliable))
+            currentNode.deleteDomForParentRoute(modelRoute);
+        else
+            currentNode.deleteDomForRoute(modelRoute);
+    }
+};
+
+MbaTemplateNode.prototype.deleteDomForParentRoute = function(parentRoute){
+    checkType(parentRoute, MbaRoute2);
+    for(var childRouteId in this._renderedDomMap){
+        if(parentRoute.isParentOfRouteId(childRouteId))
+            this.deleteDomForRoute(this._routes[childRouteId]);
+    }
+}; 
 
 MbaTemplateNode.prototype.deleteDomElementForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
@@ -128,7 +149,8 @@ MbaTemplateNode.prototype.deleteDomElementForRoute = function(modelRoute){
 }; 
 
 MbaTemplateNode.prototype.removeFromRenderedDomMap = function(modelRoute){
-    delete this._renderedDomMap[modelRoute.getAccessorId()][modelRoute.getIndexesId()];
+    delete this._renderedDomMap[modelRoute];
+    delete this._routes[modelRoute];
 };
 
 MbaTemplateNode.prototype.removeDomElementIntoParent = function(domElement, modelRoute){
