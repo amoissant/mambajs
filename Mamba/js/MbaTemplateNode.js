@@ -157,13 +157,12 @@ MbaTemplateNode.prototype.removeDomElementIntoParent = function(domElement, mode
     checkType(domElement, 'domElement');
     checkType(modelRoute, MbaRoute2);
     var parentRoute = this._parent.computeParentRoute(modelRoute);//TODO optimiser car c'est appelé plusieurs fois
-    this._parent.removeChildDomElement(domElement, this.getTemplateDomId(), modelRoute);
+    this._parent.removeChildDomElement(domElement, modelRoute);
     this.decreaseDomSizeForParentRoute(parentRoute);
 };
 
-MbaTemplateNode.prototype.removeChildDomElement = function(childDomElement, childDomId, childRoute){
+MbaTemplateNode.prototype.removeChildDomElement = function(childDomElement, childRoute){
     checkType(childDomElement, 'domElement');
-    checkType(childDomId, 'number');
     checkType(childRoute, MbaRoute2);
     var parentRoute = this.computeParentRoute(childRoute);
     var parentDomElement = this.getDomElementForRoute(parentRoute);

@@ -484,7 +484,6 @@ var testMbaV3 = function() {
 
         manager.render(model);
         
-        console.log(renderedDom);
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
     });  
     

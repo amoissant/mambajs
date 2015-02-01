@@ -82,6 +82,7 @@ MbaDomMultiplierNode.prototype.setModelArrayAndRoute = function(parentModel, par
     this._modelRoute.copyIndexes(parentIndexes);
     this._modelArray = this._relativeAccessor.getSubModelAndUpdateRoute(parentModel, this._modelRoute);
     this._modelArrayRoute = this._modelRoute.clone();
+    //TODO ici on se sert juste de modelArrayRoute comme clé pour previousModelSize, on peut optimiser en evitant le clone
 };
 
 MbaDomMultiplierNode.prototype.createUpdateDeleteDomForEachModel = function(){
@@ -138,7 +139,6 @@ MbaDomMultiplierNode.prototype.deleteDomForRemovedModels = function(){
     for(var i=deleteStartIndex ; i<deleteEndIndex ; i++){
         this._modelRoute.setLastIndex(i);
         this.deleteDomForAllElementsToClone();
-        this.setPreviousModelSizeToZero();
         this.askChildrenReinitPreviousModelSize(this._modelRoute);
     }
 };
