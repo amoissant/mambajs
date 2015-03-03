@@ -113,3 +113,32 @@ MbaAccessorChain2.prototype.toStringWithIndexes = function(indexes){
     }
     return stringRepresentation.substring(0, stringRepresentation.length-1);
 };
+
+MbaAccessorChain2.prototype.compare = function(other){
+    var sizeComparison = this.compareSize(other);
+    if(sizeComparison != 0)
+        return sizeComparison;
+    else
+        return this.compareId(other);
+};
+
+MbaAccessorChain2.prototype.compareSize = function(other){
+    var thisSize = this.getSize();
+    var otherSize = other.getSize();
+    if(thisSize < otherSize)
+        return -1;
+    if(thisSize > otherSize)
+        return 1;
+    return 0;
+};
+
+MbaAccessorChain2.prototype.compareId = function(other){
+    var thisId = this.getId();
+    var otherId = other.getId();
+    if(thisId < otherId)
+        return -1;
+    if(thisId > otherId)
+        return 1;
+    return 0;
+};
+

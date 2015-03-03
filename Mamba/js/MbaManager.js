@@ -23,26 +23,31 @@ MbaManager.prototype.parseDirective = function(directive){
     this._actionBindings = directiveParseur.getActionBindings();  
 };
 
-MbaManager.prototype.sortDomMultipliers = function(){
-    var compareDomMultipliersFunction = this.getDomMultipliersCompareFunction();
-    this._domMultipliers.sort(compareDomMultipliersFunction);
-};
-
-MbaManager.prototype.getDomMultipliersCompareFunction = function(){
-    return function(firstDomMultiplier, secondDomMultiplier){
-        return firstDomMultiplier.compare(secondDomMultiplier);
-    };
-};
-
 MbaManager.prototype.createDomMultiplierTree = function(){
     this.sortDomMultipliers();
     this._domMultiplierTree = new MbaDomMultiplierTree().init();
     this.constructDomMultiplierTree();
 };
 
+MbaManager.prototype.sortDomMultipliers = function(){
+    var compareDomMultipliersFunction = this.getAccessorChainCompareFunction('getModelAccessor');
+    this._domMultipliers.sort(compareDomMultipliersFunction);
+};
+
+MbaManager.prototype.sortPropertyBindings = function(){
+    var comparePropertyBindingsFunction = this.getAccessorChainCompareFunction('getPropertyAccessor');
+    this._propertyBindings.sort(comparePropertyBindingsFunction);
+};
+
+MbaManager.prototype.getAccessorChainCompareFunction = function(getterName){
+    return function(first, second){
+        return first[getterName]().compare(second[getterName]());
+    };
+};
+
 MbaManager.prototype.constructDomMultiplierTree = function(){
     for(var i=0 ; i<this._domMultipliers.length ; i++){
-        this._domMultiplierTree.addNodeForDomMultiplier(this._domMultipliers[i]);
+        this._domMultiplierTree.addNodeFromDomMultiplier(this._domMultipliers[i]);
     }
     this._domMultiplierTree.initAllRelativeAccessors();
 };

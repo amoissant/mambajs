@@ -1,4 +1,4 @@
-function MbaDomMultiplierTree(){    
+function MbaDomMultiplierTree(){   
 }
 
 MbaDomMultiplierTree.prototype = new MbaDomMultiplierBaseNode();

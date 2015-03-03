@@ -24,3 +24,4 @@ MbaPropertyBinding.prototype.getSelector = function(){
 MbaPropertyBinding.prototype.getPropertyAccessor = function(){
     return this._propertyAccessor;
 };
+

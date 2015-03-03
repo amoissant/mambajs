@@ -7,19 +7,13 @@ MbaDomMultiplierBaseNode.prototype.init = function(){
     return this;
 };
 
-MbaDomMultiplierBaseNode.prototype.addNodeForDomMultiplier = function(domMultiplier){
+MbaDomMultiplierBaseNode.prototype.addNodeFromDomMultiplier = function(domMultiplier){
     checkType(domMultiplier, MbaDomMultiplier);
     var candidateChild = this.findChildToBeParentOfDomMultiplier(domMultiplier);
     if(candidateChild != null)
-        candidateChild.addNodeForDomMultiplier(domMultiplier);
+        candidateChild.addNodeFromDomMultiplier(domMultiplier);
     else
         this.createNodeForDomMultiplier(domMultiplier);      
-};
-
-MbaDomMultiplierBaseNode.prototype.createNodeForDomMultiplier = function(domMultiplier){
-    checkType(domMultiplier, MbaDomMultiplier);
-    var domMultiplierNode = new MbaDomMultiplierNode().init(domMultiplier);
-    this._childNodes.push(domMultiplierNode);
 };
 
 MbaDomMultiplierBaseNode.prototype.findChildToBeParentOfDomMultiplier = function(domMultiplier){
@@ -30,6 +24,12 @@ MbaDomMultiplierBaseNode.prototype.findChildToBeParentOfDomMultiplier = function
             return currentChildNode;
     }
     return null;
+};
+
+MbaDomMultiplierBaseNode.prototype.createNodeForDomMultiplier = function(domMultiplier){
+    checkType(domMultiplier, MbaDomMultiplier);
+    var domMultiplierNode = new MbaDomMultiplierNode().init(domMultiplier);
+    this._childNodes.push(domMultiplierNode);
 };
 
 MbaDomMultiplierBaseNode.prototype.getChildNodes = function(){

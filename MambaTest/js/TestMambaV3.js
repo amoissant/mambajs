@@ -4,22 +4,7 @@ var testMbaV3 = function() {
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
 
     
-    Ca('teste la suppression d\'éléments multipliés modèle tableau', function(){
-        var template = new MbaDomFromString('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
-        var directive = {'r00t' : '.person',
-                         'sub' : {'r00t' : '.address'}};
-        var model = [{"sub" : [{}]}, {"sub" : [{}, {}]}];
-        var manager = new MbaManager().init(template, directive);
-        manager.render(model);
-        var renderedDom = manager.getRenderedDom();
-        
-        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a><a class="address"></a>end</div><span id="end"></span></div>');
-     
-        model.pop();
-        manager.render(model);
-        
-        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
-    });
+    
     
    //return; 
     
@@ -65,8 +50,15 @@ var testMbaV3 = function() {
         OnAttend(domMultipliers.length).DEtreEgalA(0);
     });
     
-    function modelAccessorString(domMultiplier){
-        return domMultiplier.getModelAccessor().toString();
+    function modelAccessorString(object){
+        switch(object.constructor){
+            case MbaDomMultiplier:
+                return object.getModelAccessor().toString();
+            case MbaPropertyBinding:
+                return object.getPropertyAccessor().toString();
+            default:
+                throw 'not implemented';
+        }
     }
     
     Ca('teste que l\'on récupère la liste des dom multipliers', function(){
@@ -486,6 +478,57 @@ var testMbaV3 = function() {
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
     });  
+ 
+    Ca('teste la suppression d\'éléments multipliés modèle tableau', function(){
+        var template = new MbaDomFromString('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
+        var directive = {'r00t' : '.person',
+                         'sub' : {'r00t' : '.address'}};
+        var model = [{sub : [{}]}, {sub : [{}, {}]}];
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a><a class="address"></a>end</div><span id="end"></span></div>');
+     
+        model.pop();
+        manager.render(model);
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
+    });
+    
+    function createMbaPropertyBinding(memberChain){
+        checkType(memberChain, 'array', 'string');
+        return new MbaPropertyBinding().init('', memberChain, new MbaTransf(), []);
+    }
+    
+    Ca('test le tri des property binding', function(){
+        var propertyBindings = [
+            createMbaPropertyBinding(['persons2']),
+            createMbaPropertyBinding(['persons2', 'vehicles2']),
+            createMbaPropertyBinding(['persons']),
+            createMbaPropertyBinding(['persons', 'vehicles'])
+        ];
+        var manager = new MbaManager();
+        manager._propertyBindings = propertyBindings;
+        manager.sortPropertyBindings();
+        
+        var sortedPropertyBindings = manager.getPropertyBindings();
+        OnAttend(modelAccessorString(sortedPropertyBindings[0])).DEtreEgalA('model.persons');
+        OnAttend(modelAccessorString(sortedPropertyBindings[1])).DEtreEgalA('model.persons2');
+        OnAttend(modelAccessorString(sortedPropertyBindings[2])).DEtreEgalA('model.persons.vehicles');
+        OnAttend(modelAccessorString(sortedPropertyBindings[3])).DEtreEgalA('model.persons2.vehicles2');
+    });
+    /*Ca('teste le rendu avec une directive minimale sans root', function(){
+        var template = new MbaDomFromString('<div id="root"><div id="toto">toto</div></div><div id="stuff"></div>');
+        var directive = {'name': '#toto'};
+        var model = {name: 'tutu'};
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div id="toto">tutu</div></div><div id="stuff"></div>');
+    });*/
     
     //TODO : id des accessorchain sans model et le calculer une fois pour toute
     
