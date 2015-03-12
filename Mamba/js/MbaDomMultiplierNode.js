@@ -11,6 +11,11 @@ function MbaDomMultiplierNode(){
 MbaDomMultiplierNode.prototype = new MbaDomMultiplierBaseNode();
 MbaDomMultiplierNode.prototype.constructor = MbaDomMultiplierNode;
 
+//TODO à garder une fois code factorisé avec MbaAccessorNode
+MbaDomMultiplierNode.prototype.onLinkToTemplate = function(){
+    this.constructDomElementsToCloneMap();
+};
+
 MbaDomMultiplierNode.prototype.init = function(domMultiplier){
     checkType(domMultiplier, MbaDomMultiplier);
     MbaDomMultiplierBaseNode.prototype.init.call(this);

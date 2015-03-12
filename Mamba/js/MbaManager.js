@@ -3,6 +3,7 @@ function MbaManager(){
     this._propertyBindings;
     this._actionBindings;
     this._domMultiplierTree;
+    this._propertyBindingTree;
     this._template;
 }
 
@@ -34,8 +35,9 @@ MbaManager.prototype.sortDomMultipliers = function(){
     this._domMultipliers.sort(compareDomMultipliersFunction);
 };
 
+//TODO factoriser les fonctions de sort
 MbaManager.prototype.sortPropertyBindings = function(){
-    var comparePropertyBindingsFunction = this.getAccessorChainCompareFunction('getPropertyAccessor');
+    var comparePropertyBindingsFunction = this.getAccessorChainCompareFunction('getAccessorChain');
     this._propertyBindings.sort(comparePropertyBindingsFunction);
 };
 
@@ -70,6 +72,20 @@ MbaManager.prototype.getDomMultipliersSelectors = function(){
     return domMultipliersSelectors;
 };
 
+//TODO factoriser code avec domMultiplierTree
+MbaManager.prototype.createPropertyBindingTree = function(){
+    this.sortPropertyBindings();
+    this._propertyBindingTree = new MbaPropertyBindingTree().init();
+    this.constructPropertyBindingTree();
+};
+
+MbaManager.prototype.constructPropertyBindingTree = function(){
+    for(var i=0 ; i<this._propertyBindings.length ; i++){
+        this._propertyBindingTree.addNodeFrom(this._propertyBindings[i]);
+    }
+    this._propertyBindingTree.initAllRelativeAccessors();
+};
+
 MbaManager.prototype.render = function(model){
     if(!this._template.isReadyToRender())
         this._template.initRenderedDom();
@@ -90,6 +106,10 @@ MbaManager.prototype.getActionBindings = function(){
 
 MbaManager.prototype.getDomMultiplierTree = function(){
     return this._domMultiplierTree;
+};
+
+MbaManager.prototype.getPropertyBindingTree = function(){
+    return this._propertyBindingTree;
 };
 
 MbaManager.prototype.getRenderedDom = function(){
