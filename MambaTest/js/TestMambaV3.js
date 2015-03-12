@@ -53,11 +53,11 @@ var testMbaV3 = function() {
     function accessorString(object){
         switch(object.constructor){
             case MbaDomMultiplier:
-                return object.getModelAccessor().toString();
+                return object.getAccessorChain().toString();
             case MbaPropertyBinding:
                 return object.getAccessorChain().toString();
             case MbaDomMultiplierNode:
-                return object.getDomMultiplier().getModelAccessor().toString();
+                return object.getDomMultiplier().getAccessorChain().toString();
             case MbaPropertyBindingNode:
                 return object.getPropertyBinding().getAccessorChain().toString();
             default:
@@ -173,7 +173,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._domMultipliers = domMultipliers;
-        manager.sortDomMultipliers();
+        manager.createDomMultiplierTree();
         
         var sortedDomMultipliers = manager.getDomMultipliers();
         OnAttend(accessorString(sortedDomMultipliers[0])).DEtreEgalA('model.persons');
@@ -514,7 +514,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
-        manager.sortPropertyBindings();
+        manager.createPropertyBindingTree();
         
         var sortedPropertyBindings = manager.getPropertyBindings();
         OnAttend(accessorString(sortedPropertyBindings[0])).DEtreEgalA('model.persons');

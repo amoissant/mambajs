@@ -13,8 +13,9 @@ MbaPropertyBindingNode.prototype.init = function(propertyBinding){
     return this;
 };
 
-MbaAccessorBaseNode.prototype.instanciateNewNode = function(objectWithAccessor){
-    return new MbaPropertyBindingNode().init(objectWithAccessor);
+MbaPropertyBindingNode.prototype.instanciateNewNode = function(propertyBinding){
+    checkType(propertyBinding, MbaPropertyBinding);
+    return new MbaPropertyBindingNode().init(propertyBinding);
 };
 
 MbaPropertyBindingNode.prototype.getPropertyBinding = function(){

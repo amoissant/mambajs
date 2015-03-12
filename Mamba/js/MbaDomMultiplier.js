@@ -11,19 +11,10 @@ MbaDomMultiplier.prototype.init = function(memberChain, selector){
     return this;
 };
 
-MbaDomMultiplier.prototype.modelAccessorHasSameRoot = function(other){
-    checkType(other, MbaDomMultiplier);
-    return this.getModelAccessor().hasSameRoot(other.getModelAccessor());
-};
-
 MbaDomMultiplier.prototype.getSelector = function(){
     return this._selector;
 };
 
-MbaDomMultiplier.prototype.getModelAccessor = function(){
+MbaDomMultiplier.prototype.getAccessorChain = function(){
     return this._modelAccessor;
-};
-
-MbaDomMultiplier.prototype.getModelAccessorSize = function(){
-    return this._modelAccessor.getSize();
 };

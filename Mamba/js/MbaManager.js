@@ -25,33 +25,26 @@ MbaManager.prototype.parseDirective = function(directive){
 };
 
 MbaManager.prototype.createDomMultiplierTree = function(){
-    this.sortDomMultipliers();
     this._domMultiplierTree = new MbaDomMultiplierTree().init();
-    this.constructDomMultiplierTree();
+    this.constructAccessorTree(this._domMultipliers, this._domMultiplierTree);
 };
 
-MbaManager.prototype.sortDomMultipliers = function(){
-    var compareDomMultipliersFunction = this.getAccessorChainCompareFunction('getModelAccessor');
-    this._domMultipliers.sort(compareDomMultipliersFunction);
+MbaManager.prototype.constructAccessorTree = function(objectWithAccessorArray, tree){
+    objectWithAccessorArray.sort(this.getAccessorChainCompareFunction());
+    for(var i=0 ; i<objectWithAccessorArray.length ; i++){
+        tree.addNodeFrom(objectWithAccessorArray[i]);
+    }
+    tree.initAllRelativeAccessors();
 };
 
-//TODO factoriser les fonctions de sort
-MbaManager.prototype.sortPropertyBindings = function(){
-    var comparePropertyBindingsFunction = this.getAccessorChainCompareFunction('getAccessorChain');
-    this._propertyBindings.sort(comparePropertyBindingsFunction);
-};
-
-MbaManager.prototype.getAccessorChainCompareFunction = function(getterName){
+MbaManager.prototype.getAccessorChainCompareFunction = function(){
     return function(first, second){
-        return first[getterName]().compare(second[getterName]());
+        return first.getAccessorChain().compare(second.getAccessorChain());
     };
 };
 
 MbaManager.prototype.constructDomMultiplierTree = function(){
-    for(var i=0 ; i<this._domMultipliers.length ; i++){
-        this._domMultiplierTree.addNodeFromDomMultiplier(this._domMultipliers[i]);
-    }
-    this._domMultiplierTree.initAllRelativeAccessors();
+    this.constructAccessorTree(this._domMultipliers, this._domMultiplierTree);
 };
 
 MbaManager.prototype.linkDomMultiplierTreeToTemplate = function(){
@@ -72,18 +65,9 @@ MbaManager.prototype.getDomMultipliersSelectors = function(){
     return domMultipliersSelectors;
 };
 
-//TODO factoriser code avec domMultiplierTree
 MbaManager.prototype.createPropertyBindingTree = function(){
-    this.sortPropertyBindings();
     this._propertyBindingTree = new MbaPropertyBindingTree().init();
-    this.constructPropertyBindingTree();
-};
-
-MbaManager.prototype.constructPropertyBindingTree = function(){
-    for(var i=0 ; i<this._propertyBindings.length ; i++){
-        this._propertyBindingTree.addNodeFrom(this._propertyBindings[i]);
-    }
-    this._propertyBindingTree.initAllRelativeAccessors();
+    this.constructAccessorTree(this._propertyBindings, this._propertyBindingTree);
 };
 
 MbaManager.prototype.render = function(model){

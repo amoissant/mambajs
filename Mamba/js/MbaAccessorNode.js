@@ -49,7 +49,6 @@ MbaAccessorNode.prototype.linkToTemplate = function(template){
     checkType(template, MbaTemplate2);
     this._template = template;
     this.onLinkToTemplate();
-    //this.constructDomElementsToCloneMap()//TODO poignée pour MbaDomMultiplierNode;
     this.askChildrenToLinkTemplate();
 };
 
