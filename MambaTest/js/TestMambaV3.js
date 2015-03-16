@@ -243,9 +243,9 @@ var testMbaV3 = function() {
         OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1, 1])).DEtreEgalA('vehicles2');
     });
     
-    function domElementToCloneForRoute(tree, route){
+    function domElementsToCloneForRoute(tree, route, domElementsFieldName){
         var node = nodeForRoute(tree, route);
-        var domElementsArray = Uti.map(node._domElementsToCloneMap).values();
+        var domElementsArray = Uti.map(node.getDomElementsToCloneMap()).values();
         var domElements = new MbaDom(domElementsArray);
         return domElements.toString();
     };
@@ -263,13 +263,13 @@ var testMbaV3 = function() {
         manager.linkDomMultiplierTreeToTemplate();
         
         var domMultiplierTree = manager.getDomMultiplierTree();
-        OnAttend(domElementToCloneForRoute(domMultiplierTree, [0]))
+        OnAttend(domElementsToCloneForRoute(domMultiplierTree, [0]))
             .DEtreEgalA('<a class="person"></a><div class="person"></div>');
-        OnAttend(domElementToCloneForRoute(domMultiplierTree, [0, 0]))
+        OnAttend(domElementsToCloneForRoute(domMultiplierTree, [0, 0]))
             .DEtreEgalA('<span class="vehicle"></span>');
     });
     
-    function domElementsIdToCloneForRoute(domMultiplierTree, route){
+    function domElementsIdForRoute(domMultiplierTree, route){
         var node = nodeForRoute(domMultiplierTree, route);
         var domIdsMap = node._domElementsToCloneMap;
         var domIds = Uti.map(domIdsMap).keys();
@@ -289,9 +289,9 @@ var testMbaV3 = function() {
         manager.linkDomMultiplierTreeToTemplate();
         
         var domMultiplierTree = manager.getDomMultiplierTree();
-        OnAttend(domElementsIdToCloneForRoute(domMultiplierTree, [0]))
+        OnAttend(domElementsIdForRoute(domMultiplierTree, [0]))
             .DEtreEgalA('1,2');
-        OnAttend(domElementsIdToCloneForRoute(domMultiplierTree, [0, 0]))
+        OnAttend(domElementsIdForRoute(domMultiplierTree, [0, 0]))
             .DEtreEgalA('3');
     });
     
@@ -307,9 +307,8 @@ var testMbaV3 = function() {
     }
     
     function domElementForRoute(templateTree, route){
-        var routeCopy = route.slice();
-        var nodeForRoute = templateNodeForRoute(templateTree, route);
-        return nodeForRoute._domElement.outerHTML;
+        var node = nodeForRoute(templateTree, route);
+        return node._domElement.outerHTML;
     }
     
     Ca('teste la construction du MbaTemplateTree', function(){
@@ -542,6 +541,58 @@ var testMbaV3 = function() {
         OnAttend(accessorStringForRoute(propertyBindingTree, [1, 0])).DEtreEgalA('model.persons2.adresses');
         OnAttend(accessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('model.persons2.vehicles2');
     });
+    
+     Ca('test l\'initialisation des relativeAccessor dans l\'arbre des property binding', function(){
+         var propertyBindings = [
+            createMbaPropertyBinding(['persons2']),
+            createMbaPropertyBinding(['persons2', 'adresses']),
+            createMbaPropertyBinding(['persons2', 'vehicles2']),
+            createMbaPropertyBinding(['persons']),
+            createMbaPropertyBinding(['persons', 'vehicles'])
+        ];
+        var manager = new MbaManager();
+        manager._propertyBindings = propertyBindings;
+        manager.createPropertyBindingTree();
+        
+        var propertyBindingTree = manager.getPropertyBindingTree();
+        OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [0])).DEtreEgalA('model.persons');
+        OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [0, 0])).DEtreEgalA('vehicles');
+        OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [1])).DEtreEgalA('model.persons2');
+        OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [1, 0])).DEtreEgalA('adresses');
+        OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('vehicles2');
+    });
+    
+    function targetDomElementIdsForRoute(tree, route){
+        var node = nodeForRoute(tree, route);
+        return node.getTargetDomElementIds().join(',');
+    };
+    
+    function createMbaPropertyBindingWithSelector(selector, memberChain){
+        checkType(memberChain, 'array', 'string');
+        return new MbaPropertyBinding().init(selector, memberChain, new MbaTransf(), []);
+    }
+    
+     Ca('teste l\'ajout des élément de dom cible dans les propertyBindingNode', function(){
+         var template = new MbaDomFromString('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
+         var propertyBindings = [
+             createMbaPropertyBindingWithSelector('.person', ['persons']),
+             createMbaPropertyBindingWithSelector('.vehicle', ['persons', 'vehicles'])
+         ];
+         var manager = new MbaManager();
+         manager._domMultipliers = [];
+         manager._propertyBindings = propertyBindings;
+         manager.setTemplate(template);
+         manager.createPropertyBindingTree();   
+         manager.linkPropertyBindingTreeToTemplate();
+        
+         var propertyBindingTree = manager.getPropertyBindingTree();
+         console.log(propertyBindingTree);
+         OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0]))
+             .DEtreEgalA('1,2');
+         OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0, 0]))
+             .DEtreEgalA('3');
+    });
+    
     //TODO continuer en créant une structure arborescente pour les propertyBinding comme pour les domMultiplier
     //linker la structure arborescente au template pour mémoriser les id des élemnts concernés par chaque transformation
     //cette sturcture permettra de parcourir récursivement le modèle et d'appliquer les trasnformations de dom

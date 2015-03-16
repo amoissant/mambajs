@@ -11,8 +11,10 @@ MbaManager.prototype.init = function(template, directive){
     checkType(template, MbaDom);
     this.parseDirective(directive);
     this.createDomMultiplierTree();
+    this.createPropertyBindingTree();
     this.setTemplate(template);
     this.linkDomMultiplierTreeToTemplate();
+    this.linkPropertyBindingTreeToTemplate();
     return this;
 };
 
@@ -49,6 +51,10 @@ MbaManager.prototype.constructDomMultiplierTree = function(){
 
 MbaManager.prototype.linkDomMultiplierTreeToTemplate = function(){
     this._domMultiplierTree.linkToTemplate(this._template);
+};
+
+MbaManager.prototype.linkPropertyBindingTreeToTemplate = function(){
+    this._propertyBindingTree.linkToTemplate(this._template);
 };
 
 MbaManager.prototype.setTemplate = function(template){
