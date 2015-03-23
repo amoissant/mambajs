@@ -2,7 +2,6 @@ function MbaAccessorNode(){
     this._objectWithAccessor;
     this._relativeAccesor;
     this._template;
-    this._modelRoute;
 }
 
 MbaAccessorNode.prototype = new MbaAccessorBaseNode();
@@ -11,13 +10,12 @@ MbaAccessorNode.prototype.constructor = MbaAccessorNode;
 MbaAccessorNode.prototype.init = function(objectWithAccessor){
     MbaAccessorBaseNode.prototype.init.call(this);
     this._objectWithAccessor = objectWithAccessor;
-    this._modelRoute = new MbaRoute2().initFromAccessor(this._objectWithAccessor.getAccessorChain());
     return this;
 };
 
 MbaAccessorNode.prototype.accessorHasSameRoot = function(otherWithAccessor){
-    var thisAccessor = this._objectWithAccessor.getAccessorChain();
-    var otherAccessor = otherWithAccessor.getAccessorChain();
+    var thisAccessor = this._objectWithAccessor.getModelAccessor();
+    var otherAccessor = otherWithAccessor.getModelAccessor();
     return thisAccessor.hasSameRoot(otherAccessor);
 };
 
@@ -29,7 +27,7 @@ MbaAccessorNode.prototype.initRelativeAccessor = function(parentAccessorSize){
 };
 
 MbaAccessorNode.prototype.createRelativeAccessor = function(){
-    var accessor = this._objectWithAccessor.getAccessorChain();
+    var accessor = this._objectWithAccessor.getModelAccessor();
     this._relativeAccessor = new MbaAccessorChain2().initFromAccessorChain(accessor);  
 };
 
@@ -39,7 +37,7 @@ MbaAccessorNode.prototype.removeParentRootFromRelativeAccessor = function(parent
 };
 
 MbaAccessorNode.prototype.initRelativeAccessorForChildren = function(){
-    var parentAccessorSize = this._objectWithAccessor.getAccessorChain().getSize();
+    var parentAccessorSize = this._objectWithAccessor.getModelAccessor().getSize();
     for(var i=0 ; i<this._childNodes.length ; i++){
         this._childNodes[i].initRelativeAccessor(parentAccessorSize);
     }
@@ -53,6 +51,7 @@ MbaAccessorNode.prototype.linkToTemplate = function(template){
 };
 
 MbaAccessorNode.prototype.onLinkToTemplate = function(){
+    throw new Error('Must be implemented in subclass.');
 };
 
 MbaAccessorNode.prototype.askChildrenToLinkTemplate = function(){

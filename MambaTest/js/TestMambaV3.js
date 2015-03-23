@@ -3,9 +3,6 @@ var testMbaV3 = function() {
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
 
-    
-    
-    
    //return; 
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
@@ -53,13 +50,13 @@ var testMbaV3 = function() {
     function accessorString(object){
         switch(object.constructor){
             case MbaDomMultiplier:
-                return object.getAccessorChain().toString();
+                return object.getModelAccessor().toString();
             case MbaPropertyBinding:
-                return object.getAccessorChain().toString();
+                return object.getPropertyAccessor().toString();
             case MbaDomMultiplierNode:
-                return object.getDomMultiplier().getAccessorChain().toString();
+                return object.getDomMultiplier().getModelAccessor().toString();
             case MbaPropertyBindingNode:
-                return object.getPropertyBinding().getAccessorChain().toString();
+                return object.getPropertyBinding().getPropertyAccessor().toString();
             default:
                 throw new Error('not implemented for '+object.constructor.name);
         }
@@ -132,13 +129,13 @@ var testMbaV3 = function() {
 
         OnAttend(propertyBindings.length).DEtreEgalA(3);
         OnAttend(propertyBindings[0].getSelector()).DEtreEgalA('div');
-        OnAttend(propertyBindings[0].getAccessorChain().toString()).DEtreEgalA('model.name');
+        OnAttend(propertyBindings[0].getPropertyAccessor().toString()).DEtreEgalA('model.name');
         
         OnAttend(propertyBindings[1].getSelector()).DEtreEgalA('.tel');
-        OnAttend(propertyBindings[1].getAccessorChain().toString()).DEtreEgalA('model.coordinates.tel');
+        OnAttend(propertyBindings[1].getPropertyAccessor().toString()).DEtreEgalA('model.coordinates.tel');
         
         OnAttend(propertyBindings[2].getSelector()).DEtreEgalA('.fax');
-        OnAttend(propertyBindings[2].getAccessorChain().toString()).DEtreEgalA('model.coordinates.fax');
+        OnAttend(propertyBindings[2].getPropertyAccessor().toString()).DEtreEgalA('model.coordinates.fax');
     });
     
     Ca('teste que l\'on récupère la liste des bindings d\'action', function(){
@@ -506,49 +503,49 @@ var testMbaV3 = function() {
     
     Ca('test le tri des property binding', function(){
         var propertyBindings = [
-            createMbaPropertyBinding(['persons2']),
-            createMbaPropertyBinding(['persons2', 'vehicles2']),
-            createMbaPropertyBinding(['persons']),
-            createMbaPropertyBinding(['persons', 'vehicles'])
+            createMbaPropertyBinding(['persons2', 'name']),
+            createMbaPropertyBinding(['persons2', 'vehicles2', 'brand']),
+            createMbaPropertyBinding(['persons', 'name']),
+            createMbaPropertyBinding(['persons', 'vehicles', 'category'])
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
         manager.createPropertyBindingTree();
         
         var sortedPropertyBindings = manager.getPropertyBindings();
-        OnAttend(accessorString(sortedPropertyBindings[0])).DEtreEgalA('model.persons');
-        OnAttend(accessorString(sortedPropertyBindings[1])).DEtreEgalA('model.persons2');
-        OnAttend(accessorString(sortedPropertyBindings[2])).DEtreEgalA('model.persons.vehicles');
-        OnAttend(accessorString(sortedPropertyBindings[3])).DEtreEgalA('model.persons2.vehicles2');
+        OnAttend(accessorString(sortedPropertyBindings[0])).DEtreEgalA('model.persons.name');
+        OnAttend(accessorString(sortedPropertyBindings[1])).DEtreEgalA('model.persons2.name');
+        OnAttend(accessorString(sortedPropertyBindings[2])).DEtreEgalA('model.persons.vehicles.category');
+        OnAttend(accessorString(sortedPropertyBindings[3])).DEtreEgalA('model.persons2.vehicles2.brand');
     });
     
     Ca('test la création de l\'abre des property binding', function(){
         var propertyBindings = [
-            createMbaPropertyBinding(['persons2']),
-            createMbaPropertyBinding(['persons2', 'adresses']),
-            createMbaPropertyBinding(['persons2', 'vehicles2']),
-            createMbaPropertyBinding(['persons']),
-            createMbaPropertyBinding(['persons', 'vehicles'])
+            createMbaPropertyBinding(['persons2', 'name']),
+            createMbaPropertyBinding(['persons2', 'adresses', 'town']),
+            createMbaPropertyBinding(['persons2', 'vehicles2', 'brand']),
+            createMbaPropertyBinding(['persons', 'name']),
+            createMbaPropertyBinding(['persons', 'vehicles', 'category'])
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
         manager.createPropertyBindingTree();
         
         var propertyBindingTree = manager.getPropertyBindingTree();
-        OnAttend(accessorStringForRoute(propertyBindingTree, [0])).DEtreEgalA('model.persons');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [0, 0])).DEtreEgalA('model.persons.vehicles');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [1])).DEtreEgalA('model.persons2');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 0])).DEtreEgalA('model.persons2.adresses');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('model.persons2.vehicles2');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [0])).DEtreEgalA('model.persons.name');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [0, 0])).DEtreEgalA('model.persons.vehicles.category');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [1])).DEtreEgalA('model.persons2.name');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 0])).DEtreEgalA('model.persons2.adresses.town');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('model.persons2.vehicles2.brand');
     });
     
      Ca('test l\'initialisation des relativeAccessor dans l\'arbre des property binding', function(){
          var propertyBindings = [
-            createMbaPropertyBinding(['persons2']),
-            createMbaPropertyBinding(['persons2', 'adresses']),
-            createMbaPropertyBinding(['persons2', 'vehicles2']),
-            createMbaPropertyBinding(['persons']),
-            createMbaPropertyBinding(['persons', 'vehicles'])
+            createMbaPropertyBinding(['persons2', 'name']),
+            createMbaPropertyBinding(['persons2', 'adresses', 'town']),
+            createMbaPropertyBinding(['persons2', 'vehicles2', 'brand']),
+            createMbaPropertyBinding(['persons', 'name']),
+            createMbaPropertyBinding(['persons', 'vehicles', 'category'])
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
@@ -586,20 +583,13 @@ var testMbaV3 = function() {
          manager.linkPropertyBindingTreeToTemplate();
         
          var propertyBindingTree = manager.getPropertyBindingTree();
-         console.log(propertyBindingTree);
          OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0]))
              .DEtreEgalA('1,2');
          OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0, 0]))
              .DEtreEgalA('3');
     });
     
-    //TODO continuer en créant une structure arborescente pour les propertyBinding comme pour les domMultiplier
-    //linker la structure arborescente au template pour mémoriser les id des élemnts concernés par chaque transformation
-    //cette sturcture permettra de parcourir récursivement le modèle et d'appliquer les trasnformations de dom
-    //on applique les transformations en passant en paramètre la route du modèle courant 
-    //ou en déduisant les sous-routes si une propriété s'applique à plusieurs éléments de dom multipliés par un sous-modèle
-    
-    /*Ca('teste le rendu avec une directive minimale sans root', function(){
+    Ca('teste le rendu avec une directive minimale sans root', function(){
         var template = new MbaDomFromString('<div id="root"><div id="toto">toto</div></div><div id="stuff"></div>');
         var directive = {'name': '#toto'};
         var model = {name: 'tutu'};
@@ -609,14 +599,14 @@ var testMbaV3 = function() {
         var renderedDom = manager.getRenderedDom();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div id="toto">tutu</div></div><div id="stuff"></div>');
-    });*/
+    });
     
-    //TODO : id des accessorchain sans model et le calculer une fois pour toute
+     //TODO continuer en créant une structure arborescente pour les propertyBinding comme pour les domMultiplier
+    //linker la structure arborescente au template pour mémoriser les id des élemnts concernés par chaque transformation
+    //cette sturcture permettra de parcourir récursivement le modèle et d'appliquer les transformations de dom
+    //on applique les transformations en passant en paramètre la route du modèle courant 
+    //ou en déduisant les sous-routes si une propriété s'applique à plusieurs éléments de dom multipliés par un sous-modèle
     
-       /*new MbaDomMultiplier().init(['persons', 'garage']),
-            new MbaDomMultiplier().init(['persons2', 'garage2', 'vehicles2']),
-            new MbaDomMultiplier().init(['persons']),
-            new MbaDomMultiplier().init(['persons', 'garage', 'vehicles']),
-            new MbaDomMultiplier().init(['persons2', 'garage2']),
-            new MbaDomMultiplier().init(['persons2'])*/
+    //TODO : qu'est ce que cela donne quand on a plusieurs transformatiosn dans une directive "name" : "#toto, #toto@attr" ?
+    //comment est la'rbre des propertyBinding ?
 }

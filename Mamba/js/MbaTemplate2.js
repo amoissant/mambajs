@@ -94,6 +94,10 @@ MbaTemplate2.prototype.deleteDomForRoute = function(domId, modelRoute){
     templateNode.deleteDomForRoute(modelRoute);
 };
 
+MbaTemplate2.prototype.getTemplateNodeForDomId = function(domId){
+    return this._templateNodeMap[domId];
+};
+
 MbaTemplate2.prototype.getRenderedDom = function(){
     return this._templateTree.getRenderedDom();
 };

@@ -32,16 +32,16 @@ MbaManager.prototype.createDomMultiplierTree = function(){
 };
 
 MbaManager.prototype.constructAccessorTree = function(objectWithAccessorArray, tree){
-    objectWithAccessorArray.sort(this.getAccessorChainCompareFunction());
+    objectWithAccessorArray.sort(this.getModelAccessorCompareFunction());
     for(var i=0 ; i<objectWithAccessorArray.length ; i++){
         tree.addNodeFrom(objectWithAccessorArray[i]);
     }
     tree.initAllRelativeAccessors();
 };
 
-MbaManager.prototype.getAccessorChainCompareFunction = function(){
+MbaManager.prototype.getModelAccessorCompareFunction = function(){
     return function(first, second){
-        return first.getAccessorChain().compare(second.getAccessorChain());
+        return first.getModelAccessor().compare(second.getModelAccessor());
     };
 };
 
@@ -80,6 +80,7 @@ MbaManager.prototype.render = function(model){
     if(!this._template.isReadyToRender())
         this._template.initRenderedDom();
     this._domMultiplierTree.updateDomForModel(model);
+    this._propertyBindingTree.applyBindingsForModel(model);
 };
 
 MbaManager.prototype.getDomMultipliers = function(){

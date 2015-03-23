@@ -15,6 +15,6 @@ MbaDomMultiplier.prototype.getSelector = function(){
     return this._selector;
 };
 
-MbaDomMultiplier.prototype.getAccessorChain = function(){
+MbaDomMultiplier.prototype.getModelAccessor = function(){
     return this._modelAccessor;
 };

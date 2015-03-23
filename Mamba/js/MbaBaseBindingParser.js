@@ -38,7 +38,7 @@ MbaBaseBindingParser.prototype.constructBinding = function(textBinding){
 };
 
 MbaBaseBindingParser.prototype.instanciateBinding = function(memberChain){
-    //abstract method
+    throw new Error('Must be implemented in subclass.');
 };
     
 MbaBaseBindingParser.prototype.copyMemberChain = function(){

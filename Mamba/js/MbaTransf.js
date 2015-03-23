@@ -97,6 +97,24 @@ MbaTransf.prototype.update = function(dom, model, route, parentDirectiveNode){
         return this.modelHasNotMemberForNewValue();
 };
 
+MbaTransf.prototype.update2 = function(domElement, model, route){
+    checkType(dom, 'domElement');
+    checkType(route, 'array', 'string');
+    var newValue = this.getNewValue(model, route);
+    if(newValue instanceof Array)
+        throw new MbaError(23, 'Received an array for model, user \'r00t\' directive to set what dom to repeat.');
+    var oldValue = this.getOldValue(route);
+    this.updateDomWithModel(domElement, newValue, oldValue);
+    this.setOldValue(newValue, route);
+    this.setSuperModel(model);//TODO on peut optimiser les perfs iueci avec un évènement pour modifier la référence du supermodel
+    this.referenceModelIntoDom(dom);
+    
+    /*if(newValue != null)
+        return false;
+    else
+        return this.modelHasNotMemberForNewValue();*/
+};
+
 MbaTransf.prototype.canReadValueFromDom = function(){
     return true;  
 };

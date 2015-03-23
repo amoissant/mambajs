@@ -31,7 +31,7 @@ MbaTemplateNode.prototype.createDomElementForRoute = function(modelRoute){
     var newDomElement = this._domElement.cloneNode(false);
     this.addIntoRenderedDomMap(newDomElement, modelRoute); 
     this.insertDomElementIntoParent(newDomElement, this.getTemplateDomId(), modelRoute);
-}; 
+};
 
 MbaTemplateNode.prototype.hasRenderedDomForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);

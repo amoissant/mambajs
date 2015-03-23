@@ -1,6 +1,7 @@
 function MbaDomMultiplierNode(){
     this._domMultiplier;
     this._domElementsToCloneMap;
+    this._modelRoute;
     this._modelArray;
     this._modelArrayRoute;
     this._previousModelSize;
@@ -12,6 +13,7 @@ MbaDomMultiplierNode.prototype.init = function(domMultiplier){
     checkType(domMultiplier, MbaDomMultiplier);
     MbaAccessorNode.prototype.init.call(this, domMultiplier);
     this._domMultiplier = domMultiplier;
+    this._modelRoute = new MbaRoute2().initFromAccessor(domMultiplier.getModelAccessor());
     this._previousModelSize = {};
     return this;
 };
