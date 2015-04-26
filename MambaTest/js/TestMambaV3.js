@@ -52,11 +52,11 @@ var testMbaV3 = function() {
             case MbaDomMultiplier:
                 return object.getModelAccessor().toString();
             case MbaPropertyBinding:
-                return object.getPropertyAccessor().toString();
+                return object.getPropertyAccessorString();
             case MbaDomMultiplierNode:
                 return object.getDomMultiplier().getModelAccessor().toString();
             case MbaPropertyBindingNode:
-                return object.getPropertyBinding().getPropertyAccessor().toString();
+                return object.getPropertyBinding().getPropertyAccessorString();
             default:
                 throw new Error('not implemented for '+object.constructor.name);
         }
@@ -129,13 +129,13 @@ var testMbaV3 = function() {
 
         OnAttend(propertyBindings.length).DEtreEgalA(3);
         OnAttend(propertyBindings[0].getSelector()).DEtreEgalA('div');
-        OnAttend(propertyBindings[0].getPropertyAccessor().toString()).DEtreEgalA('model.name');
+        OnAttend(propertyBindings[0].getPropertyAccessorString()).DEtreEgalA('model.name');
         
         OnAttend(propertyBindings[1].getSelector()).DEtreEgalA('.tel');
-        OnAttend(propertyBindings[1].getPropertyAccessor().toString()).DEtreEgalA('model.coordinates.tel');
+        OnAttend(propertyBindings[1].getPropertyAccessorString()).DEtreEgalA('model.coordinates.tel');
         
         OnAttend(propertyBindings[2].getSelector()).DEtreEgalA('.fax');
-        OnAttend(propertyBindings[2].getPropertyAccessor().toString()).DEtreEgalA('model.coordinates.fax');
+        OnAttend(propertyBindings[2].getPropertyAccessorString()).DEtreEgalA('model.coordinates.fax');
     });
     
     Ca('teste que l\'on récupère la liste des bindings d\'action', function(){
@@ -607,6 +607,6 @@ var testMbaV3 = function() {
     //on applique les transformations en passant en paramètre la route du modèle courant 
     //ou en déduisant les sous-routes si une propriété s'applique à plusieurs éléments de dom multipliés par un sous-modèle
     
-    //TODO : qu'est ce que cela donne quand on a plusieurs transformatiosn dans une directive "name" : "#toto, #toto@attr" ?
-    //comment est la'rbre des propertyBinding ?
+    //TODO : qu'est ce que cela donne quand on a plusieurs transformations dans une directive "name" : "#toto, #toto@attr" ?
+    //comment est l'arbre des propertyBinding ?
 }

@@ -3,15 +3,18 @@ function MbaAccessorChain2(){
     this._modelValue; 
 }
 
-MbaAccessorChain2.prototype.initWithRootModelAccessor = function(){
+//plus utilisé on utilise des routes avec model accesseur systématiquement
+/*MbaAccessorChain2.prototype.initWithRootModelAccessor = function(){
     this.initFromMemberChain([]);
     this.prependRootModelAccessor();
     return this;
-};
+};*/
 
 MbaAccessorChain2.prototype.initWithRootModelAccessorFromMemberChain = function(memberChain){
     checkType(memberChain, 'array', 'string');
-    this.initFromMemberChain(memberChain);
+    this.initEmpty();
+    this.createAccessors(memberChain);
+    //this.initFromMemberChain(memberChain);
     this.prependRootModelAccessor();
     return this;
 };
@@ -100,9 +103,13 @@ MbaAccessorChain2.prototype.isEmpty = function(){
 //TODO : optimiser en calculant une seule fois
 MbaAccessorChain2.prototype.toStringWithIndexes = function(indexes){
     checkType(indexes, Array);
-    if(this.isEmpty())
-        return '_';//an empty string could be ok but debugger doesn't see object's member with 'empty string' key.
-    
+    var charForEmtpyRoute = '_';
+    var accessorNamesAndIndexes = this.concatAccessorNamesAndIndexes(indexes);
+    return charForEmtpyRoute+accessorNamesAndIndexes;
+};
+
+MbaAccessorChain2.prototype.concatAccessorNamesAndIndexes = function(indexes){
+    checkType(indexes, Array);
     var stringRepresentation = '';
     for(var i=0 ; i<this._accessors.length ; i++){
         stringRepresentation += this._accessors[i];

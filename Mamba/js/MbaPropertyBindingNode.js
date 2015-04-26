@@ -10,7 +10,7 @@ MbaPropertyBindingNode.prototype.constructor = MbaPropertyBindingNode;
 
 MbaPropertyBindingNode.prototype.init = function(propertyBinding){
     checkType(propertyBinding, MbaPropertyBinding);
-    MbaAccessorNode.prototype.init.call(this, propertyBinding);//TODO enlever le dernier accesseur qui est celui de la propriété 
+    MbaAccessorNode.prototype.init.call(this, propertyBinding);
     this._propertyBinding = propertyBinding;
     //TODO factoriser code avec MbaDomMultiplierNode
     this._modelRoute = new MbaRoute2().initFromAccessor(propertyBinding.getModelAccessor());
@@ -50,7 +50,6 @@ MbaPropertyBindingNode.prototype.applyBindingsForModelWithIndexes = function(par
 
 MbaPropertyBindingNode.prototype.setModelAndRoute = function(parentModel, parentIndexes){
     this._modelRoute.copyIndexes(parentIndexes);
-    //TODO pas bon : ici on execute touts les accesseurs (model.name) et on récupère une propriété et pas un modèle
     this._model = this._relativeAccessor.getSubModelAndUpdateRoute(parentModel, this._modelRoute);
 };
 

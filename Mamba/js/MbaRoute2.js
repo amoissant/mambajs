@@ -33,8 +33,14 @@ MbaRoute2.prototype.clone = function(){
 };
 
 MbaRoute2.prototype.removeLastPart = function(){
-    this._accessorChain.removeLastAccessor();
-    this._routeIndexes.pop();
+    if(this.sameNumberOfAccessorAndIndexes())
+        this._routeIndexes.pop();
+    else
+        this._accessorChain.removeLastAccessor();    
+};
+
+MbaRoute2.prototype.sameNumberOfAccessorAndIndexes = function(){
+    return this._accessorChain.getSize() == this._routeIndexes.length;
 };
     
 MbaRoute2.prototype.getAccessorId = function(){
@@ -67,10 +73,6 @@ MbaRoute2.prototype.setIndexes = function(indexes){
 MbaRoute2.prototype.getIndexes = function(){
     return this._routeIndexes;
 };
-
-MbaRoute2.prototype.getIndexesId = function(){
-    return '_'+this._routeIndexes.join('-')+'_';
-}
 
 MbaRoute2.prototype.isEmpty = function(){
     return this._accessorChain.isEmpty();

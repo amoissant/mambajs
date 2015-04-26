@@ -60,7 +60,7 @@ MbaTemplateNode.prototype.computeParentRoute = function(childRoute){
     var parentRoute = childRoute.clone();
     while(!this.hasRenderedDomForRoute(parentRoute)){
         if(parentRoute.isEmpty())
-            throw new Error('can\'t find rendered dom for parent route');
+            throw new Error('can\'t find parent route for : '+childRoute);
         parentRoute.removeLastPart();
     }
     return parentRoute;
@@ -112,7 +112,7 @@ MbaTemplateNode.prototype.getDomElementForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
     var domElement = this._renderedDomMap[modelRoute];
     if(domElement == null)
-        throw new Error('dom Element is null.')
+        throw new Error('dom Element is null for route : '+modelRoute);
     return domElement;
 };
 
