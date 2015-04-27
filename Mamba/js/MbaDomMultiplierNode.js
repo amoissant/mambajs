@@ -1,9 +1,8 @@
 function MbaDomMultiplierNode(){
     this._domMultiplier;
     this._domElementsToCloneMap;
-    this._modelRoute;
-    this._modelArray;
-    this._modelArrayRoute;
+    this._model;
+    this._modelRouteSnapshot;
     this._previousModelSize;
 }
 MbaDomMultiplierNode.prototype = new MbaAccessorNode();
@@ -13,7 +12,6 @@ MbaDomMultiplierNode.prototype.init = function(domMultiplier){
     checkType(domMultiplier, MbaDomMultiplier);
     MbaAccessorNode.prototype.init.call(this, domMultiplier);
     this._domMultiplier = domMultiplier;
-    this._modelRoute = new MbaRoute2().initFromAccessor(domMultiplier.getModelAccessor());
     this._previousModelSize = {};
     return this;
 };
@@ -39,15 +37,8 @@ MbaDomMultiplierNode.prototype.constructDomElementsToCloneMap = function(){
 
 MbaDomMultiplierNode.prototype.updateDomForModelWithIndexes = function(parentModel, parentIndexes){
     checkType(parentIndexes, Array);
-    this.setModelArrayAndRoute(parentModel, parentIndexes);
+    this.setModelAndRoute(parentModel, parentIndexes);
     this.createUpdateDeleteDomForEachModel();
-};
-
-MbaDomMultiplierNode.prototype.setModelArrayAndRoute = function(parentModel, parentIndexes){
-    this._modelRoute.copyIndexes(parentIndexes);
-    this._modelArray = this._relativeAccessor.getSubModelAndUpdateRoute(parentModel, this._modelRoute);
-    this._modelArrayRoute = this._modelRoute.clone();
-    //TODO ici on se sert juste de modelArrayRoute comme clé pour previousModelSize, on peut optimiser en evitant le clone
 };
 
 MbaDomMultiplierNode.prototype.createUpdateDeleteDomForEachModel = function(){
@@ -58,30 +49,30 @@ MbaDomMultiplierNode.prototype.createUpdateDeleteDomForEachModel = function(){
 };    
 
 MbaDomMultiplierNode.prototype.updateDomForExistingModels = function(){
-    var updateEndIndex = Math.min(this._modelArray.length, this.getPreviousModelSize());
+    var updateEndIndex = Math.min(this._model.length, this.getPreviousModelSize());
     for(var i=0 ; i<updateEndIndex ; i++){
         this._modelRoute.setLastIndex(i);
-        this.askChildrenUpdateDomForModel(this._modelArray[i]);
+        this.askChildrenUpdateDomForModel(this._model[i]);
     }    
 };
 
 MbaDomMultiplierNode.prototype.createDomForAddedModels = function(){
     var previousModelSize = this.getPreviousModelSize();
-    for(var i=previousModelSize ; i<this._modelArray.length ; i++){
+    for(var i=previousModelSize ; i<this._model.length ; i++){
         this._modelRoute.setLastIndex(i);
         this.createDomForAllElementsToClone();
-        this.askChildrenUpdateDomForModel(this._modelArray[i]);
+        this.askChildrenUpdateDomForModel(this._model[i]);
     }
 };
 
 MbaDomMultiplierNode.prototype.getPreviousModelSize = function(){
-    if(this._previousModelSize[this._modelArrayRoute] == null)
+    if(this._previousModelSize[this._modelRouteSnapshot] == null)
         this.setPreviousModelSizeToZero();
-    return this._previousModelSize[this._modelArrayRoute];
+    return this._previousModelSize[this._modelRouteSnapshot];
 };
 
 MbaDomMultiplierNode.prototype.setPreviousModelSizeToZero = function(){
-    this._previousModelSize[this._modelArrayRoute] = 0;
+    this._previousModelSize[this._modelRouteSnapshot] = 0;
 };
 
 MbaDomMultiplierNode.prototype.createDomForAllElementsToClone = function(){
@@ -99,7 +90,7 @@ MbaDomMultiplierNode.prototype.askChildrenUpdateDomForModel = function(model){
 };
 
 MbaDomMultiplierNode.prototype.deleteDomForRemovedModels = function(){
-    var deleteStartIndex = this._modelArray.length;
+    var deleteStartIndex = this._model.length;
     var deleteEndIndex = this.getPreviousModelSize();
     for(var i=deleteStartIndex ; i<deleteEndIndex ; i++){
         this._modelRoute.setLastIndex(i);
@@ -132,7 +123,7 @@ MbaDomMultiplierNode.prototype.reinitPreviousModelSizeForParentRoute = function(
 };
 
 MbaDomMultiplierNode.prototype.updatePreviousModelSize = function(){
-    this._previousModelSize[this._modelArrayRoute] = this._modelArray.length;
+    this._previousModelSize[this._modelRouteSnapshot] = this._model.length;
 };
 
 MbaDomMultiplierNode.prototype.getDomMultiplier = function(){

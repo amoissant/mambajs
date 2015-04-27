@@ -1,9 +1,6 @@
 function MbaPropertyBindingNode(){
     this._propertyBinding;
     this._targetDomElementIds;
-    this._modelRoute;
-    this._modelArray;
-    this._modelArrayRoute;
 }
 MbaPropertyBindingNode.prototype = new MbaAccessorNode();
 MbaPropertyBindingNode.prototype.constructor = MbaPropertyBindingNode;
@@ -12,8 +9,6 @@ MbaPropertyBindingNode.prototype.init = function(propertyBinding){
     checkType(propertyBinding, MbaPropertyBinding);
     MbaAccessorNode.prototype.init.call(this, propertyBinding);
     this._propertyBinding = propertyBinding;
-    //TODO factoriser code avec MbaDomMultiplierNode
-    this._modelRoute = new MbaRoute2().initFromAccessor(propertyBinding.getModelAccessor());
     return this;
 };
 
@@ -39,18 +34,13 @@ MbaPropertyBindingNode.prototype.applyBindingsForModelWithIndexes = function(par
     checkType(parentIndexes, Array);
     this.setModelAndRoute(parentModel, parentIndexes);
     /*if(this._model instanceof Array){//TODO à tester
-        this._modelArrayRoute = this._modelRoute.clone();
+        this._modelRoute = this._modelRoute.clone();
         //TODO ici on se sert juste de modelArrayRoute comme clé pour previousModelSize, on peut optimiser en evitant le clone
         this.applyBindingsForEachModel();        
     }
     else{*/
         this.applyBindingsForEachTarget();
     //}
-};
-
-MbaPropertyBindingNode.prototype.setModelAndRoute = function(parentModel, parentIndexes){
-    this._modelRoute.copyIndexes(parentIndexes);
-    this._model = this._relativeAccessor.getSubModelAndUpdateRoute(parentModel, this._modelRoute);
 };
 
 /*MbaPropertyBindingNode.prototype.applyBindingsForEachModel = function(){
@@ -70,7 +60,6 @@ MbaPropertyBindingNode.prototype.applyBindingsForEachTarget = function(){
     }    
 };
 
-//TODO factoriser code avec MbaDomMultiplierNode
 MbaPropertyBindingNode.prototype.askChildrenApplyBindingsForModel = function(model){
     var indexes = this._modelRoute.getIndexes();
     for(var i=0 ; i<this._childNodes.length ; i++){

@@ -601,12 +601,6 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div id="toto">tutu</div></div><div id="stuff"></div>');
     });
     
-     //TODO continuer en créant une structure arborescente pour les propertyBinding comme pour les domMultiplier
-    //linker la structure arborescente au template pour mémoriser les id des élemnts concernés par chaque transformation
-    //cette sturcture permettra de parcourir récursivement le modèle et d'appliquer les transformations de dom
-    //on applique les transformations en passant en paramètre la route du modèle courant 
-    //ou en déduisant les sous-routes si une propriété s'applique à plusieurs éléments de dom multipliés par un sous-modèle
-    
     //TODO : qu'est ce que cela donne quand on a plusieurs transformations dans une directive "name" : "#toto, #toto@attr" ?
     //comment est l'arbre des propertyBinding ?
 }
