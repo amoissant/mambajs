@@ -110,6 +110,7 @@ MbaTemplateNode.prototype.initIfNeededDomSizeForParentRoute = function(parentRou
 
 MbaTemplateNode.prototype.getDomElementForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
+    console.log(this._renderedDomMap);
     var domElement = this._renderedDomMap[modelRoute];
     if(domElement == null)
         throw new Error('dom Element is null for route : '+modelRoute);

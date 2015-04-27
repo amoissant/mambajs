@@ -3,7 +3,7 @@ var testMbaV3 = function() {
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
 
-   //return; 
+    
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
@@ -344,6 +344,54 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<a class="person"></a><div class="person"><span class="vehicle"></span></div>');
     });
     
+     Ca('teste la multiplication du dom, directive minimale avec root, modèle tableau', function(){
+        var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+        var directive = {'r00t': '.toto'};
+        var model = [{}];
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+    });
+    
+    Ca('teste la multiplication du dom, directive minimale avec root, modèle tableau vide', function(){
+        var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+        var directive = {'r00t': '.toto'};
+        var model = [];
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"></div><div id="stuff"></div>');
+    });
+    
+    Ca('teste la multiplication du dom, directive minimale avec root, modèle non tableau', function(){
+        var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+        var directive = {'r00t': '.toto'};
+        var model = {};
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+    });
+    
+    Ca('teste la multiplication du dom, directive minimale avec root, modèle null', function(){
+        var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+        var directive = {'r00t': '.toto'};
+        var model = null;
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"></div><div id="stuff"></div>');
+    });
+    
     Ca('teste le rendu avec multiplication d\'éléments et modèle tableau', function(){
         var template = new MbaDomFromString('<div>list of persons</div><div class="list"><a class="person"></a></div><span>end</span>');
         var directive = {'r00t' : '.person'};
@@ -600,6 +648,33 @@ var testMbaV3 = function() {
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div id="toto">tutu</div></div><div id="stuff"></div>');
     });
+    
+    Ca('teste la multiplication du dom, directive minimale avec root, modèle non tableau', function(){
+        var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+        var directive = {'r00t': '.toto'};
+        var model = {};
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+    
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+    });
+ 
+    Ca('teste le rendu avec une directive minimale avec root, modèle non tableau', function(){
+        var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+        var directive = {'r00t': '.toto', 
+                         'name': '.toto'};
+        var model = {name: 'tutu'};
+        
+        var manager = new MbaManager().init(template, directive);
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div class="toto">tutu</div></div><div id="stuff"></div>');
+    });
+    
+    //TODo vérifier la couverture de code MbaDomMultiplierNode suivant si model tableau ou pas
     
     //TODO : qu'est ce que cela donne quand on a plusieurs transformations dans une directive "name" : "#toto, #toto@attr" ?
     //comment est l'arbre des propertyBinding ?

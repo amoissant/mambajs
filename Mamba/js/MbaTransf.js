@@ -59,8 +59,18 @@ MbaTransf.prototype.getOldValue = function(route){
     return this._oldValues[route.getIndexes()];
 };
 
+MbaTransf.prototype.getOldValue2 = function(route){
+    checkType(route, MbaRoute2);
+    return this._oldValues[route.getIndexes()];
+};
+
 MbaTransf.prototype.setOldValue = function(oldValue, route){
     checkType(route, MbaRoute);
+    this._oldValues[route.getIndexes()] = oldValue;
+};
+
+MbaTransf.prototype.setOldValue2 = function(oldValue, route){
+    checkType(route, MbaRoute2);
     this._oldValues[route.getIndexes()] = oldValue;
 };
 
@@ -100,9 +110,9 @@ MbaTransf.prototype.update = function(dom, model, route, parentDirectiveNode){
 MbaTransf.prototype.update2 = function(domElement, route, newValue){
     checkType(domElement, 'domElement');
     checkType(route, MbaRoute2);
-    var oldValue = this.getOldValue(route);
+    var oldValue = this.getOldValue2(route);
     this.updateDomWithModel(domElement, newValue, oldValue);
-    this.setOldValue(newValue, route);
+    this.setOldValue2(newValue, route);
     //TODO voir pour les anciennes fonctionnalités (setSuperModel, referenceModelIntoDom, modelHasNotMemberForNewValue)
 };
 
