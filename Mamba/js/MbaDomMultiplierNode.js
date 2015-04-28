@@ -48,10 +48,10 @@ MbaDomMultiplierNode.prototype.updateDomForModelWithIndexes = function(parentMod
 MbaDomMultiplierNode.prototype.computeModelSize = function(){
     if(this._modelIsArray)
         this._modelSize = this._model.length;
-    else if (this._model != null)
-        this._modelSize = 1;
-    else
+    else if (this._model == null)
         this._modelSize = 0;
+    else
+        this._modelSize = 1;
 };    
 
 MbaDomMultiplierNode.prototype.createUpdateDeleteDomForEachModel = function(){
@@ -63,35 +63,34 @@ MbaDomMultiplierNode.prototype.createUpdateDeleteDomForEachModel = function(){
 
 MbaDomMultiplierNode.prototype.updateDomForExistingModels = function(){
     var updateEndIndex = Math.min(this._modelSize, this.getPreviousModelSize());
-    if(this._modelIsArray){
-        for(var i=0 ; i<updateEndIndex ; i++){
-            this._modelRoute.setLastIndex(i);
-            this.askChildrenUpdateDomForModel(this._model[i]);
-        } 
-    }
-    else{
-        for(var i=0 ; i<updateEndIndex ; i++){
-            this._modelRoute.setLastIndexToUndefined();
-            this.askChildrenUpdateDomForModel(this._model);
-        } 
-    }
+    for(var i=0 ; i<updateEndIndex ; i++){
+        this.setLastIndexForModelRoute(i);
+        this.askChildrenUpdateDomForModel(this.getModelForIndex(i));
+    } 
+};
+
+MbaDomMultiplierNode.prototype.setLastIndexForModelRoute = function(index){
+    checkType(index, 'number');
+    if(this._modelIsArray)
+        this._modelRoute.setLastIndex(index);
+    else
+        this._modelRoute.setLastIndexToUndefined();
+};
+
+MbaDomMultiplierNode.prototype.getModelForIndex = function(index){
+    checkType(index, 'number');
+    if(this._modelIsArray)
+        return this._model[index];
+    else
+        return this._model;
 };
 
 MbaDomMultiplierNode.prototype.createDomForAddedModels = function(){
     var previousModelSize = this.getPreviousModelSize();
-    if(this._modelIsArray){
-        for(var i=previousModelSize ; i<this._modelSize ; i++){
-            this._modelRoute.setLastIndex(i);
-            this.createDomForAllElementsToClone();
-            this.askChildrenUpdateDomForModel(this._model[i]);
-        }
-    }
-    else{
-        for(var i=previousModelSize ; i<this._modelSize ; i++){
-            this._modelRoute.setLastIndexToUndefined();
-            this.createDomForAllElementsToClone();
-            this.askChildrenUpdateDomForModel(this._model);
-        }
+    for(var i=previousModelSize ; i<this._modelSize ; i++){
+        this.setLastIndexForModelRoute(i);
+        this.createDomForAllElementsToClone();
+        this.askChildrenUpdateDomForModel(this.getModelForIndex(i));
     }
 };
 
@@ -122,19 +121,10 @@ MbaDomMultiplierNode.prototype.askChildrenUpdateDomForModel = function(model){
 MbaDomMultiplierNode.prototype.deleteDomForRemovedModels = function(){
     var deleteStartIndex = this._modelSize;
     var deleteEndIndex = this.getPreviousModelSize();
-    if(this._modelIsArray){
-        for(var i=deleteStartIndex ; i<deleteEndIndex ; i++){
-            this._modelRoute.setLastIndex(i);
-            this.deleteDomForAllElementsToClone();
-            this.askChildrenReinitPreviousModelSize(this._modelRoute);
-        }
-    }//TODO voir comment améliorer ce if else suivant si le modèle est un tableau
-    else{
-        for(var i=deleteStartIndex ; i<deleteEndIndex ; i++){
-            this._modelRoute.setLastIndexToUndefined();
-            this.deleteDomForAllElementsToClone();
-            this.askChildrenReinitPreviousModelSize(this._modelRoute);
-        }
+    for(var i=deleteStartIndex ; i<deleteEndIndex ; i++){
+        this.setLastIndexForModelRoute(i);
+        this.deleteDomForAllElementsToClone();
+        this.askChildrenReinitPreviousModelSize(this._modelRoute);
     }
 };
 
