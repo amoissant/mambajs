@@ -1,6 +1,7 @@
 function MbaPropertyBindingCollectionNode(){
     this._propertyBindingCollection;
     this._targetDomElementIds;
+    this._propertyAccessor;
 }
 MbaPropertyBindingCollectionNode.prototype = new MbaAccessorNode();
 MbaPropertyBindingCollectionNode.prototype.constructor = MbaPropertyBindingCollectionNode;
@@ -8,10 +9,15 @@ MbaPropertyBindingCollectionNode.prototype.constructor = MbaPropertyBindingColle
 MbaPropertyBindingCollectionNode.prototype.init = function(propertyBinding){
     checkType(propertyBinding, MbaPropertyBinding);
     MbaAccessorNode.prototype.init.call(this, propertyBinding);
-    this._propertyBindingCollection = [];
-    this._propertyBindingCollection.push(new MbaPropertyBindingNode().init(propertyBinding));
-    //TODO  peut etre ne pas avoir MbaPropertyBindingNode contenant un propertyBinding mais un seul objet
+    this.initPropertyBindingCollection(propertyBinding);
+    this._propertyAccessor = propertyBinding.getPropertyAccessor();
     return this;
+};
+
+MbaPropertyBindingCollectionNode.prototype.initPropertyBindingCollection = function(propertyBinding){
+    checkType(propertyBinding, MbaPropertyBinding);
+    var propertyBindingNode = new MbaPropertyBindingNode().init(propertyBinding);
+    this._propertyBindingCollection = [propertyBindingNode];
 };
 
 MbaPropertyBindingCollectionNode.prototype.instanciateNewNode = function(propertyBinding){
@@ -56,13 +62,6 @@ MbaPropertyBindingCollectionNode.prototype.applyBindingsForModelWithIndexes = fu
 MbaPropertyBindingCollectionNode.prototype.applyPropertyBindings = function(){
     for(var i=0 ; i< this._propertyBindingCollection.length ; i++)
         this._propertyBindingCollection[i].applyBindingForModelAndRoute(this._model, this._modelRoute);
-     
-    /*for(var i=0 ; i<this._targetDomElementIds.length; i++){
-        var currentDomElementId = this._targetDomElementIds[i];
-        var templateNode = this._template.getTemplateNodeForDomId(currentDomElementId);
-        var domElement = templateNode.getDomElementForRoute(this._modelRoute);
-        this._propertyBinding.applyBinding(domElement, this._model, this._modelRoute);
-    }*/    
 };
 
 /*MbaPropertyBindingCollectionNode.prototype.askChildrenApplyBindingsForModel = function(model){
@@ -75,6 +74,10 @@ MbaPropertyBindingCollectionNode.prototype.applyPropertyBindings = function(){
 
 MbaPropertyBindingCollectionNode.prototype.getPropertyBindings = function(){
     return this._propertyBindingCollection;
+};
+
+MbaPropertyBindingCollectionNode.prototype.getPropertyAccessorString = function(){
+    return this._objectWithAccessor.getModelAccessor()+'.'+this._propertyAccessor;
 };
 
 

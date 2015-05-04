@@ -65,13 +65,10 @@ Ca('teste le rendu d\'une propriété dans deux éléments de dom', function(){
                 return object.getPropertyAccessorString();
             case MbaDomMultiplierNode:
                 return object.getDomMultiplier().getModelAccessor().toString();
+            case MbaPropertyBindingNode:
+                return object.getPropertyBinding().getPropertyAccessorString();
             case MbaPropertyBindingCollectionNode:
-                var propertyBindings = object.getPropertyBindings();
-                var propertyAccessorStrings = [];//TODO ménage
-                for(var i=0 ; i<propertyBindings.length ; i++){
-                    propertyAccessorStrings.push(propertyBindings[i].getPropertyBinding().getPropertyAccessorString());
-                }
-                return '['+propertyAccessorStrings.join(',')+']';
+                return object.getPropertyAccessorString();
             default:
                 throw new Error('not implemented for '+object.constructor.name);
         }
@@ -625,11 +622,11 @@ Ca('teste le rendu d\'une propriété dans deux éléments de dom', function(){
         manager.createPropertyBindingTree();
         
         var propertyBindingTree = manager.getPropertyBindingTree();
-        OnAttend(accessorStringForRoute(propertyBindingTree, [0])).DEtreEgalA('[model.persons.name]');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [0, 0])).DEtreEgalA('[model.persons.vehicles.category]');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [1])).DEtreEgalA('[model.persons2.name]');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 0])).DEtreEgalA('[model.persons2.adresses.town]');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('[model.persons2.vehicles2.brand]');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [0])).DEtreEgalA('model.persons.name');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [0, 0])).DEtreEgalA('model.persons.vehicles.category');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [1])).DEtreEgalA('model.persons2.name');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 0])).DEtreEgalA('model.persons2.adresses.town');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('model.persons2.vehicles2.brand');
     });
     
      Ca('test l\'initialisation des relativeAccessor dans l\'arbre des property binding', function(){
@@ -652,12 +649,10 @@ Ca('teste le rendu d\'une propriété dans deux éléments de dom', function(){
         OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('vehicles2');
     });
     
-    function targetDomElementIdsForRoute(tree, route){
+    function targetDomElementIdsForRoute(tree, route, bindingIndex){
         var node = nodeForRoute(tree, route);
-        var targetIds = [];//TODO ménage
-        for(var i=0 ; i<node.getPropertyBindings().length ; i++)
-            Uti.array(targetIds).pushAll(node.getPropertyBindings()[i].getTargetDomElementIds());
-        return targetIds.join(',');
+        var propertyBinding = node.getPropertyBindings()[bindingIndex];
+        return propertyBinding.getTargetDomElementIds().join(',');
     };
     
     function createMbaPropertyBindingWithSelector(selector, memberChain){
@@ -679,9 +674,9 @@ Ca('teste le rendu d\'une propriété dans deux éléments de dom', function(){
          manager.linkPropertyBindingTreeToTemplate();
         
          var propertyBindingTree = manager.getPropertyBindingTree();
-         OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0]))
+         OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0], 0))
              .DEtreEgalA('1,2');
-         OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0, 0]))
+         OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0, 0], 0))
              .DEtreEgalA('3');
     });
     

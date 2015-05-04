@@ -30,20 +30,6 @@ MbaPropertyBinding.prototype.initModelAccessor = function(memberChain){
     this._modelAccessor = new MbaAccessorChain2().initWithRootModelAccessorFromMemberChain(memberChain);
 };
 
-MbaPropertyBinding.prototype.applyBinding = function(domElement, model, route){
-    checkType(domElement, 'domElement');
-    checkType(route, MbaRoute2);
-    var propertyValue = this.getPropertyValue(model);
-    this._domTransformation.update2(domElement, route, propertyValue);
-};
-
-MbaPropertyBinding.prototype.getPropertyValue = function(model){
-    var propertyValue = this._propertyAccessor.getModelValue(model);
-    if(propertyValue instanceof Array)
-        throw new MbaError(23, 'Received an array for model, user \'r00t\' directive to set what dom to repeat.');
-    return propertyValue;
-};
-
 MbaPropertyBinding.prototype.getSelector = function(){
     return this._selector;
 };
@@ -52,6 +38,18 @@ MbaPropertyBinding.prototype.getModelAccessor = function(){
     return this._modelAccessor;
 };
 
+MbaPropertyBinding.prototype.getPropertyAccessor = function(){
+    return this._propertyAccessor;
+};
+
+MbaPropertyBinding.prototype.getDomTransformation = function(){
+    return this._domTransformation;
+};
+
+MbaPropertyBinding.prototype.getEvents = function(){
+    return this._events;
+};
+
 MbaPropertyBinding.prototype.getPropertyAccessorString = function(){
-    return this._modelAccessor.toString()+'.'+this._propertyAccessor.toString();
+    return this._modelAccessor+'.'+this._propertyAccessor;
 };

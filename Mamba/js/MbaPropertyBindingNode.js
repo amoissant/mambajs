@@ -1,17 +1,23 @@
 function MbaPropertyBindingNode(){
+    this._selector;
+    this._propertyAccessor;
+    this._domTransformation;
+    this._events;
     this._template;
-    this._propertyBinding;
     this._targetDomElementIds;
 }
 
 MbaPropertyBindingNode.prototype.init = function(propertyBinding){
     checkType(propertyBinding, MbaPropertyBinding);
-    this._propertyBinding = propertyBinding;
+    this._selector = propertyBinding.getSelector();
+    this._propertyAccessor = propertyBinding.getPropertyAccessor();
+    this._domTransformation = propertyBinding.getDomTransformation();
+    this._events = propertyBinding.getEvents();
     return this;
 };
 
 MbaPropertyBindingNode.prototype.computeTargetDomElementIds = function(){
-    var targetDomElements = this._template.findForSelector(this._propertyBinding.getSelector());
+    var targetDomElements = this._template.findForSelector(this._selector);
     this._targetDomElementIds = [];
     for(var i=0 ; i<targetDomElements.length ; i++){
         this._targetDomElementIds.push(targetDomElements[i]._mbaId);
@@ -24,8 +30,22 @@ MbaPropertyBindingNode.prototype.applyBindingForModelAndRoute = function(model, 
         var currentDomElementId = this._targetDomElementIds[i];
         var templateNode = this._template.getTemplateNodeForDomId(currentDomElementId);
         var domElement = templateNode.getDomElementForRoute(modelRoute);
-        this._propertyBinding.applyBinding(domElement, model, modelRoute);
+        this.applyBinding(domElement, model, modelRoute);
     }    
+};
+
+MbaPropertyBindingNode.prototype.applyBinding = function(domElement, model, route){
+    checkType(domElement, 'domElement');
+    checkType(route, MbaRoute2);
+    var propertyValue = this.getPropertyValue(model);
+    this._domTransformation.update2(domElement, route, propertyValue);
+};
+
+MbaPropertyBindingNode.prototype.getPropertyValue = function(model){
+    var propertyValue = this._propertyAccessor.getModelValue(model);
+    if(propertyValue instanceof Array)
+        throw new MbaError(23, 'Received an array for model, user \'r00t\' directive to set what dom to repeat.');
+    return propertyValue;
 };
 
 MbaPropertyBindingNode.prototype.setTemplate = function(template){
