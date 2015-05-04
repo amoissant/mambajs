@@ -3,7 +3,7 @@ function MbaPropertyBindingTree(){
 MbaPropertyBindingTree.prototype = new MbaAccessorTree();
 MbaPropertyBindingTree.prototype.constructor = MbaPropertyBindingTree;
 
-MbaPropertyBindingTree.prototype.instanciateNewNode = MbaPropertyBindingNode.prototype.instanciateNewNode;
+MbaPropertyBindingTree.prototype.instanciateNewNode = MbaPropertyBindingCollectionNode.prototype.instanciateNewNode;
 
 //TODO factoriser code avec MbaDomMultiplierTree
 MbaPropertyBindingTree.prototype.applyBindingsForModel = function(model){

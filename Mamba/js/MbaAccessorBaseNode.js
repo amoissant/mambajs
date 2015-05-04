@@ -30,7 +30,7 @@ MbaAccessorBaseNode.prototype.createNodeFrom = function(objectWithAccessor){
 
 MbaAccessorBaseNode.prototype.instanciateNewNode = function(objectWithAccessor){
     throw new Error('Must be implemented in subclass.');
-}
+};
 
 MbaAccessorBaseNode.prototype.getChildNodes = function(){
     return this._childNodes;

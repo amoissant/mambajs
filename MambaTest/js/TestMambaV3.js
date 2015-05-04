@@ -3,7 +3,17 @@ var testMbaV3 = function() {
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
 
+Ca('teste le rendu d\'une propriété dans deux éléments de dom', function(){
+        var template = new MbaDomFromString('<div></div><span></span>');
+        var directive = {'name': 'div, span'};
+        var model = {name: 'toto'};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div>toto</div><span>toto</span>');
+    });
     
+//    return;
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
@@ -55,8 +65,13 @@ var testMbaV3 = function() {
                 return object.getPropertyAccessorString();
             case MbaDomMultiplierNode:
                 return object.getDomMultiplier().getModelAccessor().toString();
-            case MbaPropertyBindingNode:
-                return object.getPropertyBinding().getPropertyAccessorString();
+            case MbaPropertyBindingCollectionNode:
+                var propertyBindings = object.getPropertyBindings();
+                var propertyAccessorStrings = [];//TODO ménage
+                for(var i=0 ; i<propertyBindings.length ; i++){
+                    propertyAccessorStrings.push(propertyBindings[i].getPropertyBinding().getPropertyAccessorString());
+                }
+                return '['+propertyAccessorStrings.join(',')+']';
             default:
                 throw new Error('not implemented for '+object.constructor.name);
         }
@@ -610,11 +625,11 @@ var testMbaV3 = function() {
         manager.createPropertyBindingTree();
         
         var propertyBindingTree = manager.getPropertyBindingTree();
-        OnAttend(accessorStringForRoute(propertyBindingTree, [0])).DEtreEgalA('model.persons.name');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [0, 0])).DEtreEgalA('model.persons.vehicles.category');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [1])).DEtreEgalA('model.persons2.name');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 0])).DEtreEgalA('model.persons2.adresses.town');
-        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('model.persons2.vehicles2.brand');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [0])).DEtreEgalA('[model.persons.name]');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [0, 0])).DEtreEgalA('[model.persons.vehicles.category]');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [1])).DEtreEgalA('[model.persons2.name]');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 0])).DEtreEgalA('[model.persons2.adresses.town]');
+        OnAttend(accessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('[model.persons2.vehicles2.brand]');
     });
     
      Ca('test l\'initialisation des relativeAccessor dans l\'arbre des property binding', function(){
@@ -639,7 +654,10 @@ var testMbaV3 = function() {
     
     function targetDomElementIdsForRoute(tree, route){
         var node = nodeForRoute(tree, route);
-        return node.getTargetDomElementIds().join(',');
+        var targetIds = [];//TODO ménage
+        for(var i=0 ; i<node.getPropertyBindings().length ; i++)
+            Uti.array(targetIds).pushAll(node.getPropertyBindings()[i].getTargetDomElementIds());
+        return targetIds.join(',');
     };
     
     function createMbaPropertyBindingWithSelector(selector, memberChain){
@@ -724,6 +742,8 @@ var testMbaV3 = function() {
         
         OnAttend(person1).DEtreEgalA(person2);
     });
+    
+    
     
     //TODO : qu'est ce que cela donne quand on a plusieurs transformations dans une directive "name" : "#toto, #toto@attr" ?
     //comment est l'arbre des propertyBinding ?

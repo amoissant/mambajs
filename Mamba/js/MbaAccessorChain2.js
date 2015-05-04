@@ -73,6 +73,10 @@ MbaAccessorChain2.prototype.hasSameRoot = function(other){
     return true;
 };
 
+MbaAccessorChain2.prototype.equals = function(other){
+    return this.getSize() == other.getSize() && this.hasSameRoot(other);
+};
+
 MbaAccessorChain2.prototype.getSubModelAndUpdateRoute = function (parentModel, modelRoute){
     checkType(modelRoute, MbaRoute2);
     var currentModel = parentModel;

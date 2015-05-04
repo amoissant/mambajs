@@ -17,6 +17,22 @@ MbaAccessorNode.prototype.init = function(objectWithAccessor){
     return this;
 };
 
+MbaAccessorNode.prototype.addNodeFrom = function(objectWithAccessor){
+     if(this.accessorEquals(objectWithAccessor))
+        this.onAccessorEquals(objectWithAccessor);
+    MbaAccessorBaseNode.prototype.addNodeFrom.call(this, objectWithAccessor);
+};
+
+MbaAccessorNode.prototype.accessorEquals = function(otherWithAccessor){
+    var thisAccessor = this._objectWithAccessor.getModelAccessor();
+    var otherAccessor = otherWithAccessor.getModelAccessor();
+    return thisAccessor.equals(otherAccessor);
+};
+
+MbaAccessorNode.prototype.onAccessorEquals = function(otherWithAccessor){
+    throw new Error('Must be implemented in subclass.');
+};
+
 MbaAccessorNode.prototype.accessorHasSameRoot = function(otherWithAccessor){
     var thisAccessor = this._objectWithAccessor.getModelAccessor();
     var otherAccessor = otherWithAccessor.getModelAccessor();
