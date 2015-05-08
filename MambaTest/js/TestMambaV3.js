@@ -2,16 +2,6 @@ var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
-
-Ca('teste le rendu d\'une propriété dans deux éléments de dom', function(){
-        var template = new MbaDomFromString('<div></div><span></span>');
-        var directive = {'name': 'div, span'};
-        var model = {name: 'toto'};
-        var manager = new MbaManager().init(template, directive);
-        
-        manager.render(model);
-        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div>toto</div><span>toto</span>');
-    });
     
 //    return;
     
@@ -738,8 +728,16 @@ Ca('teste le rendu d\'une propriété dans deux éléments de dom', function(){
         OnAttend(person1).DEtreEgalA(person2);
     });
     
-    
-    
+    Ca('teste le rendu d\'une propriété dans deux éléments de dom', function(){
+        var template = new MbaDomFromString('<div></div><span></span>');
+        var directive = {'name': 'div, span'};
+        var model = {name: 'toto'};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div>toto</div><span>toto</span>');
+    });
+   
     //TODO : qu'est ce que cela donne quand on a plusieurs transformations dans une directive "name" : "#toto, #toto@attr" ?
     //comment est l'arbre des propertyBinding ?
 }
