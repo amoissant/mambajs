@@ -112,8 +112,19 @@ MbaTemplateNode.prototype.getDomElementForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
     var domElement = this._renderedDomMap[modelRoute];
     if(domElement == null)
-        throw new Error('dom Element is null for route : '+modelRoute);
+        domElement = this.searchDomElementForParentRouteOf(modelRoute);        
     return domElement;
+};
+
+MbaTemplateNode.prototype.searchDomElementForParentRouteOf = function(modelRoute){
+    checkType(modelRoute, MbaRoute2);
+    while(!modelRoute.isEmpty()){
+        modelRoute.removeLastAccessorWithIndex();
+        var domElement = this._renderedDomMap[modelRoute];
+        if(domElement != null)
+            return domElement;
+    }
+    throw new Error('dom Element is null for route : '+modelRoute);
 };
 
 MbaTemplateNode.prototype.deleteDomForRoute = function(modelRoute){

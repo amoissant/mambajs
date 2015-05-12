@@ -39,6 +39,13 @@ MbaRoute2.prototype.removeLastPart = function(){
         this._accessorChain.removeLastAccessor();    
 };
 
+MbaRoute2.prototype.removeLastAccessorWithIndex = function(){
+    if(!this.sameNumberOfAccessorAndIndexes())
+        throw new Error('must have same number of accessors and indexes');
+    this._routeIndexes.pop();
+    this._accessorChain.removeLastAccessor();    
+};
+
 MbaRoute2.prototype.sameNumberOfAccessorAndIndexes = function(){
     return this._accessorChain.getSize() == this._routeIndexes.length;
 };

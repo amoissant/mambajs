@@ -2,7 +2,7 @@ var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
-    
+   
 //    return;
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
@@ -737,7 +737,51 @@ var testMbaV3 = function() {
         manager.render(model);
         OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div>toto</div><span>toto</span>');
     });
+    
+    Ca('teste le rendu d\'une propriété avec modèle tableau', function(){
+        var template = new MbaDomFromString('<div><span></span></div>');
+        var directive = {'r00t' : 'span', 'name': 'span'};
+        var model = [{name: 'toto'}, {name: 'titi'}];
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div><span>toto</span><span>titi</span></div>');
+    });
+    
+    Ca('teste le rendu d\'une propriété avec modèle tableau récursivement', function(){
+        var template = new MbaDomFromString('<div><span></span><a></a></div>');
+        var directive = {'r00t' : 'div', 'name': 'span', 'sub' : {'r00t' : 'a', 'name' : 'a'}};
+        var model = [{name: 'toto', sub : {name : 'tata'}}, 
+                     {name: 'titi', sub : {name : 'tutu'}}];
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div><span>toto</span><a>tata</a></div><div><span>titi</span><a>tutu</a></div>');
+    });
+    
+    Ca('teste le rendu d\'une propriété avec modèle tableau récursivement, enfant sans r00t', function(){
+        var template = new MbaDomFromString('<div><span></span><a></a></div>');
+        var directive = {'r00t' : 'div', 'name': 'span', 'sub' : {'name' : 'a'}};
+        var model = [{name: 'toto', sub : {name : 'tata'}}, 
+                     {name: 'titi', sub : {name : 'tutu'}}];
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div><span>toto</span><a>tata</a></div><div><span>titi</span><a>tutu</a></div>');
+    });
+    
+    Ca('teste le rendu d\'une propriété dans deux éléments de dom avec modèle tableau', function(){
+        var template = new MbaDomFromString('<div><span></span><a></a></div>');
+        var directive = {'r00t' : 'div', 'name': 'span, a'};
+        var model = [{name: 'toto'}, {name: 'titi'}];
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div><span>toto</span><a>toto</a></div><div><span>titi</span><a>titi</a></div>');
+    });
    
-    //TODO : qu'est ce que cela donne quand on a plusieurs transformations dans une directive "name" : "#toto, #toto@attr" ?
-    //comment est l'arbre des propertyBinding ?
+    //TODO si pas de r00t avec modèle tableau alors lever exception
+    //    var template = new MbaDomFromString('<div><span></span></div>');
+    //    var directive = {'name': 'span'};
+    //    var model = [{name: 'toto'}, {name: 'titi'}];
 }
