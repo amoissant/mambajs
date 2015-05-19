@@ -72,6 +72,10 @@ MbaRoute2.prototype.setLastIndexToUndefined = function(){
     this._routeIndexes[this._routeIndexes.length-1] = undefined;
 };
 
+MbaRoute2.prototype.lastIndexIsUndefined = function(){
+    return this._routeIndexes[this._routeIndexes.length-1] == undefined;
+};
+
 MbaRoute2.prototype.setIndexes = function(indexes){
     checkType(indexes, Array);
     this._routeIndexes = indexes;
@@ -93,5 +97,14 @@ MbaRoute2.prototype.isParentOfRouteId = function(routeId){
     var id = this.toString();
     return routeId.indexOf(id) != -1;
 };
+
+MbaRoute2.prototype.forDebug = function(){
+    var debugRoute = this.clone();
+    debugRoute.setLastIndexToUndefined();
+    var debugRouteString = debugRoute.toString();
+    return debugRouteString.substring(1, debugRouteString.length);
+    return this._accessorChain.toStringWithIndexes(this._routeIndexes);
+};
+
     
     

@@ -779,9 +779,16 @@ var testMbaV3 = function() {
         manager.render(model);
         OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div><span>toto</span><a>toto</a></div><div><span>titi</span><a>titi</a></div>');
     });
-   
-    //TODO si pas de r00t avec modèle tableau alors lever exception
-    //    var template = new MbaDomFromString('<div><span></span></div>');
-    //    var directive = {'name': 'span'};
-    //    var model = [{name: 'toto'}, {name: 'titi'}];
+    
+    Ca('lève une exception si pas de r00t et modèle tableau', function(){
+        var template = new MbaDomFromString('<a></a>');
+        var directive = {'name': 'a'};
+        var model = [{name: 'toto'}, {name: 'titi'}];
+        var manager = new MbaManager().init(template, directive);
+        
+        try{ manager.render(model); }
+        catch (e){ return OnAttend(e instanceof MbaError).DEtreVrai(); }
+        
+        Echec();
+    });
 }

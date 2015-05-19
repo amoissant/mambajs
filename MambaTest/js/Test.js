@@ -134,6 +134,13 @@ function OnAttend(valeurATester) {
     return InstanceDeTest;
 }
 
+function Echec() {
+    var InstanceDeTest = Testeur.Courant();
+    throw Error('Echec du test');
+    return InstanceDeTest;
+}
+
+
 function Initialiser(initialisation) {
     var InstanceDeTest = Testeur.Courant();
     if (initialisation == null)

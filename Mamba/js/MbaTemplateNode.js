@@ -111,9 +111,16 @@ MbaTemplateNode.prototype.initIfNeededDomSizeForParentRoute = function(parentRou
 MbaTemplateNode.prototype.getDomElementForRoute = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
     var domElement = this._renderedDomMap[modelRoute];
-    if(domElement == null)
-        domElement = this.searchDomElementForParentRouteOf(modelRoute);        
-    return domElement;
+    if(domElement != null)
+        return domElement;
+    if(this.modelRouteIsForArrayModel(modelRoute))
+        throw new MbaError().init2(modelRoute.forDebug()+' is an array, set r00t in directive.');//TODO new MbaMissingR00tError
+    return this.searchDomElementForParentRouteOf(modelRoute);        
+};
+
+MbaTemplateNode.prototype.modelRouteIsForArrayModel = function(modelRoute){
+    checkType(modelRoute, MbaRoute2);
+    return modelRoute.sameNumberOfAccessorAndIndexes() && !modelRoute.lastIndexIsUndefined();
 };
 
 MbaTemplateNode.prototype.searchDomElementForParentRouteOf = function(modelRoute){
