@@ -2,8 +2,25 @@ var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
-   
-//    return;
+
+    Ca('appelle une méthode sur l\'évènement donné', function(){
+        var template = new MbaDomFromString('<a></a>');
+        var directive = {'name': 'a', '/toUpper' : 'a->click'};
+        var model = {name: 'toto', toUpper: function(){ 
+            this.name = this.name.toUpperCase();
+        }};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        var a = renderedDom.selectOneMax('a');
+        a.dispatchEvent(new Event('click'));
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<a>TOTO</a>');
+        OnAttend(model.name).DEtreEgalA('TOTO');
+    });
+
+    //return;
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
@@ -57,8 +74,9 @@ var testMbaV3 = function() {
                 return object.getDomMultiplier().getModelAccessor().toString();
             case MbaPropertyBindingNode:
                 return object.getPropertyBinding().getPropertyAccessorString();
-            case MbaPropertyBindingCollectionNode:
-                return object.getPropertyAccessorString();
+            case MbaBindingCollectionNode:
+                var firstBinding = object.getBindings()[0];
+                return object.getModelAccessor()+'.'+firstBinding.getPropertyAccessor();
             default:
                 throw new Error('not implemented for '+object.constructor.name);
         }
@@ -154,13 +172,13 @@ var testMbaV3 = function() {
 
         OnAttend(actionBindings.length).DEtreEgalA(3);
         OnAttend(actionBindings[0].getSelector()).DEtreEgalA('.toto');
-        OnAttend(actionBindings[0].getActionAccessor().toString()).DEtreEgalA('model.toto');
+        OnAttend(actionBindings[0].getActionAccessorString()).DEtreEgalA('model.toto');
         
         OnAttend(actionBindings[1].getSelector()).DEtreEgalA('button');
-        OnAttend(actionBindings[1].getActionAccessor().toString()).DEtreEgalA('model.coordinates.delete');
+        OnAttend(actionBindings[1].getActionAccessorString()).DEtreEgalA('model.coordinates.delete');
         
         OnAttend(actionBindings[2].getSelector()).DEtreEgalA('.del');
-        OnAttend(actionBindings[2].getActionAccessor().toString()).DEtreEgalA('model.coordinates.delete');
+        OnAttend(actionBindings[2].getActionAccessorString()).DEtreEgalA('model.coordinates.delete');
     });
     
     Ca('test le tri des dom multiplier', function(){
@@ -590,7 +608,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
-        manager.createPropertyBindingTree();
+        manager.createBindingTree();
         
         var sortedPropertyBindings = manager.getPropertyBindings();
         OnAttend(accessorString(sortedPropertyBindings[0])).DEtreEgalA('model.persons.name');
@@ -609,9 +627,9 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
-        manager.createPropertyBindingTree();
+        manager.createBindingTree();
         
-        var propertyBindingTree = manager.getPropertyBindingTree();
+        var propertyBindingTree = manager.getBindingTree();
         OnAttend(accessorStringForRoute(propertyBindingTree, [0])).DEtreEgalA('model.persons.name');
         OnAttend(accessorStringForRoute(propertyBindingTree, [0, 0])).DEtreEgalA('model.persons.vehicles.category');
         OnAttend(accessorStringForRoute(propertyBindingTree, [1])).DEtreEgalA('model.persons2.name');
@@ -629,9 +647,9 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
-        manager.createPropertyBindingTree();
+        manager.createBindingTree();
         
-        var propertyBindingTree = manager.getPropertyBindingTree();
+        var propertyBindingTree = manager.getBindingTree();
         OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [0])).DEtreEgalA('model.persons');
         OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [0, 0])).DEtreEgalA('vehicles');
         OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [1])).DEtreEgalA('model.persons2');
@@ -641,8 +659,8 @@ var testMbaV3 = function() {
     
     function targetDomElementIdsForRoute(tree, route, bindingIndex){
         var node = nodeForRoute(tree, route);
-        var propertyBinding = node.getPropertyBindings()[bindingIndex];
-        return propertyBinding.getTargetDomElementIds().join(',');
+        var binding = node.getBindings()[bindingIndex];
+        return binding.getTargetDomElementIds().join(',');
     };
     
     function createMbaPropertyBindingWithSelector(selector, memberChain){
@@ -660,10 +678,10 @@ var testMbaV3 = function() {
          manager._domMultipliers = [];
          manager._propertyBindings = propertyBindings;
          manager.setTemplate(template);
-         manager.createPropertyBindingTree();   
-         manager.linkPropertyBindingTreeToTemplate();
+         manager.createBindingTree();   
+         manager.linkBindingTreeToTemplate();
         
-         var propertyBindingTree = manager.getPropertyBindingTree();
+         var propertyBindingTree = manager.getBindingTree();
          OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0], 0))
              .DEtreEgalA('1,2');
          OnAttend(targetDomElementIdsForRoute(propertyBindingTree, [0, 0], 0))
@@ -791,4 +809,6 @@ var testMbaV3 = function() {
         
         Echec();
     });
+    
+   //TODO rafraichir le modèle avec la nouvealle valeur sur l'évènement input$value->blur
 }

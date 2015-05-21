@@ -3,7 +3,7 @@ function MbaManager(){
     this._propertyBindings;
     this._actionBindings;
     this._domMultiplierTree;
-    this._propertyBindingTree;
+    this._bindingTree;
     this._template;
 }
 
@@ -11,10 +11,11 @@ MbaManager.prototype.init = function(template, directive){
     checkType(template, MbaDom);
     this.parseDirective(directive);
     this.createDomMultiplierTree();
-    this.createPropertyBindingTree();
+    this.createBindingTree();
+    this.addActionBindingsToBindingTree();
     this.setTemplate(template);
     this.linkDomMultiplierTreeToTemplate();
-    this.linkPropertyBindingTreeToTemplate();
+    this.linkBindingTreeToTemplate();
     return this;
 };
 
@@ -45,18 +46,6 @@ MbaManager.prototype.getModelAccessorCompareFunction = function(){
     };
 };
 
-MbaManager.prototype.constructDomMultiplierTree = function(){
-    this.constructAccessorTree(this._domMultipliers, this._domMultiplierTree);
-};
-
-MbaManager.prototype.linkDomMultiplierTreeToTemplate = function(){
-    this._domMultiplierTree.linkToTemplate(this._template);
-};
-
-MbaManager.prototype.linkPropertyBindingTreeToTemplate = function(){
-    this._propertyBindingTree.linkToTemplate(this._template);
-};
-
 MbaManager.prototype.setTemplate = function(template){
     checkType(template, MbaDom);
     var domMultipliersSelectors = this.getDomMultipliersSelectors();
@@ -71,16 +60,28 @@ MbaManager.prototype.getDomMultipliersSelectors = function(){
     return domMultipliersSelectors;
 };
 
-MbaManager.prototype.createPropertyBindingTree = function(){
-    this._propertyBindingTree = new MbaPropertyBindingTree().init();
-    this.constructAccessorTree(this._propertyBindings, this._propertyBindingTree);
+MbaManager.prototype.createBindingTree = function(){
+    this._bindingTree = new MbaBindingTree().init();
+    this.constructAccessorTree(this._propertyBindings, this._bindingTree);    
+};
+
+MbaManager.prototype.addActionBindingsToBindingTree = function(){
+    this.constructAccessorTree(this._actionBindings, this._bindingTree);    
+};
+
+MbaManager.prototype.linkDomMultiplierTreeToTemplate = function(){
+    this._domMultiplierTree.linkToTemplate(this._template);
+};
+
+MbaManager.prototype.linkBindingTreeToTemplate = function(){
+    this._bindingTree.linkToTemplate(this._template);
 };
 
 MbaManager.prototype.render = function(model){
     if(!this._template.isReadyToRender())
         this._template.initRenderedDom();
     this._domMultiplierTree.updateDomForModel(model);
-    this._propertyBindingTree.applyBindingsForModel(model);
+    this._bindingTree.applyBindingsForModel(model);
 };
 
 MbaManager.prototype.getDomMultipliers = function(){
@@ -99,8 +100,8 @@ MbaManager.prototype.getDomMultiplierTree = function(){
     return this._domMultiplierTree;
 };
 
-MbaManager.prototype.getPropertyBindingTree = function(){
-    return this._propertyBindingTree;
+MbaManager.prototype.getBindingTree = function(){
+    return this._bindingTree;
 };
 
 MbaManager.prototype.getRenderedDom = function(){

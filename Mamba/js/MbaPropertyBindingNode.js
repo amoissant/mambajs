@@ -57,6 +57,10 @@ MbaPropertyBindingNode.prototype.getPropertyBinding = function(){
     return this._propertyBinding;
 };
 
+MbaPropertyBindingNode.prototype.getPropertyAccessor = function(){
+    return this._propertyAccessor;
+};
+
 MbaPropertyBindingNode.prototype.getTargetDomElementIds = function(){
     return this._targetDomElementIds;
 };
