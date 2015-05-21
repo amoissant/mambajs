@@ -11,7 +11,7 @@ MbaRoute2.prototype.init = function(){
 
 MbaRoute2.prototype.initFromAccessorAndIndexes = function(accessorChain, indexes){
     checkType(accessorChain, MbaAccessorChain2);
-    checkType(indexes, 'array', 'string');
+    checkType(indexes, Array);
     this._accessorChain = accessorChain;
     this._routeIndexes = indexes;
     return this;

@@ -39,7 +39,7 @@ MbaActionBindingNode.prototype.applyBinding = function(domElement, model, route)
     for(var i=0 ; i<this._events.length ; i++){
         domElement.addEventListener(this._events[i], function(){
             model[action]();//TODO passer en paramètre le(s) modèle(s) correspondant(s) au domElement
-            console.log(route.toString());
+            //console.log(route.toString());
             //TODO faire un render pour la route donnée pour rafraichir le dom
         });   
     }    

@@ -55,29 +55,30 @@ MbaBindingCollectionNode.prototype.applyBindingsForModelWithIndexes = function(p
     checkType(parentIndexes, Array);
     this.setModelAndRoute(parentModel, parentIndexes);
     if(this._model instanceof Array)
-        this.applyPropertyBindingsForEachModel();        
+        this.applyBindingsForEachModel();        
     else
-        this.applyPropertyBindings();
+        this.applyBindings();
 };
 
-MbaBindingCollectionNode.prototype.applyPropertyBindingsForEachModel = function(){
+MbaBindingCollectionNode.prototype.applyBindingsForEachModel = function(){
     //TODO ici on se sert juste de modelRoute comme clé pour previousModelSize, on peut optimiser en evitant le clone
     this._modelRoute = this._modelRoute.clone();
     var modelArray = this._model;
     for(var i=0 ; i<modelArray.length ; i++){
         this._modelRoute.setLastIndex(i);
         this._model = modelArray[i];
-        this.applyPropertyBindings();
-        this.askChildrenApplyPropertyBindings();
+        this.applyBindings();
+        //this.askChildrenApplyBindings();
     }
 };
 
-MbaBindingCollectionNode.prototype.applyPropertyBindings = function(){
+MbaBindingCollectionNode.prototype.applyBindings = function(){
     for(var i=0 ; i< this._bindingNodeCollection.length ; i++)
         this._bindingNodeCollection[i].applyBindingForModelAndRoute(this._model, this._modelRoute);
+    this.askChildrenApplyBindings();
 };
 
-MbaBindingCollectionNode.prototype.askChildrenApplyPropertyBindings = function(){
+MbaBindingCollectionNode.prototype.askChildrenApplyBindings = function(){
     var indexes = this._modelRoute.getIndexes();
     for(var i=0 ; i<this._childNodes.length ; i++){
         var currentChild = this._childNodes[i];

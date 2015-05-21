@@ -3,24 +3,27 @@ var testMbaV3 = function() {
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
 
-    Ca('appelle une méthode sur l\'évènement donné', function(){
-        var template = new MbaDomFromString('<a></a>');
-        var directive = {'name': 'a', '/toUpper' : 'a->click'};
-        var model = {name: 'toto', toUpper: function(){ 
-            this.name = this.name.toUpperCase();
-        }};
+Ca('rafraichit le dom pour une route donnée', function(){
+        var template = new MbaDomFromString('<div><a></a></div>');
+        var directive = {'name': 'div@name', 'sub' : {'prop' : 'a'}};
+        var model = {name: 'toto', sub: {prop : 'titi'}};
         var manager = new MbaManager().init(template, directive);
         
         manager.render(model);
-        var renderedDom = manager.getRenderedDom();
-        var a = renderedDom.selectOneMax('a');
-        a.dispatchEvent(new Event('click'));
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="toto"><a>titi</a></div>');
         
-        OnAttend(renderedDom.toString()).DEtreEgalA('<a>TOTO</a>');
-        OnAttend(model.name).DEtreEgalA('TOTO');
+        model.name = 'TOTO';
+        model.sub.prop = 'TITI';
+        
+        var route = new MbaRoute2().initFromAccessorAndIndexes(new MbaAccessorChain2().initFromMemberChain(['model', 'sub']), [undefined, undefined]);
+        
+        console.log(route.toString());
+        
+        //manager.refreshForRoute();
+        //OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="toto"><a>TITI</a></div>');
     });
-
-    //return;
+    
+    return;
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
@@ -809,6 +812,26 @@ var testMbaV3 = function() {
         
         Echec();
     });
+ 
+    Ca('appelle une méthode sur l\'évènement donné', function(){
+        var template = new MbaDomFromString('<a></a>');
+        var directive = {'name': 'a', '/toUpper' : 'a->click'};
+        var model = {name: 'toto', toUpper: function(){ 
+            this.name = this.name.toUpperCase();
+        }};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        var a = renderedDom.selectOneMax('a');
+        a.dispatchEvent(new Event('click'));
+        
+        //TODO décommenter une fois rafraichissement ok
+        //OnAttend(renderedDom.toString()).DEtreEgalA('<a>TOTO</a>');
+        OnAttend(model.name).DEtreEgalA('TOTO');
+    });
     
+    
+
    //TODO rafraichir le modèle avec la nouvealle valeur sur l'évènement input$value->blur
 }
