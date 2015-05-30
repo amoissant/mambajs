@@ -32,6 +32,13 @@ MbaRoute2.prototype.clone = function(){
     return clone;
 };
 
+MbaRoute2.prototype.removeFirstPart = function(){    
+    if(!this.sameNumberOfAccessorAndIndexes())
+        throw new Error('must have same number of accessors and indexes');
+    this._routeIndexes.shift();
+    this._accessorChain.removeFirstAccessor();    
+};
+
 MbaRoute2.prototype.removeLastPart = function(){
     if(this.sameNumberOfAccessorAndIndexes())
         this._routeIndexes.pop();
@@ -96,6 +103,10 @@ MbaRoute2.prototype.toString = function(){
 MbaRoute2.prototype.isParentOfRouteId = function(routeId){
     var id = this.toString();
     return routeId.indexOf(id) != -1;
+};
+
+MbaRoute2.prototype.getSubModel = function(parentModel){
+    return this._accessorChain.getSubModelForIndexes(parentModel, this._routeIndexes);
 };
 
 MbaRoute2.prototype.forDebug = function(){

@@ -54,10 +54,14 @@ MbaBindingCollectionNode.prototype.onAccessorEquals = MbaBindingCollectionNode.p
 MbaBindingCollectionNode.prototype.applyBindingsForModelWithIndexes = function(parentModel, parentIndexes){
     checkType(parentIndexes, Array);
     this.setModelAndRoute(parentModel, parentIndexes);
+    this.applyBindings();
+};
+
+MbaBindingCollectionNode.prototype.applyBindings = function(){
     if(this._model instanceof Array)
         this.applyBindingsForEachModel();        
     else
-        this.applyBindings();
+        this.applyBindingsForOneModel();
 };
 
 MbaBindingCollectionNode.prototype.applyBindingsForEachModel = function(){
@@ -67,12 +71,11 @@ MbaBindingCollectionNode.prototype.applyBindingsForEachModel = function(){
     for(var i=0 ; i<modelArray.length ; i++){
         this._modelRoute.setLastIndex(i);
         this._model = modelArray[i];
-        this.applyBindings();
-        //this.askChildrenApplyBindings();
+        this.applyBindingsForOneModel();
     }
 };
 
-MbaBindingCollectionNode.prototype.applyBindings = function(){
+MbaBindingCollectionNode.prototype.applyBindingsForOneModel = function(){
     for(var i=0 ; i< this._bindingNodeCollection.length ; i++)
         this._bindingNodeCollection[i].applyBindingForModelAndRoute(this._model, this._modelRoute);
     this.askChildrenApplyBindings();
@@ -85,6 +88,8 @@ MbaBindingCollectionNode.prototype.askChildrenApplyBindings = function(){
         currentChild.applyBindingsForModelWithIndexes(this._model, indexes);
     }
 };
+
+MbaBindingCollectionNode.prototype.refresh = MbaBindingCollectionNode.prototype.applyBindings;
 
 MbaBindingCollectionNode.prototype.getBindings = function(){
     return this._bindingNodeCollection;

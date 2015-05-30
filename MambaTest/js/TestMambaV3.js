@@ -2,28 +2,8 @@ var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser);
-
-Ca('rafraichit le dom pour une route donnée', function(){
-        var template = new MbaDomFromString('<div><a></a></div>');
-        var directive = {'name': 'div@name', 'sub' : {'prop' : 'a'}};
-        var model = {name: 'toto', sub: {prop : 'titi'}};
-        var manager = new MbaManager().init(template, directive);
-        
-        manager.render(model);
-        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="toto"><a>titi</a></div>');
-        
-        model.name = 'TOTO';
-        model.sub.prop = 'TITI';
-        
-        var route = new MbaRoute2().initFromAccessorAndIndexes(new MbaAccessorChain2().initFromMemberChain(['model', 'sub']), [undefined, undefined]);
-        
-        console.log(route.toString());
-        
-        //manager.refreshForRoute();
-        //OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="toto"><a>TITI</a></div>');
-    });
     
-    return;
+    //return;
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
@@ -832,6 +812,29 @@ Ca('rafraichit le dom pour une route donnée', function(){
     });
     
     
-
+    function createRoute(memberChain, indexes){
+        var accessorChain = new MbaAccessorChain2().initWithRootModelAccessorFromMemberChain(memberChain);
+        return new MbaRoute2().initFromAccessorAndIndexes(accessorChain, indexes)
+    };
+    
+    Ca('rafraichit le dom pour une route donnée', function(){
+        var template = new MbaDomFromString('<div><a></a></div>');
+        var directive = {'name': 'div@name', 'sub' : {'prop' : 'a'}};
+        var model = {name: 'toto', sub: {prop : 'titi'}};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="toto"><a>titi</a></div>');
+        
+        model.name = 'TOTO';
+        model.sub.prop = 'TITI';
+        var route = createRoute(['sub'], [undefined, undefined]);
+        manager.refreshForRoute(route);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="toto"><a>TITI</a></div>');
+    });
+    
+    //tester quand une action ajoute/supprime un modèle dans un tableau
+    //refreshForRoute doit appeler les dom multiplier + appliquer les bindings
+    
    //TODO rafraichir le modèle avec la nouvealle valeur sur l'évènement input$value->blur
 }

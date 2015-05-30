@@ -1,10 +1,11 @@
 function MbaAccessorNode(){
     this._objectWithAccessor;
-    this._relativeAccesor;
+    this._relativeAccessor;
     this._template;
     this._model;
     this._modelRoute;
     this._modelRouteSnapshot;
+    this._modelAccessorId;
 }
 
 MbaAccessorNode.prototype = new MbaAccessorBaseNode();
@@ -14,6 +15,7 @@ MbaAccessorNode.prototype.init = function(objectWithAccessor){
     MbaAccessorBaseNode.prototype.init.call(this);
     this._objectWithAccessor = objectWithAccessor;
     this._modelRoute = new MbaRoute2().initFromAccessor(objectWithAccessor.getModelAccessor());
+    this._modelAccessorId = this._modelRoute.getAccessorId();
     return this;
 };
 
@@ -87,11 +89,34 @@ MbaAccessorNode.prototype.setModelAndRoute = function(parentModel, parentIndexes
     //TODO ici on se sert juste de modelArrayRoute comme clé, on peut optimiser en evitant le clone
 };
 
+MbaAccessorNode.prototype.findAndRefresh = function(parentModel, route){
+    checkType(route, MbaRoute2);
+    this._model = this._relativeAccessor.getSubModelAndReduceRoute(parentModel, route);
+    if(route.isEmpty()){
+        this.refresh();
+        return;
+    }
+    this.askChildrenFindAndRefresh(this._model, route);
+};
+
+MbaAccessorNode.prototype.refresh = function(){
+    throw new Error('Must be implemented in subclass.');
+};
+
+MbaAccessorNode.prototype.relativeAccessorMatches = function(route){
+    checkType(route, MbaRoute2);
+    return route.getAccessorId().startsWith(this._relativeAccessor.getId());
+};
+
 MbaAccessorNode.prototype.getObjectWithAccessor = function(){
     return this._objectWithAccessor;
 };
 
 MbaAccessorNode.prototype.getRelativeAccessor = function(){
     return this._relativeAccessor;
+};
+
+MbaAccessorNode.prototype.getModelAccessorId = function(){
+    return this._modelAccessorId;
 };
 

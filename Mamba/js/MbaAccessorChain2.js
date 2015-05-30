@@ -3,28 +3,20 @@ function MbaAccessorChain2(){
     this._modelValue; 
 }
 
-//plus utilisé on utilise des routes avec model accesseur systématiquement
-/*MbaAccessorChain2.prototype.initWithRootModelAccessor = function(){
-    this.initFromMemberChain([]);
-    this.prependRootModelAccessor();
-    return this;
-};*/
-
 MbaAccessorChain2.prototype.initWithRootModelAccessorFromMemberChain = function(memberChain){
     checkType(memberChain, 'array', 'string');
     this.initEmpty();
     this.createAccessors(memberChain);
-    //this.initFromMemberChain(memberChain);
     this.prependRootModelAccessor();
     return this;
 };
 
-MbaAccessorChain2.prototype.initFromMemberChain = function(memberChain){
+/*MbaAccessorChain2.prototype.initFromMemberChain = function(memberChain){
     checkType(memberChain, 'array', 'string');
-    this.initEmpty();
+    this.initEmpty();initFromMemberChain
     this.createAccessors(memberChain);
     return this;
-};
+};*/
     
 MbaAccessorChain2.prototype.initFromAccessorChain = function(accessorChain){
     checkType(accessorChain, MbaAccessorChain2);
@@ -53,6 +45,10 @@ MbaAccessorChain2.prototype.appendAccessor = function(accessor){
 MbaAccessorChain2.prototype.prependRootModelAccessor = function(){
     this._accessors.splice(0, 0, new MbaSelfAccessor());
 };
+
+MbaAccessorChain2.prototype.removeFirstAccessor = function(){
+    this._accessors.shift();  
+};  
 
 MbaAccessorChain2.prototype.removeNFirstAccessors = function(n){
     for(var i=0; i<n ; i++){
@@ -84,6 +80,31 @@ MbaAccessorChain2.prototype.getSubModelAndUpdateRoute = function (parentModel, m
         //TODO : si subModel est un tableau alors erreur -> il faut mettre une 'r00t'
         currentModel = this._accessors[i].getModelValue(currentModel);
         modelRoute.appendUndefinedIndex();
+    }
+    return currentModel;
+};
+
+MbaAccessorChain2.prototype.getSubModelForIndexes = function (parentModel, indexes){
+    checkType(indexes, Array);
+    var currentModel = parentModel;
+    for(var i=0 ; i<this._accessors.length ; i++){
+        currentModel = this._accessors[i].getModelValue(currentModel);
+        var currentIndex = indexes[i];
+        if(currentIndex != undefined)
+            currentModel = currentModel[currentIndex];
+    }
+    return currentModel;
+};
+
+MbaAccessorChain2.prototype.getSubModelAndReduceRoute = function (parentModel, route){
+    checkType(route, MbaRoute2);
+    var currentModel = parentModel;
+    for(var i=0 ; i<this._accessors.length ; i++){
+        currentModel = this._accessors[i].getModelValue(currentModel);
+        var currentIndex = route.getIndexes()[i];
+        if(currentIndex != undefined)
+            currentModel = currentModel[currentIndex];
+        route.removeFirstPart();
     }
     return currentModel;
 };

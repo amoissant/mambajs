@@ -1,12 +1,11 @@
 function MbaDomMultiplierNode(){
     this._domMultiplier;
     this._domElementsToCloneMap;
-    this._model;
     this._modelIsArray;
-    this._modelRouteSnapshot;
     this._modelSize;
     this._previousModelSize;
 }
+
 MbaDomMultiplierNode.prototype = new MbaAccessorNode();
 MbaDomMultiplierNode.prototype.constructor = MbaDomMultiplierNode;
 
@@ -157,10 +156,6 @@ MbaDomMultiplierNode.prototype.updatePreviousModelSize = function(){
 
 MbaDomMultiplierNode.prototype.getDomMultiplier = function(){
     return this._domMultiplier;
-};
-
-MbaDomMultiplierNode.prototype.getRelativeAccessor = function(){
-    return this._relativeAccessor;
 };
 
 MbaDomMultiplierNode.prototype.getDomElementsToCloneMap = function(){

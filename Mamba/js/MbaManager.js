@@ -5,6 +5,7 @@ function MbaManager(){
     this._domMultiplierTree;
     this._bindingTree;
     this._template;
+    this._model;
 }
 
 MbaManager.prototype.init = function(template, directive){
@@ -80,8 +81,16 @@ MbaManager.prototype.linkBindingTreeToTemplate = function(){
 MbaManager.prototype.render = function(model){
     if(!this._template.isReadyToRender())
         this._template.initRenderedDom();
+    this._model = model;
     this._domMultiplierTree.updateDomForModel(model);
     this._bindingTree.applyBindingsForModel(model);
+};
+
+MbaManager.prototype.refreshForRoute = function(route){
+    checkType(route, MbaRoute2);
+    this._bindingTree.findAndRefresh(this._model, route);
+    //TODO tester un refresh qui ajout/supprime des éléments de dom
+    //TODO tester que l'on rafraichit seulement pour la route (ex model[1].sub[0])
 };
 
 MbaManager.prototype.getDomMultipliers = function(){
