@@ -101,7 +101,7 @@ MbaAccessorChain2.prototype.getSubModelAndReduceRoute = function (parentModel, r
     var currentModel = parentModel;
     for(var i=0 ; i<this._accessors.length ; i++){
         currentModel = this._accessors[i].getModelValue(currentModel);
-        var currentIndex = route.getIndexes()[i];
+        var currentIndex = route.getIndexes()[0];
         if(currentIndex != undefined)
             currentModel = currentModel[currentIndex];
         route.removeFirstPart();

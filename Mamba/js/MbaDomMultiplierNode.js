@@ -39,10 +39,15 @@ MbaDomMultiplierNode.prototype.constructDomElementsToCloneMap = function(){
 MbaDomMultiplierNode.prototype.updateDomForModelWithIndexes = function(parentModel, parentIndexes){
     checkType(parentIndexes, Array);
     this.setModelAndRoute(parentModel, parentIndexes);
+    this.updateDom();
+};
+
+MbaDomMultiplierNode.prototype.updateDom = function(){
     this._modelIsArray = this._model instanceof Array;
     this.computeModelSize();
     this.createUpdateDeleteDomForEachModel();
 };
+
 
 MbaDomMultiplierNode.prototype.computeModelSize = function(){
     if(this._modelIsArray)
@@ -152,6 +157,13 @@ MbaDomMultiplierNode.prototype.reinitPreviousModelSizeForParentRoute = function(
 
 MbaDomMultiplierNode.prototype.updatePreviousModelSize = function(){
     this._previousModelSize[this._modelRouteSnapshot] = this._modelSize;
+};
+
+MbaDomMultiplierNode.prototype.refresh = function(){
+    if(this._model instanceof Array){
+        this.updateDom();
+    }
+    this.askChildrenUpdateDomForModel(this._model);
 };
 
 MbaDomMultiplierNode.prototype.getDomMultiplier = function(){

@@ -55,7 +55,6 @@ MbaAccessorBaseNode.prototype.askChildrenFindAndRefresh = function(parentModel, 
             return;
         }
     }
-    throw new Error('Did not find node for route.');
 };
 
 MbaAccessorBaseNode.prototype.getChildNodes = function(){

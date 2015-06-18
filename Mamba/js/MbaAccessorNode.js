@@ -106,6 +106,7 @@ MbaAccessorNode.prototype.refresh = function(){
 MbaAccessorNode.prototype.relativeAccessorMatches = function(route){
     checkType(route, MbaRoute2);
     return route.getAccessorId().startsWith(this._relativeAccessor.getId());
+    //return this._relativeAccessor.getId().startsWith(route.getAccessorId());
 };
 
 MbaAccessorNode.prototype.getObjectWithAccessor = function(){
