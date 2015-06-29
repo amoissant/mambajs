@@ -11,3 +11,16 @@ MbaDomMultiplierTree.prototype.updateDomForModel = function(model){
         this._childNodes[i].updateDomForModelWithIndexes(model, []);
     }
 };
+
+/*MbaDomMultiplierTree.prototype.findNodeToRefresh = function(parentModel, route){
+    checkType(route, MbaRoute2);
+    var routeClone = route.clone();
+    var nodeToRefresh = this.findNodeToRefreshAmongChildren(parentModel, route);
+    console.log(nodeToRefresh);
+    var subModel = parentModel.sub[0];
+    var indexes = routeClone.getIndexes();
+    this._modelRoute.copyIndexes(parentIndexes);
+    this._model = subModel;
+    this._modelRouteSnapshot = routeClone.toString();
+    nodeToRefresh.askChildrenUpdateDomForModel(subModel);
+};*/

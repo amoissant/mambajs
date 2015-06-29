@@ -88,8 +88,12 @@ MbaManager.prototype.render = function(model){
 
 MbaManager.prototype.refreshForRoute = function(route){
     checkType(route, MbaRoute2);
-    this._domMultiplierTree.findAndRefresh(this._model, route.clone());
-    this._bindingTree.findAndRefresh(this._model, route);
+    //this._domMultiplierTree.findNodeToRefresh(this._model, route.clone());
+    //this._bindingTree.findNodeToRefresh(this._model, route.clone());
+    var routeIndexes = route.getIndexes();
+    this._domMultiplierTree.findAndRefresh(this._model, route.clone(), routeIndexes);
+    this._bindingTree.findAndRefresh(this._model, route.clone(), routeIndexes);
+    
     //TODO tester un refresh qui ajout/supprime des éléments de dom
     //TODO tester que l'on rafraichit seulement pour la route (ex model[1].sub[0])
 };

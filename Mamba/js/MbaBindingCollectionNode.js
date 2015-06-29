@@ -65,8 +65,6 @@ MbaBindingCollectionNode.prototype.applyBindings = function(){
 };
 
 MbaBindingCollectionNode.prototype.applyBindingsForEachModel = function(){
-    //TODO ici on se sert juste de modelRoute comme clé pour previousModelSize, on peut optimiser en evitant le clone
-    this._modelRoute = this._modelRoute.clone();
     var modelArray = this._model;
     for(var i=0 ; i<modelArray.length ; i++){
         this._modelRoute.setLastIndex(i);

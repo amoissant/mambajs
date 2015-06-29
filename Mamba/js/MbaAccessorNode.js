@@ -86,17 +86,20 @@ MbaAccessorNode.prototype.setModelAndRoute = function(parentModel, parentIndexes
     this._modelRoute.copyIndexes(parentIndexes);
     this._model = this._relativeAccessor.getSubModelAndUpdateRoute(parentModel, this._modelRoute);
     this._modelRouteSnapshot = this._modelRoute.clone().toString();
-    //TODO ici on se sert juste de modelArrayRoute comme clé, on peut optimiser en evitant le clone
+    //TODO ici on se sert juste de _modelRouteSnapshot comme clé, on peut optimiser en evitant le clone
 };
 
-MbaAccessorNode.prototype.findAndRefresh = function(parentModel, route){
+MbaAccessorNode.prototype.findAndRefresh = function(parentModel, route, indexes){
     checkType(route, MbaRoute2);
+    var routeClone = route.clone();
     this._model = this._relativeAccessor.getSubModelAndReduceRoute(parentModel, route);
     if(route.isEmpty()){
+        this._modelRoute.copyIndexes(indexes);
+        this._modelRouteSnapshot = this._modelRoute.clone().toString();
         this.refresh();
-        return;
     }
-    this.askChildrenFindAndRefresh(this._model, route);
+    else    
+        this.askChildrenFindAndRefresh(this._model, route, indexes);
 };
 
 MbaAccessorNode.prototype.refresh = function(){
@@ -106,7 +109,6 @@ MbaAccessorNode.prototype.refresh = function(){
 MbaAccessorNode.prototype.relativeAccessorMatches = function(route){
     checkType(route, MbaRoute2);
     return route.getAccessorId().startsWith(this._relativeAccessor.getId());
-    //return this._relativeAccessor.getId().startsWith(route.getAccessorId());
 };
 
 MbaAccessorNode.prototype.getObjectWithAccessor = function(){

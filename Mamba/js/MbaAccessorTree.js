@@ -17,8 +17,7 @@ MbaAccessorTree.prototype.linkToTemplate = function(template){
     }
 };
 
-MbaAccessorTree.prototype.findAndRefresh = function(parentModel, route){
+MbaAccessorTree.prototype.findAndRefresh = function(parentModel, route, indexes){
     checkType(route, MbaRoute2);
-    this.askChildrenFindAndRefresh(parentModel, route);
+    this.askChildrenFindAndRefresh(parentModel, route, indexes);
 };
-
