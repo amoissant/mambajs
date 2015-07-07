@@ -85,8 +85,7 @@ MbaAccessorNode.prototype.askChildrenToLinkTemplate = function(){
 MbaAccessorNode.prototype.setModelAndRoute = function(parentModel, parentIndexes){
     this._modelRoute.copyIndexes(parentIndexes);
     this._model = this._relativeAccessor.getSubModelAndUpdateRoute(parentModel, this._modelRoute);
-    this._modelRouteSnapshot = this._modelRoute.clone().toString();
-    //TODO ici on se sert juste de _modelRouteSnapshot comme clé, on peut optimiser en evitant le clone
+    this._modelRouteSnapshot = this._modelRoute.toString();
 };
 
 MbaAccessorNode.prototype.findAndRefresh = function(parentModel, route, indexes){
@@ -95,7 +94,7 @@ MbaAccessorNode.prototype.findAndRefresh = function(parentModel, route, indexes)
     this._model = this._relativeAccessor.getSubModelAndReduceRoute(parentModel, route);
     if(route.isEmpty()){
         this._modelRoute.copyIndexes(indexes);
-        this._modelRouteSnapshot = this._modelRoute.clone().toString();
+        this._modelRouteSnapshot = this._modelRoute.toString();
         this.refresh();
     }
     else    

@@ -3,37 +3,6 @@ var testMbaV3 = function() {
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser); 
 
-     Ca('rafraichit le dom récursivement, modèle objet, route undefined.0', function(){
-        var template = new MbaDomFromString('<div><span><a></a></span></div>');
-        var directive = {'name': 'div@name',
-                         'sub' : {'r00t': 'span', 
-                                  'prop': 'span@id',
-                                  'subsub': {'r00t': 'a', 
-                                             'prop': 'a'}}};
-        var model = 
-            {name: '0', 
-             sub: [{prop : '0.0',
-                    subsub: [{prop: '0.0.0'}]},
-                   {prop : '0.1',
-                    subsub: [{prop: '0.1.0'}]}]};
-        
-        var manager = new MbaManager().init(template, directive);        
-        manager.render(model);
-        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="0.0"><a>0.0.0</a></span><span id="0.1"><a>0.1.0</a></span></div>');
-    
-        model.name = '_0';
-        model.sub[0].prop = '_0.0';
-        model.sub[0].subsub[0].prop = '_0.0.0';
-        model.sub[0].subsub.push({prop : '_0.0.1'});
-        model.sub[1].prop = '_1';
-        
-        var route = createRoute(['sub'], [undefined, 0]);
-        manager.refreshForRoute(route);
-        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="_0.0"><a>_0.0.0</a><a>_0.0.1</a></span><span id="0.1"><a>0.1.0</a></span></div>');
-    });     
-      
-    return;
-    
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
         var domIdentifier = new MbaDomIdentifier().init(dom.getElements());
@@ -894,86 +863,89 @@ var testMbaV3 = function() {
         OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="toto"><a>TITI</a></div>');
     });    
     
+    function recursiveRefreshTemplate(){
+        return new MbaDomFromString('<div><span><a></a></span></div>');
+    }
+    
+    function recursiveRefreshDirective(){
+        return {'r00t' : 'div',
+                'name': 'div@name',
+                'sub' : {'r00t': 'span', 
+                         'prop': 'span@id',
+                         'subsub': {'r00t': 'a', 
+                                    'prop': 'a'}}};
+    }
+    
+    function recursiveRefreshArrayModel(){
+        return [{name: '0', 
+                 sub: [{prop : '0.0',
+                        subsub: [{prop: '0.0.0'}]},
+                       {prop : '0.1',
+                        subsub: [{prop: '0.1.0'}]}]},
+                {name: '1',
+                 sub: []}];
+    }
+    
+    function recursiveRefreshRenderResult(){
+        return '<div name="0"><span id="0.0"><a>0.0.0</a></span><span id="0.1"><a>0.1.0</a></span></div><div name="1"></div>';
+    }
+    
+    function updateRecursiveRefreshArrayModel(model){
+        model[0] = {name: '_0', 
+                    sub: [{prop : '_0.0',
+                           subsub: []},
+                          {prop : '_0.1',
+                           subsub: [{prop: '_0.1.0'}, 
+                                    {prop: '_0.1.1'}]}]};
+        model[1] = {name: '_1',
+                    sub: [{prop : '_1.0',
+                           subsub: []}]};
+    }
+    
    Ca('rafraichit le dom récursivement, modèle tableau, route 0.1', function(){
         var template = new MbaDomFromString('<div><span><a></a></span></div>');
-        var directive = {'r00t' : 'div',
-                         'name': 'div@name',
-                         'sub' : {'r00t': 'span', 
-                                  'prop': 'span@id',
-                                  'subsub': {'r00t': 'a', 
-                                             'prop': 'a'}}};
-        var model = 
-            [{name: '0', 
-              sub: [{prop : '0.0',
-                     subsub: [{prop: '0.0.0'}]},
-                    {prop : '0.1',
-                     subsub: [{prop: '0.1.0'}]}]},
-             {name: '1', 
-              sub : []}];
+        var directive = recursiveRefreshDirective();
+        var model = recursiveRefreshArrayModel();
         
         var manager = new MbaManager().init(template, directive);        
         manager.render(model);
-        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="0.0"><a>0.0.0</a></span><span id="0.1"><a>0.1.0</a></span></div><div name="1"></div>');
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA(recursiveRefreshRenderResult());
         
-        model[0].name = '_0';
-        model[0].sub[0].prop = '_0.0';
-        model[0].sub[0].subsub[0].prop = '_0.0.0';
-        model[0].sub[0].subsub.push({prop : '_0.0.1'});
-        model[0].sub[1].prop = '_0.1';
-        model[0].sub[1].subsub[0].prop = '_0.1.0';
-        
+        updateRecursiveRefreshArrayModel(model);
+       
         var route = createRoute(['sub'], [0, 1]);
         manager.refreshForRoute(route);
-        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="0.0"><a>0.0.0</a></span><span id="_0.1"><a>_0.1.0</a></span></div><div name="1"></div>');
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="0.0"><a>0.0.0</a></span><span id="_0.1"><a>_0.1.0</a><a>_0.1.1</a></span></div><div name="1"></div>');
     });
     
     Ca('rafraichit le dom récursivement, modèle tableau, route 0.undefined', function(){
-        var template = new MbaDomFromString('<div><span><a></a></span></div>');
-        var directive = {'r00t' : 'div',
-                         'name': 'div@name',
-                         'sub' : {'r00t': 'span', 
-                                  'prop': 'span@id',
-                                  'subsub': {'r00t': 'a', 
-                                             'prop': 'a'}}};
-        var model = 
-            [{name: '0', 
-              sub: [{prop : '0.0',
-                     subsub: [{prop: '0.0.0'}]},
-                    {prop : '0.1',
-                     subsub: [{prop: '0.1.0'}]}]},
-             {name: '1', 
-              sub : []}];
+        var template = recursiveRefreshTemplate();
+        var directive = recursiveRefreshDirective();
+        var model = recursiveRefreshArrayModel();
         
         var manager = new MbaManager().init(template, directive);        
         manager.render(model);
-        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="0.0"><a>0.0.0</a></span><span id="0.1"><a>0.1.0</a></span></div><div name="1"></div>');
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA(recursiveRefreshRenderResult());
         
-        model[0].name = '_0';
-        model[0].sub[0].prop = '_0.0';
-        model[0].sub[0].subsub[0].prop = '_0.0.0';
-        model[0].sub[0].subsub.push({prop : '_0.0.1'});
-        model[0].sub[1].prop = '_0.1';
-        model[0].sub[1].subsub[0].prop = '_0.1.0';
-        model[0].sub[1].subsub.push({prop : '_0.1.1'});
-        
+        updateRecursiveRefreshArrayModel(model);
+
         var route = createRoute(['sub'], [0, undefined]);
         manager.refreshForRoute(route);
-        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="_0.0"><a>_0.0.0</a><a>_0.0.1</a></span><span id="_0.1"><a>_0.1.0</a><a>_0.1.1</a></span></div><div name="1"></div>');
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="_0.0"></span><span id="_0.1"><a>_0.1.0</a><a>_0.1.1</a></span></div><div name="1"></div>');
     });
     
+    function recursiveRefreshModel(){
+        return {name: '0', 
+                sub: [{prop : '0.0',
+                       subsub: [{prop: '0.0.0'}]},
+                      {prop : '0.1',
+                       subsub: [{prop: '0.1.0'}]}]};
+    }
+    
     Ca('rafraichit le dom récursivement, modèle objet, route undefined.0', function(){
-        var template = new MbaDomFromString('<div><span><a></a></span></div>');
-        var directive = {'name': 'div@name',
-                         'sub' : {'r00t': 'span', 
-                                  'prop': 'span@id',
-                                  'subsub': {'r00t': 'a', 
-                                             'prop': 'a'}}};
-        var model = 
-            {name: '0', 
-             sub: [{prop : '0.0',
-                    subsub: [{prop: '0.0.0'}]},
-                   {prop : '0.1',
-                    subsub: [{prop: '0.1.0'}]}]};
+        var template = recursiveRefreshTemplate();
+        var directive = recursiveRefreshDirective();
+        var model = recursiveRefreshModel();
         
         var manager = new MbaManager().init(template, directive);        
         manager.render(model);
@@ -989,10 +961,33 @@ var testMbaV3 = function() {
         manager.refreshForRoute(route);
         OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="_0.0"><a>_0.0.0</a><a>_0.0.1</a></span><span id="0.1"><a>0.1.0</a></span></div>');
     });     
-      
+    
+    Ca('rafraichit le dom récursivement, modèle objet, route undefined.1.1', function(){
+        var template = recursiveRefreshTemplate();
+        var directive = recursiveRefreshDirective();
+        var model = recursiveRefreshModel();
+        model.sub[1].subsub.push({prop: '0.1.1'});
+        
+        var manager = new MbaManager().init(template, directive);        
+        manager.render(model);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="0.0"><a>0.0.0</a></span><span id="0.1"><a>0.1.0</a><a>0.1.1</a></span></div>');
+    
+        model.name = '_0';
+        model.sub[0].prop = '_0.0';
+        model.sub[0].subsub[0].prop = '_0.0.0';
+        model.sub[0].subsub.push({prop : '_0.0.1'});
+        model.sub[1].prop = '_0.1';
+        model.sub[1].subsub[0].prop = '_0.1.0';
+        model.sub[1].subsub[1].prop = '_0.1.1';
+        
+        var route = createRoute(['sub', 'subsub'], [undefined, 1, 1]);
+        manager.refreshForRoute(route);
+        OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="0.0"><a>0.0.0</a></span><span id="0.1"><a>0.1.0</a><a>_0.1.1</a></span></div>');
+    }); 
   
     Ca('appelle une méthode sur l\'évènement donné', function(){
         var template = new MbaDomFromString('<a></a>');
+
         var directive = {'name': 'a', '/toUpper' : 'a->click'};
         var model = {name: 'toto', toUpper: function(){ 
             this.name = this.name.toUpperCase();

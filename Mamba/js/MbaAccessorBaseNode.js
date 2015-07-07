@@ -56,17 +56,6 @@ MbaAccessorBaseNode.prototype.askChildrenFindAndRefresh = function(parentModel, 
         }
     }
 };
-/*
-MbaAccessorBaseNode.prototype.findNodeToRefreshAmongChildren = function(parentModel, route){
-    checkType(route, MbaRoute2);
-    for(var i=0 ; i<this._childNodes.length ; i++){
-        var currentChild = this._childNodes[i];
-        if(currentChild.relativeAccessorMatches(route)){
-            return currentChild.findNodeToRefresh(parentModel, route);
-        }
-    }
-    return null;
-};*/
 
 MbaAccessorBaseNode.prototype.getChildNodes = function(){
     return this._childNodes;
