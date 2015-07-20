@@ -371,18 +371,6 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"></div><div id="stuff"></div>');
     });
     
-    Ca('teste la multiplication du dom, directive minimale avec root, modèle objet', function(){
-        var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
-        var directive = {'r00t': '.toto'};
-        var model = {};
-        
-        var manager = new MbaManager().init(template, directive);
-        manager.render(model);
-        var renderedDom = manager.getRenderedDom();
-    
-        OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
-    });
-    
     Ca('teste la multiplication du dom, directive minimale avec root, modèle null', function(){
         var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
         var directive = {'r00t': '.toto'};
@@ -460,17 +448,18 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="root">list1<div class="list1"></div><div class="list1"></div>end_list1<span></span>list2<div class="list2">begin<a class="subList"></a><a class="subList"></a>end</div><div class="list2">begin<a class="subList"></a>end</div></div>');
     });  
     
-    Ca('teste l\'ajout d\'éléments multipliés : d\'un modèle null à un objet', function(){
+    Ca('teste l\'ajout d\'éléments multipliés : d\'un tableau vide à une élément', function(){
         var template = new MbaDomFromString('<div class="list"><div class="person"></div></div>');
         var directive = {'r00t' : '.person'};
-        var model = null;
+        var model = [];
         var manager = new MbaManager().init(template, directive);
         manager.render(model);
         var renderedDom = manager.getRenderedDom();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"></div>');
         
-        manager.render({});
+        model.push({});
+        manager.refresh();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><div class="person"></div></div>');
     }); 
@@ -486,7 +475,7 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><div class="person"></div><div class="person"></div></div>');
         
         model.push({});
-        manager.render(model);
+        manager.refresh();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><div class="person"></div><div class="person"></div><div class="person"></div></div>');
     }); 
@@ -504,22 +493,23 @@ var testMbaV3 = function() {
         
         model[0].sub.push({});
         model[1].sub.push({});
-        manager.render(model);
+        manager.refresh();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a><a class="address"></a>end</div><span id="end"></span></div>');
     });
     
-    Ca('teste la suppression d\'éléments multipliés : d\'un modèle objet à null', function(){
+    Ca('teste la suppression d\'éléments multipliés : d\'un modèle tableau à un élément à vide', function(){
         var template = new MbaDomFromString('<div class="list"><div class="person"></div></div>');
         var directive = {'r00t' : '.person'};
-        var model = {};
+        var model = [{}];
         var manager = new MbaManager().init(template, directive);
         manager.render(model);
         var renderedDom = manager.getRenderedDom();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><div class="person"></div></div>');
         
-        manager.render(null);
+        model.pop();
+        manager.refresh();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"></div>');
     }); 
@@ -537,7 +527,7 @@ var testMbaV3 = function() {
         
         model[0].sub.pop();
         model[1].sub.pop();
-        manager.render(model);
+        manager.refresh();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">beginend</div><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
     });
@@ -552,10 +542,10 @@ var testMbaV3 = function() {
         var renderedDom = manager.getRenderedDom();
      
         model.pop();
-        manager.render(model);
+        manager.refresh();
         model.push({"sub" : [{}]});
 
-        manager.render(model);
+        manager.refresh();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
     });  
@@ -686,7 +676,7 @@ var testMbaV3 = function() {
     Ca('teste la multiplication du dom, directive minimale avec root', function(){
         var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
         var directive = {'r00t': '.toto'};
-        var model = {};
+        var model = [{}];
         
         var manager = new MbaManager().init(template, directive);
         manager.render(model);

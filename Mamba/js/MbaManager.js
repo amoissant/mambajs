@@ -86,6 +86,12 @@ MbaManager.prototype.render = function(model){
     this._bindingTree.applyBindingsForModel(model);
 };
 
+MbaManager.prototype.refresh = function(){
+    var baseAccessorChain = new MbaAccessorChain2().initWithRootModelAccessorFromMemberChain([]);
+    var baseRoute = new MbaRoute2().initFromAccessorAndIndexes(baseAccessorChain, [undefined])
+    this.refreshForRoute(baseRoute);
+};
+
 MbaManager.prototype.refreshForRoute = function(route){
     checkType(route, MbaRoute2);
     var routeIndexes = route.getIndexes();

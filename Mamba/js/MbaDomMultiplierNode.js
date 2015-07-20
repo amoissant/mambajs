@@ -42,8 +42,8 @@ MbaDomMultiplierNode.prototype.updateDomForModelWithIndexes = function(parentMod
 };
 
 MbaDomMultiplierNode.prototype.updateDom = function(){
-    /*if(this._model != null && !this.modelIsArray())
-        throw new Error('Received an object when an array is expected, remove r00t from directive.');*/
+    if(this._model != null && !this.modelIsArray())
+        throw new Error('Received an object when an array is expected, remove r00t from directive or use an array as model.');
     this.computeModelSize();
     this.createUpdateDeleteDomForEachModel();
 };
