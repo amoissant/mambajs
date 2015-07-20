@@ -1,6 +1,5 @@
 function MbaAccessorNode(){
     this._objectWithAccessor;
-    this._relativeAccessor;
     this._template;
     this._model;
     this._modelRoute;
@@ -88,26 +87,8 @@ MbaAccessorNode.prototype.setModelAndRoute = function(parentModel, parentIndexes
     this._modelRouteSnapshot = this._modelRoute.toString();
 };
 
-MbaAccessorNode.prototype.findAndRefresh = function(parentModel, route, indexes){
-    checkType(route, MbaRoute2);
-    var routeClone = route.clone();
-    this._model = this._relativeAccessor.getSubModelAndReduceRoute(parentModel, route);
-    if(route.isEmpty()){
-        this._modelRoute.copyIndexes(indexes);
-        this._modelRouteSnapshot = this._modelRoute.toString();
-        this.refresh();
-    }
-    else    
-        this.askChildrenFindAndRefresh(this._model, route, indexes);
-};
-
 MbaAccessorNode.prototype.refresh = function(){
     throw new Error('Must be implemented in subclass.');
-};
-
-MbaAccessorNode.prototype.relativeAccessorMatches = function(route){
-    checkType(route, MbaRoute2);
-    return route.getAccessorId().startsWith(this._relativeAccessor.getId());
 };
 
 MbaAccessorNode.prototype.getObjectWithAccessor = function(){

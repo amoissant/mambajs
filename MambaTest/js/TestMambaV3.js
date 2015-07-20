@@ -3,6 +3,8 @@ var testMbaV3 = function() {
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser); 
 
+    //return;
+    
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
         var domIdentifier = new MbaDomIdentifier().init(dom.getElements());
@@ -681,7 +683,7 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div id="toto">tutu</div></div><div id="stuff"></div>');
     });
     
-    Ca('teste la multiplication du dom, directive minimale avec root, modèle objet', function(){
+    Ca('teste la multiplication du dom, directive minimale avec root', function(){
         var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
         var directive = {'r00t': '.toto'};
         var model = {};
@@ -693,11 +695,11 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
     });
  
-    Ca('teste le rendu avec une directive minimale avec root, modèle objet', function(){
+    Ca('teste le rendu pour une directive minimale avec root', function(){
         var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
         var directive = {'r00t': '.toto', 
                          'name': '.toto'};
-        var model = {name: 'tutu'};
+        var model = [{name: 'tutu'}];
         
         var manager = new MbaManager().init(template, directive);
         manager.render(model);
@@ -710,7 +712,7 @@ var testMbaV3 = function() {
         var template = new MbaDomFromString('<div class="person">toto</div>');
         var directive = {'r00t': '.person', 
                          'name': '.person'};
-        var model = {name: 'tutu'};
+        var model = [{name: 'tutu'}];
         var manager = new MbaManager().init(template, directive);
         
         manager.render(model);
@@ -718,7 +720,7 @@ var testMbaV3 = function() {
         var person1 = renderedDom.findOneMax('.person').getElement();        
         OnAttend(person1.innerHTML).DEtreEgalA('tutu');
         
-        model.name = 'titi';
+        model[0].name = 'titi';
         manager.render(model);
         var renderedDom = manager.getRenderedDom();
         var person2 = renderedDom.findOneMax('.person').getElement();
@@ -750,8 +752,8 @@ var testMbaV3 = function() {
     Ca('teste le rendu d\'une propriété avec modèle tableau récursivement', function(){
         var template = new MbaDomFromString('<div><span></span><a></a></div>');
         var directive = {'r00t' : 'div', 'name': 'span', 'sub' : {'r00t' : 'a', 'name' : 'a'}};
-        var model = [{name: 'toto', sub : {name : 'tata'}}, 
-                     {name: 'titi', sub : {name : 'tutu'}}];
+        var model = [{name: 'toto', sub : [{name : 'tata'}]}, 
+                     {name: 'titi', sub : [{name : 'tutu'}]}];
         var manager = new MbaManager().init(template, directive);
         
         manager.render(model);
@@ -868,12 +870,17 @@ var testMbaV3 = function() {
     }
     
     function recursiveRefreshDirective(){
-        return {'r00t' : 'div',
-                'name': 'div@name',
+        return {'name': 'div@name',
                 'sub' : {'r00t': 'span', 
                          'prop': 'span@id',
                          'subsub': {'r00t': 'a', 
                                     'prop': 'a'}}};
+    }
+    
+    function recursiveRefreshArrayDirective(){
+        var directive = recursiveRefreshDirective();
+        directive.r00t = 'div';
+        return directive;
     }
     
     function recursiveRefreshArrayModel(){
@@ -904,7 +911,7 @@ var testMbaV3 = function() {
     
    Ca('rafraichit le dom récursivement, modèle tableau, route 0.1', function(){
         var template = new MbaDomFromString('<div><span><a></a></span></div>');
-        var directive = recursiveRefreshDirective();
+        var directive = recursiveRefreshArrayDirective();
         var model = recursiveRefreshArrayModel();
         
         var manager = new MbaManager().init(template, directive);        
@@ -920,7 +927,7 @@ var testMbaV3 = function() {
     
     Ca('rafraichit le dom récursivement, modèle tableau, route 0.undefined', function(){
         var template = recursiveRefreshTemplate();
-        var directive = recursiveRefreshDirective();
+        var directive = recursiveRefreshArrayDirective();
         var model = recursiveRefreshArrayModel();
         
         var manager = new MbaManager().init(template, directive);        
@@ -985,6 +992,55 @@ var testMbaV3 = function() {
         OnAttend(manager.getRenderedDom().toString()).DEtreEgalA('<div name="0"><span id="0.0"><a>0.0.0</a></span><span id="0.1"><a>0.1.0</a><a>_0.1.1</a></span></div>');
     }); 
   
+    Ca('fait le rendu si on attend un tableau mais qu\'il est null', function(){
+        var template = new MbaDomFromString('<div><a></a></div>');
+
+        var directive = {'name': 'div@id', 'sub': {'r00t': 'a', 'text': 'a'}};
+        var model = {name: 'toto', sub: null};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        OnAttend(renderedDom).DEtreEgalA('<div id="toto"></div>');
+    });
+    
+    Ca('teste le refresh avec un tableau qui devient vide', function(){
+        var template = new MbaDomFromString('<div><a></a></div>');
+
+        var directive = {'name': 'div@id', 'sub': {'r00t': 'a', 'text': 'a'}};
+        var model = {name: 'toto', sub: [{text: 'pouet'}]};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        OnAttend(renderedDom).DEtreEgalA('<div id="toto"><a>pouet</a></div>');
+        
+        model.name = 'TOTO';
+        model.sub = [];
+        var route = createRoute([], [undefined]);
+        manager.refreshForRoute(route);
+        OnAttend(renderedDom).DEtreEgalA('<div id="TOTO"></div>');
+    });
+    
+    Ca('teste le refresh avec un tableau qui devient null', function(){
+        var template = new MbaDomFromString('<div><a></a></div>');
+
+        var directive = {'name': 'div@id', 'sub': {'r00t': 'a', 'text': 'a'}};
+        var model = {name: 'toto', sub: [{text: 'pouet'}]};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        OnAttend(renderedDom).DEtreEgalA('<div id="toto"><a>pouet</a></div>');
+        
+        model.name = 'TOTO';
+        model.sub = null;
+        var route = createRoute([], [undefined]);
+        manager.refreshForRoute(route);
+        OnAttend(renderedDom).DEtreEgalA('<div id="TOTO"></div>');
+    });
+    
+    
     Ca('appelle une méthode sur l\'évènement donné', function(){
         var template = new MbaDomFromString('<a></a>');
 
@@ -1004,6 +1060,21 @@ var testMbaV3 = function() {
         OnAttend(model.name).DEtreEgalA('TOTO');
     });
  
+    Ca('lève une exception si directive avec r00t mais modèle non tableau', function(){
+        var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+        var directive = {'r00t': '.toto'};
+        var model = {};
+        
+        var manager = new MbaManager().init(template, directive);
+        try{
+            manager.render(model);
+        }catch(e){
+            return;
+        }
+        OnAttend(true).DEtreFaux();
+    });
+
+    
     //TODO gérer quand un tableau à multiplier est null
     
     //tester quand une action ajoute/supprime un modèle dans un tableau

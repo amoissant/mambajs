@@ -42,6 +42,8 @@ MbaDomMultiplierNode.prototype.updateDomForModelWithIndexes = function(parentMod
 };
 
 MbaDomMultiplierNode.prototype.updateDom = function(){
+    /*if(this._model != null && !this.modelIsArray())
+        throw new Error('Received an object when an array is expected, remove r00t from directive.');*/
     this.computeModelSize();
     this.createUpdateDeleteDomForEachModel();
 };
@@ -76,15 +78,11 @@ MbaDomMultiplierNode.prototype.updateDomForExistingModels = function(){
 
 MbaDomMultiplierNode.prototype.setLastIndexForModelRoute = function(index){
     checkType(index, 'number');
-    if(this.modelIsArray())
-        this._modelRoute.setLastIndex(index);
-    else
-        this._modelRoute.setLastIndexToUndefined();
+    this._modelRoute.setLastIndex(index);
 };
 
 MbaDomMultiplierNode.prototype.getModelForIndex = function(index){
     checkType(index, 'number');
-    //if(this._modelIsArray)
     if(this.modelIsArray())
         return this._model[index];
     else
@@ -162,8 +160,8 @@ MbaDomMultiplierNode.prototype.updatePreviousModelSize = function(){
 };
 
 MbaDomMultiplierNode.prototype.refresh = function(){
-    if(this.modelIsArray())
-        this.updateDom();
+    if(this._modelRoute.lastIndexIsUndefined())
+        this.updateDom();     
     else
         this.askChildrenUpdateDomForModel(this._model);
 };

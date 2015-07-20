@@ -91,8 +91,6 @@ MbaManager.prototype.refreshForRoute = function(route){
     var routeIndexes = route.getIndexes();
     this._domMultiplierTree.findAndRefresh(this._model, route.clone(), routeIndexes);
     this._bindingTree.findAndRefresh(this._model, route.clone(), routeIndexes);
-    
-    //TODO tester un refresh qui ajout/supprime des éléments de dom
 };
 
 MbaManager.prototype.getDomMultipliers = function(){

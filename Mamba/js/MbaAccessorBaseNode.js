@@ -1,4 +1,5 @@
 function MbaAccessorBaseNode(){
+    this._relativeAccessor;
     this._childNodes;
 }
 
@@ -33,17 +34,17 @@ MbaAccessorBaseNode.prototype.instanciateNewNode = function(objectWithAccessor){
     throw new Error('Must be implemented in subclass.');
 };
 
-MbaAccessorBaseNode.prototype.findNodeForAccessorId = function(targetAccessorId){
-    checkType(targetAccessorId, 'string');
-    for(var i=0 ; i<this._childNodes.length ; i++){
-        var currentChild = this._childNodes[i];
-        var currentAccessorId = currentChild.getModelAccessorId();
-        if(currentAccessorId.startsWith(targetAccessorId))
-            return currentChild;
-        if(targetAccessorId.startsWith(currentAccessorId))
-            return currentChild.findNodeForAccessorId(targetAccessorId);
+MbaAccessorBaseNode.prototype.findAndRefresh = function(parentModel, route, indexes){
+    checkType(route, MbaRoute2);
+    var routeClone = route.clone();
+    this._model = this._relativeAccessor.getSubModelAndReduceRoute(parentModel, route);
+    if(route.isEmpty()){
+        this._modelRoute.copyIndexes(indexes);
+        this._modelRouteSnapshot = this._modelRoute.toString();
+        this.refresh();
     }
-    return null;
+    else    
+        this.askChildrenFindAndRefresh(this._model, route, indexes);
 };
 
 MbaAccessorBaseNode.prototype.askChildrenFindAndRefresh = function(parentModel, route, indexes){
@@ -56,6 +57,12 @@ MbaAccessorBaseNode.prototype.askChildrenFindAndRefresh = function(parentModel, 
         }
     }
 };
+
+MbaAccessorBaseNode.prototype.relativeAccessorMatches = function(route){
+    checkType(route, MbaRoute2);
+    return route.getAccessorId().startsWith(this._relativeAccessor.getId());
+};
+
 
 MbaAccessorBaseNode.prototype.getChildNodes = function(){
     return this._childNodes;

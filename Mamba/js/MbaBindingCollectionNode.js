@@ -60,7 +60,7 @@ MbaBindingCollectionNode.prototype.applyBindingsForModelWithIndexes = function(p
 MbaBindingCollectionNode.prototype.applyBindings = function(){
     if(this._model instanceof Array)
         this.applyBindingsForEachModel();        
-    else
+    else if(this._model != null)
         this.applyBindingsForOneModel();
 };
 

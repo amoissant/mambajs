@@ -125,13 +125,14 @@ MbaTemplateNode.prototype.modelRouteIsForArrayModel = function(modelRoute){
 
 MbaTemplateNode.prototype.searchDomElementForParentRouteOf = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
+    var routeSnapshot = modelRoute.toString();//TODO à suppr pour les perfs ou mettre en cache le snapshot des routes
     while(!modelRoute.isEmpty()){
         modelRoute.removeLastAccessorWithIndex();
         var domElement = this._renderedDomMap[modelRoute];
         if(domElement != null)
             return domElement;
     }
-    throw new Error('dom Element is null for route : '+modelRoute);
+    throw new Error('dom Element is null for route : '+routeSnapshot);
 };
 
 MbaTemplateNode.prototype.deleteDomForRoute = function(modelRoute){
