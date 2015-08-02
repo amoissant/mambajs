@@ -35,7 +35,10 @@ MbaManager.prototype.parseDirective = function(directive){
 };
 
 MbaManager.prototype.createDomMultiplierTree = function(){
-    this._domMultiplierTree = new MbaDomMultiplierTree().init(this._rootDirectiveIsForArrayModel);
+    if(this._rootDirectiveIsForArrayModel)
+        this._domMultiplierTree = new MbaDomMultiplierTreeArrayModel().init();
+    else
+        this._domMultiplierTree = new MbaDomMultiplierTreeObjectModel().init();
     this.constructAccessorTree(this._domMultipliers, this._domMultiplierTree);
 };
 

@@ -11,6 +11,11 @@ MbaBindingTree.prototype.applyBindingsForModel = function(model){
     }
 };
 
+MbaBindingTree.prototype.findAndRefresh = function(parentModel, route, indexes){
+    checkType(route, MbaRoute2);
+    this.askChildrenFindAndRefresh(parentModel, route, indexes);
+};
+
 
 
 

@@ -1,27 +1,19 @@
 function MbaAccessorTree(){
-    this._rootDirectiveIsForArrayModel;
+    this._rootAccessorSize;
 }
 
 MbaAccessorTree.prototype = new MbaAccessorBaseNode();
 MbaAccessorTree.prototype.constructor = MbaAccessorTree;
 
-MbaAccessorTree.prototype.init = function(rootDirectiveIsForArrayModel){
-    checkType(rootDirectiveIsForArrayModel, 'boolean');
+MbaAccessorTree.prototype.init = function(){
     MbaAccessorBaseNode.prototype.init.call(this);
-    this._rootDirectiveIsForArrayModel = rootDirectiveIsForArrayModel;
+    this._rootAccessorSize = 0;
     return this;
 };
 
 MbaAccessorTree.prototype.initAllRelativeAccessors = function(){
-    var rootAccessorSize = 0;
-    if(!this._rootDirectiveIsForArrayModel){
-        this._modelRoute = new MbaRoute2().initFromAccessor(new MbaAccessorChain2().initWithRootModelAccessor());
-        this._relativeAccessor = new MbaAccessorChain2().initWithRootModelAccessor();
-        rootAccessorSize = 1;
-    }
-    
     for(var i=0 ; i<this._childNodes.length ; i++){
-        this._childNodes[i].initRelativeAccessor(rootAccessorSize);
+        this._childNodes[i].initRelativeAccessor(this._rootAccessorSize);
     }
 };
 
@@ -30,11 +22,4 @@ MbaAccessorTree.prototype.linkToTemplate = function(template){
     for(var i=0 ; i<this._childNodes.length ; i++){
         this._childNodes[i].linkToTemplate(template);
     }
-};
-
-//TODO à suppr une fois refresh au niveau arbre pour domMultiplier et binding
-MbaAccessorTree.prototype.findAndRefresh = function(parentModel, route, indexes){
-    checkType(route, MbaRoute2);
-    //throw new Error('là');
-    this.askChildrenFindAndRefresh(parentModel, route, indexes);
 };
