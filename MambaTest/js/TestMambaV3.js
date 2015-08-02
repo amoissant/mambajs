@@ -2,46 +2,9 @@ var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser); 
-    
-    /*Ca('teste le refresh avec un tableau qui devient vide', function(){
-        var template = new MbaDomFromString('<div><a></a></div>');
-
-        var directive = {'name': 'div@id', 'sub': {'r00t': 'a', 'text': 'a'}};
-        var model = {name: 'toto', sub: [{text: 'pouet'}]};
-        var manager = new MbaManager().init(template, directive);
-        
-        manager.render(model);
-        var renderedDom = manager.getRenderedDom();
-        OnAttend(renderedDom).DEtreEgalA('<div id="toto"><a>pouet</a></div>');
-        
-        model.name = 'TOTO';
-        model.sub = [];
-        var route = createRoute([], [undefined]);
-        manager.refreshForRoute(route);
-        OnAttend(renderedDom).DEtreEgalA('<div id="TOTO"></div>');
-    });    
-    
-    Ca('teste le refresh avec un tableau qui devient vide, super modèle tableau', function(){
-        var template = new MbaDomFromString('<div><a></a></div>');
-        var directive = {'r00t' : 'div',
-                         'name': 'div@id',
-                         'sub': {'r00t': 'a', 
-                                 'text': 'a'}};
-        var model = [{name: 'toto', sub: [{text: 'pouet'}]}];
-        var manager = new MbaManager().init(template, directive);
-        
-        manager.render(model);
-        var renderedDom = manager.getRenderedDom();
-        OnAttend(renderedDom).DEtreEgalA('<div id="toto"><a>pouet</a></div>');
-        
-        model[0].name = 'TOTO';
-        model[0].sub = [];
-        var route = createRoute([], [undefined]);
-        manager.refreshForRoute(route);
-        OnAttend(renderedDom).DEtreEgalA('<div id="TOTO"></div>');
-    });    */
 
     //return;
+    
     
     Ca('teste l\'ajout des identifiants dans les éléments de dom', function(){
         var dom = new MbaDomFromString('<div id="root"><span id="child1"></span><span id="child2"><a></a></span></div>'); 
@@ -211,6 +174,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._domMultipliers = domMultipliers;
+        manager._rootDirectiveForArray = true;
         manager.createDomMultiplierTree();
         
         var sortedDomMultipliers = manager.getDomMultipliers();
@@ -236,7 +200,7 @@ var testMbaV3 = function() {
         return accessorString(node);
     };
         
-    Ca('test la création de l\'abre des dom multiplier', function(){
+    /*Ca('test la création de l\'abre des dom multiplier', function(){
         var domMultipliers = [
             new MbaDomMultiplier().init(['persons2'], ''),
             new MbaDomMultiplier().init(['persons2', 'adresses'], ''),
@@ -246,6 +210,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._domMultipliers = domMultipliers;
+        manager._rootDirectiveForArray = true;
         manager.createDomMultiplierTree();
         
         var domMultiplierTree = manager.getDomMultiplierTree();
@@ -254,14 +219,14 @@ var testMbaV3 = function() {
         OnAttend(accessorStringForRoute(domMultiplierTree, [1])).DEtreEgalA('model.persons2');
         OnAttend(accessorStringForRoute(domMultiplierTree, [1, 0])).DEtreEgalA('model.persons2.adresses');
         OnAttend(accessorStringForRoute(domMultiplierTree, [1, 1])).DEtreEgalA('model.persons2.vehicles2');
-    });
+    });*/
   
     function relativeAccessorStringForRoute(tree, route){
         var node = nodeForRoute(tree, route);
         return node.getRelativeAccessor().toString();
     };
     
-    Ca('test l\'initialisation des relativeAccessor dans l\'arbre des dom multiplier', function(){
+    /*Ca('test l\'initialisation des relativeAccessor dans l\'arbre des dom multiplier', function(){
         var domMultipliers = [
             new MbaDomMultiplier().init(['persons2'], ''),
             new MbaDomMultiplier().init(['persons2', 'adresses'], ''),
@@ -271,6 +236,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._domMultipliers = domMultipliers;
+        manager._rootDirectiveForArray = true;
         manager.createDomMultiplierTree();
         
         var domMultiplierTree = manager.getDomMultiplierTree();
@@ -279,6 +245,48 @@ var testMbaV3 = function() {
         OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1])).DEtreEgalA('model.persons2');
         OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1, 0])).DEtreEgalA('adresses');
         OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1, 1])).DEtreEgalA('vehicles2');
+    });*/
+    
+    Ca('test la construction de l\'arbre des dom multiplier pour modèle tableau', function(){
+        var directive = 
+            {'r00t' : '',
+             'persons' : {'r00t' : '',
+                          'adresses' : {'r00t' : ''}},
+             'pets' : {'r00t' : '',
+                       'toys' : {'r00t' : ''}}};
+        var manager = new MbaManager();
+        manager.setRootDirectiveIsForArray(directive);
+        manager.parseDirective(directive);
+        manager.createDomMultiplierTree();
+        console.log(manager._domMultiplierTree);
+        
+        var domMultiplierTree = manager.getDomMultiplierTree();
+        OnAttend(domMultiplierTree.getRelativeAccessor()).DEtreNull();
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0])).DEtreEgalA('model');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0, 0])).DEtreEgalA('persons');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0, 0, 0])).DEtreEgalA('adresses');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0, 1])).DEtreEgalA('pets');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0, 1, 0])).DEtreEgalA('toys');
+    });
+    
+    Ca('test la construction de l\'arbre des dom multiplier pour modèle objet', function(){
+        var directive = 
+            {'persons' : {'r00t' : '',
+                          'adresses' : {'r00t' : ''}},
+             'pets' : {'r00t' : '',
+                       'toys' : {'r00t' : ''}}};
+        var manager = new MbaManager();
+        manager.setRootDirectiveIsForArray(directive);
+        manager.parseDirective(directive);
+        manager.createDomMultiplierTree();
+        console.log(manager._domMultiplierTree);
+        
+        var domMultiplierTree = manager.getDomMultiplierTree();
+        OnAttend(domMultiplierTree.getRelativeAccessor().toString()).DEtreEgalA('model');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0])).DEtreEgalA('persons');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [0, 0])).DEtreEgalA('adresses');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1])).DEtreEgalA('pets');
+        OnAttend(relativeAccessorStringForRoute(domMultiplierTree, [1, 0])).DEtreEgalA('toys');
     });
     
     function domElementsToCloneForRoute(tree, route, domElementsFieldName){
@@ -296,6 +304,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._domMultipliers = domMultipliers;
+        manager._rootDirectiveForArray = true;
         manager.createDomMultiplierTree();
         manager.setTemplate(template);
         manager.linkDomMultiplierTreeToTemplate();
@@ -322,6 +331,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._domMultipliers = domMultipliers;
+        manager._rootDirectiveForArray = true;
         manager.createDomMultiplierTree();
         manager.setTemplate(template);
         manager.linkDomMultiplierTreeToTemplate();
@@ -486,7 +496,7 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="root">list1<div class="list1"></div><div class="list1"></div>end_list1<span></span>list2<div class="list2">begin<a class="subList"></a><a class="subList"></a>end</div><div class="list2">begin<a class="subList"></a>end</div></div>');
     });  
     
-    Ca('teste l\'ajout d\'éléments multipliés : d\'un tableau vide à une élément', function(){
+    Ca('teste l\'ajout d\'éléments multipliés : d\'un tableau vide à un élément', function(){
         var template = new MbaDomFromString('<div class="list"><div class="person"></div></div>');
         var directive = {'r00t' : '.person'};
         var model = [];
@@ -619,6 +629,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
+        manager._rootDirectiveForArray = true;
         manager.createBindingTree();
         
         var sortedPropertyBindings = manager.getPropertyBindings();
@@ -638,6 +649,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
+        manager._rootDirectiveForArray = true;
         manager.createBindingTree();
         
         var propertyBindingTree = manager.getBindingTree();
@@ -648,7 +660,7 @@ var testMbaV3 = function() {
         OnAttend(accessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('model.persons2.vehicles2.brand');
     });
     
-     Ca('test l\'initialisation des relativeAccessor dans l\'arbre des property binding', function(){
+     Ca('test l\'initialisation des relativeAccessor dans l\'arbre des property binding, modèle tableau', function(){
          var propertyBindings = [
             createMbaPropertyBinding(['persons2', 'name']),
             createMbaPropertyBinding(['persons2', 'adresses', 'town']),
@@ -658,6 +670,7 @@ var testMbaV3 = function() {
         ];
         var manager = new MbaManager();
         manager._propertyBindings = propertyBindings;
+        manager._rootDirectiveForArray = true;
         manager.createBindingTree();
         
         var propertyBindingTree = manager.getBindingTree();
@@ -667,6 +680,7 @@ var testMbaV3 = function() {
         OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [1, 0])).DEtreEgalA('adresses');
         OnAttend(relativeAccessorStringForRoute(propertyBindingTree, [1, 1])).DEtreEgalA('vehicles2');
     });
+ 
     
     function targetDomElementIdsForRoute(tree, route, bindingIndex){
         var node = nodeForRoute(tree, route);
@@ -689,6 +703,7 @@ var testMbaV3 = function() {
          manager._domMultipliers = [];
          manager._propertyBindings = propertyBindings;
          manager.setTemplate(template);
+         manager._rootDirectiveForArray = true;
          manager.createBindingTree();   
          manager.linkBindingTreeToTemplate();
         
@@ -813,6 +828,18 @@ var testMbaV3 = function() {
         var template = new MbaDomFromString('<a></a>');
         var directive = {'name': 'a'};
         var model = [{name: 'toto'}, {name: 'titi'}];
+        var manager = new MbaManager().init(template, directive);
+        
+        try{ manager.render(model); }
+        catch (e){ return OnAttend(e instanceof MbaError).DEtreVrai(); }
+        
+        Echec();
+    });
+    
+    Ca('lève une exception si r00t et modèle objet', function(){
+        var template = new MbaDomFromString('<a></a>');
+        var directive = {'r00t' : 'a', 'name': 'a'};
+        var model = {name: 'toto'};
         var manager = new MbaManager().init(template, directive);
         
         try{ manager.render(model); }
@@ -1032,7 +1059,7 @@ var testMbaV3 = function() {
         OnAttend(renderedDom).DEtreEgalA('<div id="toto"></div>');
     });
     
-    Ca('teste le refresh avec un tableau qui devient vide', function(){
+    Ca('teste le refresh avec un tableau qui devient vide, super modèle objet', function(){
         var template = new MbaDomFromString('<div><a></a></div>');
 
         var directive = {'name': 'div@id', 'sub': {'r00t': 'a', 'text': 'a'}};
@@ -1045,6 +1072,26 @@ var testMbaV3 = function() {
         
         model.name = 'TOTO';
         model.sub = [];
+        var route = createRoute([], [undefined]);
+        manager.refreshForRoute(route);
+        OnAttend(renderedDom).DEtreEgalA('<div id="TOTO"></div>');
+    });
+    
+      Ca('teste le refresh avec un tableau qui devient vide, super modèle tableau', function(){
+        var template = new MbaDomFromString('<div><a></a></div>');
+        var directive = {'r00t' : 'div',
+                         'name': 'div@id',
+                         'sub': {'r00t': 'a', 
+                                 'text': 'a'}};
+        var model = [{name: 'toto', sub: [{text: 'pouet'}]}];
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        OnAttend(renderedDom).DEtreEgalA('<div id="toto"><a>pouet</a></div>');
+        
+        model[0].name = 'TOTO';
+        model[0].sub = [];
         var route = createRoute([], [undefined]);
         manager.refreshForRoute(route);
         OnAttend(renderedDom).DEtreEgalA('<div id="TOTO"></div>');

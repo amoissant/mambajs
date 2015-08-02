@@ -93,7 +93,7 @@ MbaTransf.prototype.update = function(dom, model, route, parentDirectiveNode){
     checkType(parentDirectiveNode, MbaNode);
     var newValue = this.getNewValue(model, route);
     if(newValue instanceof Array)
-        throw new MbaError(23, 'Received an array for model, user \'r00t\' directive to set what dom to repeat.');
+        throw new MbaError(23, 'Received an array for model, user \'r00t\' directive to set dom to repeat.');
     var oldValue = this.getOldValue(route);
     var domElement = dom.getElement();
     this.updateDomWithModel(domElement, newValue, oldValue);

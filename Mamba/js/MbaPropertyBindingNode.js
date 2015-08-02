@@ -44,7 +44,7 @@ MbaPropertyBindingNode.prototype.applyBinding = function(domElement, model, rout
 MbaPropertyBindingNode.prototype.getPropertyValue = function(model){
     var propertyValue = this._propertyAccessor.getModelValue(model);
     if(propertyValue instanceof Array)
-        throw new MbaError(23, 'Received an array for model, user \'r00t\' directive to set what dom to repeat.');
+        throw new MbaError(23, 'Received an array for model, user \'r00t\' directive to set dom to repeat.');
     return propertyValue;
 };
 

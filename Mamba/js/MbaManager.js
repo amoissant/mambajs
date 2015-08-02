@@ -6,10 +6,12 @@ function MbaManager(){
     this._bindingTree;
     this._template;
     this._model;
+    this._rootDirectiveIsForArrayModel;
 }
 
 MbaManager.prototype.init = function(template, directive){
     checkType(template, MbaDom);
+    this.setRootDirectiveIsForArray(directive);
     this.parseDirective(directive);
     this.createDomMultiplierTree();
     this.createBindingTree();
@@ -18,6 +20,10 @@ MbaManager.prototype.init = function(template, directive){
     this.linkDomMultiplierTreeToTemplate();
     this.linkBindingTreeToTemplate();
     return this;
+};
+
+MbaManager.prototype.setRootDirectiveIsForArray = function(directive){
+    this._rootDirectiveIsForArrayModel = directive[MBA_CST.ROOT] != null;
 };
 
 MbaManager.prototype.parseDirective = function(directive){
@@ -29,7 +35,7 @@ MbaManager.prototype.parseDirective = function(directive){
 };
 
 MbaManager.prototype.createDomMultiplierTree = function(){
-    this._domMultiplierTree = new MbaDomMultiplierTree().init();
+    this._domMultiplierTree = new MbaDomMultiplierTree().init(this._rootDirectiveIsForArrayModel);
     this.constructAccessorTree(this._domMultipliers, this._domMultiplierTree);
 };
 
@@ -62,7 +68,7 @@ MbaManager.prototype.getDomMultipliersSelectors = function(){
 };
 
 MbaManager.prototype.createBindingTree = function(){
-    this._bindingTree = new MbaBindingTree().init();
+    this._bindingTree = new MbaBindingTree().init(true);//TODO ne pas laisser cette constante
     this.constructAccessorTree(this._propertyBindings, this._bindingTree);    
 };
 

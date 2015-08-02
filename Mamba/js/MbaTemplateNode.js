@@ -113,15 +113,18 @@ MbaTemplateNode.prototype.getDomElementForRoute = function(modelRoute){
     var domElement = this._renderedDomMap[modelRoute];
     if(domElement != null)
         return domElement;
-    if(this.modelRouteIsForArrayModel(modelRoute))
-        throw new MbaError().init2(modelRoute.forDebug()+' is an array, set r00t in directive.');//TODO new MbaMissingR00tError
+    /*if(this.modelRouteIsForArrayModel(modelRoute))
+        throw new MbaError().init2(modelRoute.forDebug()+' is an array, set r00t in directive.');//TODO new MbaMissingR00tError*/
+    //TODO voir si on peut pas faire 2 version de cette fonction : une qui cherche dans les parents et l'autre non
     return this.searchDomElementForParentRouteOf(modelRoute);        
 };
+/*
 
 MbaTemplateNode.prototype.modelRouteIsForArrayModel = function(modelRoute){
     checkType(modelRoute, MbaRoute2);
     return modelRoute.sameNumberOfAccessorAndIndexes() && !modelRoute.lastIndexIsUndefined();
 };
+*/
 
 MbaTemplateNode.prototype.searchDomElementForParentRouteOf = function(modelRoute){
     checkType(modelRoute, MbaRoute2);

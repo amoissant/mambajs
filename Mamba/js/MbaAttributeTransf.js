@@ -40,7 +40,7 @@ MbaAttributeTransf.prototype.readValueFromDom = function(domElement, oldValue){
     else if(domElement.hasAttributes(this._attribute))
         return domElement.getAttribute(this._attribute);
     else
-        throw new MbaError(0, 'Dom element has no attribute '+this._attribute+', can\'t read value from.');
+        throw new MbaError().init2('Dom element has no attribute '+this._attribute+', can\'t read value from.');
 }
 
 
