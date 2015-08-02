@@ -36,7 +36,7 @@ MbaAccessorBaseNode.prototype.instanciateNewNode = function(objectWithAccessor){
 
 MbaAccessorBaseNode.prototype.findAndRefresh = function(parentModel, route, indexes){
     checkType(route, MbaRoute2);
-    var routeClone = route.clone();
+    var routeClone = route.clone();//TODO à suppr si pas utilisé
     this._model = this._relativeAccessor.getSubModelAndReduceRoute(parentModel, route);
     if(route.isEmpty()){
         this._modelRoute.copyIndexes(indexes);
@@ -60,9 +60,14 @@ MbaAccessorBaseNode.prototype.askChildrenFindAndRefresh = function(parentModel, 
 
 MbaAccessorBaseNode.prototype.relativeAccessorMatches = function(route){
     checkType(route, MbaRoute2);
-    return route.getAccessorId().startsWith(this._relativeAccessor.getId());
+    var routeAccessorId = route.getAccessorId();
+    var thisAccessorId = this._relativeAccessor.getId();
+    return routeAccessorId.startsWith(thisAccessorId);
 };
 
+MbaAccessorBaseNode.prototype.getRelativeAccessor = function(){
+    return this._relativeAccessor;
+};
 
 MbaAccessorBaseNode.prototype.getChildNodes = function(){
     return this._childNodes;

@@ -2,6 +2,44 @@ var testMbaV3 = function() {
     
     MBA_DI.bind(DirectiveValueParser).to(DirectiveValueParser);
     MBA_DI.bind(MbaTextBindingParser).to(MbaTextBindingParser); 
+    
+    /*Ca('teste le refresh avec un tableau qui devient vide', function(){
+        var template = new MbaDomFromString('<div><a></a></div>');
+
+        var directive = {'name': 'div@id', 'sub': {'r00t': 'a', 'text': 'a'}};
+        var model = {name: 'toto', sub: [{text: 'pouet'}]};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        OnAttend(renderedDom).DEtreEgalA('<div id="toto"><a>pouet</a></div>');
+        
+        model.name = 'TOTO';
+        model.sub = [];
+        var route = createRoute([], [undefined]);
+        manager.refreshForRoute(route);
+        OnAttend(renderedDom).DEtreEgalA('<div id="TOTO"></div>');
+    });    
+    
+    Ca('teste le refresh avec un tableau qui devient vide, super modèle tableau', function(){
+        var template = new MbaDomFromString('<div><a></a></div>');
+        var directive = {'r00t' : 'div',
+                         'name': 'div@id',
+                         'sub': {'r00t': 'a', 
+                                 'text': 'a'}};
+        var model = [{name: 'toto', sub: [{text: 'pouet'}]}];
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        OnAttend(renderedDom).DEtreEgalA('<div id="toto"><a>pouet</a></div>');
+        
+        model[0].name = 'TOTO';
+        model[0].sub = [];
+        var route = createRoute([], [undefined]);
+        manager.refreshForRoute(route);
+        OnAttend(renderedDom).DEtreEgalA('<div id="TOTO"></div>');
+    });    */
 
     //return;
     
@@ -562,7 +600,7 @@ var testMbaV3 = function() {
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><div class="person">begin<a class="address"></a><a class="address"></a>end</div><span id="end"></span></div>');
      
         model.pop();
-        manager.render(model);
+        manager.refresh();
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<div class="list"><span id="begin"></span><div class="person">begin<a class="address"></a>end</div><span id="end"></span></div>');
     });
@@ -1065,10 +1103,7 @@ var testMbaV3 = function() {
     });
 
     
-    //TODO gérer quand un tableau à multiplier est null
-    
     //tester quand une action ajoute/supprime un modèle dans un tableau
-    //refreshForRoute doit appeler les dom multiplier + appliquer les bindings
     
    //TODO rafraichir le modèle avec la nouvelle valeur sur l'évènement input$value->blur
 }

@@ -95,10 +95,6 @@ MbaAccessorNode.prototype.getObjectWithAccessor = function(){
     return this._objectWithAccessor;
 };
 
-MbaAccessorNode.prototype.getRelativeAccessor = function(){
-    return this._relativeAccessor;
-};
-
 MbaAccessorNode.prototype.getModelAccessorId = function(){
     return this._modelAccessorId;
 };
