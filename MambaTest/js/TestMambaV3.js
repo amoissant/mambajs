@@ -849,7 +849,7 @@ var testMbaV3 = function() {
     });
     
     function createRoute(memberChain, indexes){
-        var accessorChain = new MbaAccessorChain2().initWithRootModelAccessorFromMemberChain(memberChain);
+        var accessorChain = new MbaAccessorChain2().initFromMemberChain(memberChain);
         return new MbaRoute2().initFromAccessorAndIndexes(accessorChain, indexes)
     };
     

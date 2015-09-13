@@ -26,7 +26,7 @@ MbaRoute2.prototype.initFromAccessor = function(accessorChain){
 
 MbaRoute2.prototype.clone = function(){
     var clone = new MbaRoute2();
-    clone._accessorChain = new MbaAccessorChain2().initFromAccessorChain(this._accessorChain);
+    clone._accessorChain = this._accessorChain.clone();
     clone._routeIndexes = [];
     Uti.array(clone._routeIndexes).pushAll(this._routeIndexes);
     return clone;

@@ -25,7 +25,7 @@ MbaActionBinding2.prototype.initAction = function(memberChain){
 MbaActionBinding2.prototype.initModelAccessor = function(memberChain){
     checkType(memberChain, 'array', 'string');
     memberChain.pop();
-    this._modelAccessor = new MbaAccessorChain2().initWithRootModelAccessorFromMemberChain(memberChain);
+    this._modelAccessor = new MbaAccessorChain2().initFromMemberChain(memberChain);
 };
 
 MbaActionBinding2.prototype.getSelector = function(){

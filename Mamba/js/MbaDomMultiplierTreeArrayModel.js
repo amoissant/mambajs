@@ -11,7 +11,6 @@ MbaDomMultiplierTreeArrayModel.prototype.init = function(){
 MbaDomMultiplierTreeArrayModel.prototype.updateDomForModel = function(model){
     if(this.modelIsObject(model)) 
        throw new MbaError().init2('Root directive contains \'r00t\' but the given model is not an array.');
-       
     MbaDomMultiplierTreeBase.prototype.updateDomForModel.call(this, model);
 };
 

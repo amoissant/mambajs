@@ -49,7 +49,7 @@ MbaAccessorNode.prototype.initRelativeAccessor = function(parentAccessorSize){
 
 MbaAccessorNode.prototype.createRelativeAccessor = function(){
     var accessor = this._objectWithAccessor.getModelAccessor();
-    this._relativeAccessor = new MbaAccessorChain2().initFromAccessorChain(accessor);  
+    this._relativeAccessor = accessor.clone();
 };
 
 MbaAccessorNode.prototype.removeParentRootFromRelativeAccessor = function(parentAccessorSize){

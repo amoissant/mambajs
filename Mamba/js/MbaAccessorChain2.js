@@ -4,23 +4,14 @@ function MbaAccessorChain2(){
 }
 
 MbaAccessorChain2.prototype.initWithRootModelAccessor = function(){
-    this.initEmpty();
-    this.prependRootModelAccessor();
+    this._accessors = [new MbaSelfAccessor()];
     return this;
 };
 
-MbaAccessorChain2.prototype.initWithRootModelAccessorFromMemberChain = function(memberChain){
+MbaAccessorChain2.prototype.initFromMemberChain = function(memberChain){
     checkType(memberChain, 'array', 'string');
-    this.initEmpty();
+    this.initWithRootModelAccessor();
     this.createAccessors(memberChain);
-    this.prependRootModelAccessor();
-    return this;
-};
-    
-MbaAccessorChain2.prototype.initFromAccessorChain = function(accessorChain){
-    checkType(accessorChain, MbaAccessorChain2);
-    this.initEmpty();
-    Uti.array(this._accessors).pushAll(accessorChain._accessors);
     return this;
 };
 
@@ -171,5 +162,12 @@ MbaAccessorChain2.prototype.compareId = function(other){
     if(thisId > otherId)
         return 1;
     return 0;
+};
+
+MbaAccessorChain2.prototype.clone = function(){
+    var clone = new MbaAccessorChain2();
+    clone.initEmpty();
+    Uti.array(clone._accessors).pushAll(this._accessors);
+    return clone;
 };
 

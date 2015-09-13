@@ -74,7 +74,7 @@ MbaTemplate2.prototype.registerDomElementsRecursively = function(templateNodes){
 }
 
 MbaTemplate2.prototype.initRenderedDom = function(){
-    var modelAccessorChain = new MbaAccessorChain2().initWithRootModelAccessorFromMemberChain([]);
+    var modelAccessorChain = new MbaAccessorChain2().initFromMemberChain([]);
     var modelRoute = new MbaRoute2().initFromAccessor(modelAccessorChain);
     //var modelRoute = new MbaRoute2().init();
     this._templateTree.createDomForRoute(modelRoute);

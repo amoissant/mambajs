@@ -1,6 +1,7 @@
 function MbaAccessorBaseNode(){
     this._relativeAccessor;
     this._childNodes;
+    this._modelRoute;
 }
 
 MbaAccessorBaseNode.prototype.init = function(){
@@ -33,12 +34,6 @@ MbaAccessorBaseNode.prototype.createNodeFrom = function(objectWithAccessor){
 MbaAccessorBaseNode.prototype.instanciateNewNode = function(objectWithAccessor){
     throw new Error('Must be implemented in subclass.');
 };
-
-/*MbaAccessorBaseNode.prototype.askChildrenToLinkTemplate = function(){
-    for(var i=0 ; i<this._childNodes.length ; i++){
-        this._childNodes[i].linkToTemplate(this._template);
-    }
-};*/
 
 MbaAccessorBaseNode.prototype.findAndRefresh = function(parentModel, route, indexes){
     checkType(route, MbaRoute2);

@@ -96,7 +96,7 @@ MbaManager.prototype.render = function(model){
 };
 
 MbaManager.prototype.refresh = function(){
-    var baseAccessorChain = new MbaAccessorChain2().initWithRootModelAccessorFromMemberChain([]);
+    var baseAccessorChain = new MbaAccessorChain2().initFromMemberChain([]);
     var baseRoute = new MbaRoute2().initFromAccessorAndIndexes(baseAccessorChain, [undefined])
     this.refreshForRoute(baseRoute);
 };
