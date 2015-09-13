@@ -1148,6 +1148,20 @@ var testMbaV3 = function() {
         }
         OnAttend(true).DEtreFaux();
     });
+    
+     Ca('lève une exception si directive sans r00t mais modèle tableau', function(){
+        var template = new MbaDomFromString('<div id="root"><div class="toto">toto</div></div><div id="stuff"></div>');
+        var directive = {};
+        var model = [];
+        
+        var manager = new MbaManager().init(template, directive);
+        try{
+            manager.render(model);
+        }catch(e){
+            return;
+        }
+        OnAttend(true).DEtreFaux();
+    });
 
     
     //tester quand une action ajoute/supprime un modèle dans un tableau
