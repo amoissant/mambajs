@@ -1130,8 +1130,7 @@ var testMbaV3 = function() {
         var a = renderedDom.selectOneMax('a');
         a.dispatchEvent(new Event('click'));
         
-        //TODO décommenter une fois rafraichissement ok
-        //OnAttend(renderedDom.toString()).DEtreEgalA('<a>TOTO</a>');
+        OnAttend(renderedDom.toString()).DEtreEgalA('<a>TOTO</a>');
         OnAttend(model.name).DEtreEgalA('TOTO');
     });
  
@@ -1163,7 +1162,24 @@ var testMbaV3 = function() {
         OnAttend(true).DEtreFaux();
     });
 
-    
+    Ca('appelle une méthode puis rafraichit le modèle sur l\'évènement donné', function(){
+        var template = new MbaDomFromString('<a></a>');
+
+        var directive = {'name': 'a', '/toUpper' : 'a->click'};
+        var model = {name: 'toto', toUpper: function(){ 
+            this.name = this.name.toUpperCase();
+        }};
+        var manager = new MbaManager().init(template, directive);
+        
+        manager.render(model);
+        var renderedDom = manager.getRenderedDom();
+        var a = renderedDom.selectOneMax('a');
+        a.dispatchEvent(new Event('click'));
+        
+        OnAttend(renderedDom.toString()).DEtreEgalA('<a>TOTO</a>');
+        OnAttend(model.name).DEtreEgalA('TOTO');
+    });   
+
     //tester quand une action ajoute/supprime un modèle dans un tableau
     
    //TODO rafraichir le modèle avec la nouvelle valeur sur l'évènement input$value->blur

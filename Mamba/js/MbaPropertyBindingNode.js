@@ -5,14 +5,17 @@ function MbaPropertyBindingNode(){
     this._events;
     this._template;
     this._targetDomElementIds;
+    this._manager;
 }
 
-MbaPropertyBindingNode.prototype.init = function(propertyBinding){
+MbaPropertyBindingNode.prototype.init = function(propertyBinding, manager){
     checkType(propertyBinding, MbaPropertyBinding);
+    checkType(manager, MbaManager);
     this._selector = propertyBinding.getSelector();
     this._propertyAccessor = propertyBinding.getPropertyAccessor();
     this._domTransformation = propertyBinding.getDomTransformation();
     this._events = propertyBinding.getEvents();
+    this._manager = manager;
     return this;
 };
 

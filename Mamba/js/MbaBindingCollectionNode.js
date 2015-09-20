@@ -6,11 +6,12 @@ MbaBindingCollectionNode.prototype = new MbaAccessorNode();
 MbaBindingCollectionNode.prototype.constructor = MbaBindingCollectionNode;
     
 MbaBindingCollectionNode.prototype.instanciateNewNode = function(binding){
-    return new MbaBindingCollectionNode().init(binding);
+    return new MbaBindingCollectionNode().init(binding, this._manager);
 };
 
-MbaBindingCollectionNode.prototype.init = function(binding){
-    MbaAccessorNode.prototype.init.call(this, binding);
+MbaBindingCollectionNode.prototype.init = function(binding, manager){
+    checkType(manager, MbaManager);
+    MbaAccessorNode.prototype.init.call(this, binding, manager);
     this._bindingNodeCollection = [];
     this.addBindingNode(binding);
     return this;
@@ -31,13 +32,13 @@ MbaBindingCollectionNode.prototype.addBindingNode = function(binding){
 
 MbaBindingCollectionNode.prototype.addPropertyBindingNode = function(propertyBinding){
     checkType(propertyBinding, MbaPropertyBinding);
-    var propertyBindingNode = new MbaPropertyBindingNode().init(propertyBinding);
+    var propertyBindingNode = new MbaPropertyBindingNode().init(propertyBinding, this._manager);
     this._bindingNodeCollection.push(propertyBindingNode);
 };
 
 MbaBindingCollectionNode.prototype.addActionBindingNode = function(actionBinding){
     checkType(actionBinding, MbaActionBinding2);
-    var actionBindingNode = new MbaActionBindingNode().init(actionBinding);
+    var actionBindingNode = new MbaActionBindingNode().init(actionBinding, this._manager);
     this._bindingNodeCollection.push(actionBindingNode);
 };
 

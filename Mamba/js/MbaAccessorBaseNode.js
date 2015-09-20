@@ -2,9 +2,12 @@ function MbaAccessorBaseNode(){
     this._relativeAccessor;
     this._childNodes;
     this._modelRoute;
+    this._manager;
 }
 
-MbaAccessorBaseNode.prototype.init = function(){
+MbaAccessorBaseNode.prototype.init = function(manager){
+    checkType(manager, MbaManager);
+    this._manager = manager;
     this._childNodes = [];
     return this;
 };
@@ -37,6 +40,8 @@ MbaAccessorBaseNode.prototype.instanciateNewNode = function(objectWithAccessor){
 
 MbaAccessorBaseNode.prototype.findAndRefresh = function(parentModel, route, indexes){
     checkType(route, MbaRoute2);
+    //TODO : si route modelseflaccesseur et indexes = [undefined] la fonction ci-dessous supprime un index hors pour
+    //le rafraichissement suite à une ation ca pose problème
     this._model = this._relativeAccessor.getSubModelAndReduceRoute(parentModel, route);
     if(route.isEmpty()){
         this._modelRoute.copyIndexes(indexes);

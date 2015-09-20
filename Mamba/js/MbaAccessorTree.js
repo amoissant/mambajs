@@ -5,8 +5,9 @@ function MbaAccessorTree(){
 MbaAccessorTree.prototype = new MbaAccessorBaseNode();
 MbaAccessorTree.prototype.constructor = MbaAccessorTree;
 
-MbaAccessorTree.prototype.init = function(){
-    MbaAccessorBaseNode.prototype.init.call(this);
+MbaAccessorTree.prototype.init = function(manager){
+    checkType(manager, MbaManager);
+    MbaAccessorBaseNode.prototype.init.call(this, manager);
     this._rootAccessorSize = 0;
     return this;
 };

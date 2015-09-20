@@ -10,8 +10,9 @@ function MbaAccessorNode(){
 MbaAccessorNode.prototype = new MbaAccessorBaseNode();
 MbaAccessorNode.prototype.constructor = MbaAccessorNode;
 
-MbaAccessorNode.prototype.init = function(objectWithAccessor){
-    MbaAccessorBaseNode.prototype.init.call(this);
+MbaAccessorNode.prototype.init = function(objectWithAccessor, manager){
+    checkType(manager, MbaManager);
+    MbaAccessorBaseNode.prototype.init.call(this, manager);
     this._objectWithAccessor = objectWithAccessor;
     this._modelRoute = new MbaRoute2().initFromAccessor(objectWithAccessor.getModelAccessor());
     this._modelAccessorId = this._modelRoute.getAccessorId();
@@ -21,7 +22,8 @@ MbaAccessorNode.prototype.init = function(objectWithAccessor){
 MbaAccessorNode.prototype.addNodeFrom = function(objectWithAccessor){
      if(this.accessorEquals(objectWithAccessor))
         this.onAccessorEquals(objectWithAccessor);
-    MbaAccessorBaseNode.prototype.addNodeFrom.call(this, objectWithAccessor);
+    else
+        MbaAccessorBaseNode.prototype.addNodeFrom.call(this, objectWithAccessor);
 };
 
 MbaAccessorNode.prototype.accessorEquals = function(otherWithAccessor){

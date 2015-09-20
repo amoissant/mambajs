@@ -4,16 +4,19 @@ function MbaActionBindingNode(){
     this._events;
     this._template;
     this._targetDomElementIds;
+    this._manager;
 }
 
-MbaActionBindingNode.prototype.init = function(actionBinding){
+MbaActionBindingNode.prototype.init = function(actionBinding, manager){
     checkType(actionBinding, MbaActionBinding2);
+    checkType(manager, manager);
     this._selector = actionBinding.getSelector();
     this._action = actionBinding.getAction();
     this._events = actionBinding.getEvents();
+    this._manager = manager;
     return this;
 };
-//TODO factoriser code avec MbaMbaPropertyBindingNode
+//TODO factoriser code avec MbaPropertyBindingNode
 MbaActionBindingNode.prototype.computeTargetDomElementIds = function(){
     var targetDomElements = this._template.findForSelector(this._selector);
     this._targetDomElementIds = [];
@@ -36,11 +39,14 @@ MbaActionBindingNode.prototype.applyBinding = function(domElement, model, route)
     checkType(domElement, 'domElement');
     checkType(route, MbaRoute2);
     var action = this._action;
+    var manager = this._manager;
+    var routeClone = route.clone();
     for(var i=0 ; i<this._events.length ; i++){
         domElement.addEventListener(this._events[i], function(){
             model[action]();//TODO passer en paramètre le(s) modèle(s) correspondant(s) au domElement
-            //console.log(route.toString());
             //TODO faire un render pour la route donnée pour rafraichir le dom
+            manager.refreshForRoute(routeClone);
+            //TODO trouver une tester pour confirmer la necessité du clone sur la route
         });   
     }    
 };

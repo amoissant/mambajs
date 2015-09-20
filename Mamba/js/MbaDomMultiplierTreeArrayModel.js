@@ -4,8 +4,9 @@ function MbaDomMultiplierTreeArrayModel(){
 MbaDomMultiplierTreeArrayModel.prototype = new MbaDomMultiplierTreeBase();
 MbaDomMultiplierTreeArrayModel.prototype.constructor = MbaDomMultiplierTreeArrayModel;
 
-MbaDomMultiplierTreeArrayModel.prototype.init = function(){
-    return MbaDomMultiplierTreeBase.prototype.init.call(this, []);
+MbaDomMultiplierTreeArrayModel.prototype.init = function(manager){
+    checkType(manager, MbaManager);
+    return MbaDomMultiplierTreeBase.prototype.init.call(this, [], manager);
 };
 
 MbaDomMultiplierTreeArrayModel.prototype.updateDomForModel = function(model){

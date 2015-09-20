@@ -114,7 +114,6 @@ MbaRoute2.prototype.forDebug = function(){
     debugRoute.setLastIndexToUndefined();
     var debugRouteString = debugRoute.toString();
     return debugRouteString.substring(1, debugRouteString.length);
-    return this._accessorChain.toStringWithIndexes(this._routeIndexes);
 };
 
     

@@ -8,9 +8,10 @@ function MbaDomMultiplierNode(){
 MbaDomMultiplierNode.prototype = new MbaAccessorNode();
 MbaDomMultiplierNode.prototype.constructor = MbaDomMultiplierNode;
 
-MbaDomMultiplierNode.prototype.init = function(domMultiplier){
+MbaDomMultiplierNode.prototype.init = function(domMultiplier, manager){
     checkType(domMultiplier, MbaDomMultiplier);
-    MbaAccessorNode.prototype.init.call(this, domMultiplier);
+    checkType(manager, MbaManager);
+    MbaAccessorNode.prototype.init.call(this, domMultiplier, manager);
     this._domMultiplier = domMultiplier;
     this._previousModelSize = {};
     return this;
@@ -18,7 +19,7 @@ MbaDomMultiplierNode.prototype.init = function(domMultiplier){
 
 MbaDomMultiplierNode.prototype.instanciateNewNode = function(domMultiplier){
     checkType(domMultiplier, MbaDomMultiplier);
-    return new MbaDomMultiplierNode().init(domMultiplier);
+    return new MbaDomMultiplierNode().init(domMultiplier, this._manager);
 };
 
 MbaDomMultiplierNode.prototype.onLinkToTemplate = function(){

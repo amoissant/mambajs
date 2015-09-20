@@ -36,9 +36,9 @@ MbaManager.prototype.parseDirective = function(directive){
 
 MbaManager.prototype.createDomMultiplierTree = function(){
     if(this._rootDirectiveIsForArrayModel)
-        this._domMultiplierTree = new MbaDomMultiplierTreeArrayModel().init();
+        this._domMultiplierTree = new MbaDomMultiplierTreeArrayModel().init(this);
     else
-        this._domMultiplierTree = new MbaDomMultiplierTreeObjectModel().init();
+        this._domMultiplierTree = new MbaDomMultiplierTreeObjectModel().init(this);
     this.constructAccessorTree(this._domMultipliers, this._domMultiplierTree);
 };
 
@@ -71,7 +71,7 @@ MbaManager.prototype.getDomMultipliersSelectors = function(){
 };
 
 MbaManager.prototype.createBindingTree = function(){
-    this._bindingTree = new MbaBindingTree().init(true);//TODO ne pas laisser cette constante
+    this._bindingTree = new MbaBindingTree().init(this);
     this.constructAccessorTree(this._propertyBindings, this._bindingTree);    
 };
 
@@ -105,6 +105,7 @@ MbaManager.prototype.refreshForRoute = function(route){
     checkType(route, MbaRoute2);
     var routeIndexes = route.getIndexes();
     this._domMultiplierTree.findAndRefresh(this._model, route.clone(), routeIndexes);
+    //TODO c'est pas l'appelant qui doit savoir qu'il faut cloner mais l'appelé
     this._bindingTree.findAndRefresh(this._model, route.clone(), routeIndexes);
 };
 
