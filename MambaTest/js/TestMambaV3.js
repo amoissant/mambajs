@@ -1166,8 +1166,10 @@ var testMbaV3 = function() {
         var template = new MbaDomFromString('<a></a>');
 
         var directive = {'name': 'a', '/toUpper' : 'a->click'};
+        var callCount = 0;
         var model = {name: 'toto', toUpper: function(){ 
             this.name = this.name.toUpperCase();
+            callCount++;
         }};
         var manager = new MbaManager().init(template, directive);
         
@@ -1178,8 +1180,12 @@ var testMbaV3 = function() {
         
         OnAttend(renderedDom.toString()).DEtreEgalA('<a>TOTO</a>');
         OnAttend(model.name).DEtreEgalA('TOTO');
+        OnAttend(callCount).DEtreEgalA(1);
     });   
 
+    //TODO : ajouter les actionBinding sur les dom multiplier plutot que sur le bindingTree
+    //TODO : ensuite pouvoir appeler deux méthodes sur un évènement ('toUpper' : 'a->click', 'autreMéthode' : 'a->click')
+    
     //tester quand une action ajoute/supprime un modèle dans un tableau
     
    //TODO rafraichir le modèle avec la nouvelle valeur sur l'évènement input$value->blur
